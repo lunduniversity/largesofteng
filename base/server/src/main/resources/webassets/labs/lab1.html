@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <title>BASE Lab 1 Manual</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!--<link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/default.min.css">-->
+    <link rel="stylesheet" href="header.css">
+</head>
+<body>
+<div id="header"></div>
+
+<div class="container">
+    <h1 class="display-2">BASE Lab Manual:</h1>
+    <h1>Lab 1 Front End</h1>
+    <h4 class="text-muted mt-3">Created by Rasmus Ros in 2018,
+        <a href="mailto:rasmus.ros@cs.lth.se?Subject=Lab%20rant">rasmus.ros@cs.lth.se</a>,
+        for the course in Large Scale Software Engineering at LTH, Lund University.</h4>
+    <p class="lead mt-3">
+        In these labs you will learn about front and backend web development in the context of the BASE system. This can
+        appear daunting, however, you need only a holistic understanding of the concepts within. By now you should have
+        been assigned a specific team and role within your larger group, so pay extra attention to the lab parts that
+        concern the technology in that team. As for the rest, what is touched upon in this manual will suffice. It is
+        not a problem if some of the details in this document that do not concern your group escapes your understanding.
+        The progression of this lab is as follows:
+        Overview of the BASE system, JavaScript, HTML, CSS, Bootstrap, and finally you will implement some new
+        functionality.
+    </p>
+
+    <!--  ***********************************************************************************************
+          Lab Structure
+          *********************************************************************************************** -->
+    <section class="lab-section">
+        <a class="anchor" name="Structure"></a>
+        <h1>Lab Structure</h1>
+
+        <ul>
+            <li>
+                Your progress is stored in
+                <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage" target="_blank">
+                    local storage</a> in your own browser. You can close the browser and come back at any time, just
+                don't clear all your browser data. The progress tracking is mostly for fun and is used as a tool for the
+                teaching assistant to see where you are in the lab, it is not a grading system.
+            </li>
+            <li>
+                You can navigate to any part of the lab through the fixed header with the dropdown at the top. Also, go
+                to the current task with the link labeled <q>Next task</q> next to it (useful in case you missed some
+                task).
+            </li>
+            <li>
+                This document is built using the same technology as you will use in your project, with the same
+                guidelines. Feel free to steal any parts you like here in your project.
+            </li>
+            <li>
+                In this document there will be several tasks that you must complete to pass the lab, in addition you
+                should be able to answer a few questions from the teaching assistant. An example of a task is shown
+                directly below.
+            </li>
+        </ul>
+
+        <div class="lab-task-group" id="firstTask">
+            <div class="lab-task-info alert alert-warning">
+                <h4 class="alert-heading">Your first task</h4>
+                <p>
+                    Any tests that you have to complete will look like this. As such this is your first task.
+                    so that you can see how spacing within an alert works with this kind of content. Note that the
+                    progress is tracked in the info bar at top.
+                </p>
+                <div class="lab-task-form">
+                    <button class="btn btn-primary" onclick="baseLab.complete('firstTask')">Click me to complete
+                    </button>
+                </div>
+                <div class="lab-task-completed">
+                    <hr>
+                    Nice, well done!
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--  ***********************************************************************************************
+          BASE System Overview
+          *********************************************************************************************** -->
+    <section class="lab-section">
+        <a class="anchor" name="BASE"></a>
+        <h1>BASE System Overview</h1>
+        <p>
+            You have been provided with a base system for your project, creatively called BASE system. It is a code
+            skeleton where you can finish the implementation according to your needs. The base system was created to be
+            as realistic as possible, it looks and feels like a professional system, with all the bells and whistles
+            that is expected. In addition, the security and performance is within reason, although it is not at all a
+            focus of this course.
+        </p>
+        <p>
+            The system consists of three components: the web server in java (with a database), an Android client, and a
+            web client. Exactly what goes into the components is flexible, but must be decided by the student groups and
+            the course teacher. Note that you are not supposed to do double implementation of functionality in
+            <em>both</em> android and web, each functionality should go in <em>either</em> client. For example, the web
+            client might be for administrators and the web client for normal day to day users. Below is a picture of the
+            components in the system with their main supporting frameworks indicated. The Android client is described in
+            another lab manual found on the course web page and will not be further detailed here. None of the code is
+            shared between the modules and they communicate only through a HTTP REST API on the server (see below for
+            an explanation of these terms).
+        </p>
+
+        <figure>
+            <img style="max-height:300px; margin-top: 30px" src="lse.svg" class="img-fluid mx-auto d-block">
+            <figcaption class="mx-auto d-block figure-caption" style="text-align: center">
+                The components in blue are dealt with in this manual, in the order indicated by the numbering.
+            </figcaption>
+        </figure>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="DirStructure"></a>
+            <h3>Directory Structure</h3>
+            <p>
+                The structure of your team groups have a real counterpart in the directory of the BASE system, so that
+                there is no confusion concerning whom are responsible for which part.
+            </p>
+            <ol>
+                <li>
+                    <b>Front end</b> code is everything located under
+                    <code>base/server/src/main/webapp</code>
+                </li>
+                <li>
+                    <b>Back end</b> code is everything located under
+                    <code>base/server/</code> except for the front end directory.
+                </li>
+                <li>
+                    <b>Android</b> is everything located under <code>base/android/</code>.
+                </li>
+            </ol>
+        </section>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="Frameworks"></a>
+            <h3>Frameworks</h3>
+            <p>
+                The rationale for choosing the frameworks are given below. On a general level, all frameworks chosen
+                here
+                are very popular so that it is easy to find information on Stack Overflow etc.
+            </p>
+            <ol>
+                <li>
+                    <b>Web client with Bootstrap</b>. Modern front end development is very complex. The JavaScript
+                    ecosystem is under constant change. Many students have no exposure to front end development (some
+                    have seen HTML). For these reasons we chose to have the front end as simple as possible. We do not
+                    use any JavaScript libraries or frameworks, such as
+                    <a href="https://angularjs.org/" target="_blank">AngularJS</a>,
+                    <a href="https://reactjs.org/" target="_blank">React</a>,
+                    or <a href="https://jquery.com/" target="_blank">jQuery</a>.
+                    Instead we rely only on vanilla JavaScript, this prospect is not as horrible as it would be five
+                    years ago, with the introduction of wide spread support for ECMAScript 6 and HTML 5. However, to
+                    avoid the situation where students spend too much time
+                    <a href="https://en.wikipedia.org/wiki/Gold_plating_(software_engineering)" target="_blank">
+                        gold plating</a> the user interface
+                    <a href="https://getbootstrap.com/" target="_blank">Bootstrap</a> was included. With Bootstrap, it
+                    is easy to give web sites a modern style and to implement common components like tabs and navigation
+                    toolbars, using mostly declarative syntax. The look and feel of this document is by large a product
+                    of default Bootstrap settings.
+                </li>
+                <li>
+                    <b>Java backend with Jetty and Jersey</b>. This is a standard and common set up and we believe it
+                    will be a low threshold for students already familiar with Java. Jetty is a servlet container and
+                    HTTP server. There are many alternatives to Jetty, such as Tomcat or Glassfish. Any of them can be
+                    used but Jetty has the advantage of being fully configurable by code. Jersey is an abstraction layer
+                    on op of Jetty for implementing
+                    <a href="https://en.wikipedia.org/wiki/Representational_state_transfer" target="_blank">REST</a>
+                    servers. As usual, there are alternatives, such as
+                    <a href="http://www.jboss.org/resteasy" target="_blank">RESTEasy</a>, or
+                    <a href="https://en.wikipedia.org/wiki/Restlet" target="_blank">Restlet</a>.
+                    However, they all implement the same specification (
+                    <a href="https://en.wikipedia.org/wiki/Java_API_for_RESTful_Web_Services" target="_blank">JAX-RS</a>),
+                    but Jersey is the reference implementation.
+                </li>
+                <li>
+                    <b>H2 SQL database</b>. SQL is suitable for the project in the course, because of the highly
+                    relational data in the project.
+                    <a href="http://www.h2database.com/" target="_blank">H2</a> is an embedded database, meaning that it
+                    does not need to be installed. It can also operate in an in-memory mode, so that it can be easily
+                    used for unit tests. For this reason it is often used as an alternative database to unit test other
+                    databases, such as <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a>.
+                </li>
+            </ol>
+            <p>
+                This is many components to learn in a short time, but students are not expected to learn <em>all</em>
+                parts of the system. In fact, the system has been designed so that it should not be possible. Instead
+                you have to rely on an efficient process and delegation of responsibility between to all team members,
+                so that you can all master different parts of the system.
+            </p>
+        </section>
+        <div class="lab-task-group" id="systemBrowse">
+            <div class="lab-task-info alert alert-warning">
+                <h4 class="alert-heading">Browse the BASE GUI</h4>
+                <p>
+                    Go to <a href="http://localhost:8080" target="_blank">http://localhost:8080</a> and login using
+                    username <em>Admin</em> and password <em>password</em>. While there, feel free to look at both the
+                    Simple tab and Admin tab. Give the system a spin!
+                </p>
+                <hr>
+                <p><b>Do not sign out</b> when done.</p>
+                <hr>
+                <div class="lab-task-form">
+                    <button class="btn btn-primary" onclick="systemBrowseValidate()">I am done</button>
+                </div>
+                <div class="lab-task-completed">
+                    Since this lab manual is located on the same server as the BASE system, the login you performed is
+                    also valid from the JavaScript in this document. Hence it is possible to detect your login by doing
+                    a asynchronous HTTP request to the web server.
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Did you really login? The lab script can not detect your login. Login using the link above.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--  ***********************************************************************************************
+          JavaScript Basics
+          *********************************************************************************************** -->
+    <section class="lab-section language-javascript">
+        <a class="anchor" name="JavaScript"></a>
+        <h1>JavaScript Basics</h1>
+        <p>
+            JavaScript is a dynamically typed scripting language for the web. Its actual name is ECMAScript, but for
+            historic reasons it is still called JavaScript. The language itself is fairly small.
+            JavaScript is needed in the project to dynamically load data from the server and for some
+            interactivity. If the material here is not sufficient, please see the tutorial by:
+            <a href="http://htmldog.com/guides/javascript/" target="_blank">htmldog</a>.
+        </p>
+        <p>
+            Anyway, since JavaScript is a functionally oriented language let's start of by defining a function.
+            This assigns a function to a variable, denoted by the <code>var</code>. In fact, <code>var</code> is used
+            for all assignments, regardless of type. The function have two parameters without any specific type, it
+            works on strings, numbers, or any other object. Since the function is a normal variable, it can be passed
+            around as a normal object to other functions. The function can be called as expected, use the button below
+            to see what <code>alert</code> does.
+        </p>
+        <pre><code class="language-javascript">
+            var testJavaScript = function(param1, param2) {
+                alert(param1 + param2);
+            }
+        </code></pre>
+
+        <button class="mb-3 btn btn-secondary" onclick="testJavaScript('1', 0)">testJavaScript('1', 0)</button>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="JSTypes"></a>
+            <h3>JavaScript Types</h3>
+            <p>
+                Variable types are tricky in JavaScript since the language is dynamic, and because it has some weird
+                implicit type conversions. Hopefully, those language quirks will not become apparent during the project.
+                If you are ever uncertain about the type of objects, use the <code>typeof expr</code> operator.
+            </p>
+            <dl class="row">
+                <dt class="col-sm-3"><code>number</code></dt>
+                <dd class="col-sm-9">There is only one number type in JavaScript which is a double floating point. The
+                    number literals are similar to Java, e.g. <code>1, 1E-3, 0.41</code></dd>
+                <dt class="col-sm-3"><code>boolean</code></dt>
+                <dd class="col-sm-9">No surprises here, <code>true</code> and <code>false</code>.</dd>
+                <dt class="col-sm-3"><code>object</code></dt>
+                <dd class="col-sm-9">Anything declared with <code>{}</code> will be an object. Think of it as a Map in
+                    Java, that is a key-value data structure. Some of those key attributes will be functions, which in
+                    Java would be methods.
+                </dd>
+                <dt class="col-sm-3"><code>array</code></dt>
+                <dd class="col-sm-9">
+                    List of objects of any type. Note that, <code>typeof []</code> returns <code>"object"</code>, since
+                    <code>[]</code> is just an object with some default properties, such as <code>length</code>.
+                </dd>
+                <dt class="col-sm-3"><code>string</code></dt>
+                <dd class="col-sm-9">
+                    A string is a special type of array, containing only characters. String literals can be specified
+                    using either <code>'single'</code> or <code>"double"</code>. As such, they can be easily nested like
+                    so: <code>'single "double"'</code>.
+                </dd>
+                <dt class="col-sm-3"><code>function</code></dt>
+                <dd class="col-sm-9">
+                    Functions are first class objects, meaning that you can pass them around as objects.
+                </dd>
+            </dl>
+
+            <h4>Arrays</h4>
+            <p> Arrays are created as such: </p>
+            <pre><code>var arr = [0,3,-1];</code></pre>
+            <p>Add elements to the end of an array like so:
+                <code>arr.push(4)</code>, check their length with <code>arr.length</code>, select a subset of the array
+                with
+                <code>arr.slice(begin,end)</code>, find elements with <code>arr.indexOf(obj)</code>remove elements using
+                <code>arr.remove(index)</code>, etc.
+            </p>
+            <h4>Loops</h4>
+            <p>Iterate using for loops like this:</p>
+            <pre><code>
+                for (var i = 0; i < arr.length; i++) {
+                    console.log(arr[i]);
+                }
+            </code></pre>
+            <p>And while loops:</p>
+            <pre><code>
+                var val = 0;
+                while (val < 0.1) {
+                    val = Math.random();
+                }
+            </code></pre>
+
+            <h4>Objects</h4>
+            <p>Objects are created as such:</p>
+            <pre><code>var obj = {'myArray': arr, 'myNumber': 1};</code></pre>
+            <p>
+                Any object can be dynamically extended with new properties, e.g. <code>obj.more = 'yes';</code>.
+                <code>delete obj.more</code> removes the property again.
+                Use <code>Object.keys(obj)</code> to get an array of keys in the object, that can be iterated over as
+                described above.
+            </p>
+
+            <h4>Operators</h4>
+            <p>
+                All Java operators have identical JavaScript counterparts (except <code>instanceof</code>).
+                However, there are two equality operators in JavaScript <code>===</code> and <code>==</code>.
+                The first one with (===) works as from Java's == , while the second allow for type conversions.
+            </p>
+            <pre><code>
+                [] == "";     // Both are empty arrays.
+                [] !== "";    // But not of the same type
+                0 == false;
+                0 !== false;
+            </code></pre>
+
+            <h4>Functional JavaScript</h4>
+            <p>Loops and data manipulation is easy to do with the functional API in JavaScript, which is very similar
+                to the Stream API in Java.</p>
+            <pre><code>
+                arr.forEach(function(a) {
+                    console.log(a);
+                });
+            </code></pre>
+            <p>Map and reduce is also available <code>arr.map(func)</code>:</p>
+            <pre><code>
+                var arr = ['a', 'b', '', 'db', '1a'];
+                arr.map(s => s.length).reduce((accumulator, currentValue) => accumulator + currentValue);
+            </code></pre>
+            <p>
+                This examples illustrates the arrow function expression (like <code>-></code> in Java). It is simply a
+                shorthand form of writing anonymous functions without the <code>function</code> keyword and
+                curly brackets.
+            </p>
+
+            <div class="lab-task-group" id="jsProperty">
+                <div class="lab-task-info alert alert-warning">
+                    <h4 class="alert-heading">JavaScript objects</h4>
+                    <p> Create an object with property <code>'fruit'</code> and value <code>'banana'</code></p>
+                    <form onsubmit="return jsPropertyValidate(event)" class="lab-task-form">
+                        <input class="form-control" placeholder="{ example: 'something' }">
+                        <button class="mt-3 btn btn-primary" type="submit">Validate</button>
+                    </form>
+                    <div class="lab-task-completed">
+                        <hr>
+                        <p>
+                            Right. <code>{fruit: 'banana'}</code> or <code>{'fruit': 'banana'}</code>
+                            for when the attribute name contains weird characters like white space or hyphen.
+                        </p>
+                    </div>
+                    <div class="mt-3 lab-task-error alert alert-danger">
+                        Incorrect. You are expected to write something like <code>{property: 'value'}</code>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lab-task-group" id="jsFunction">
+                <div class="lab-task-info alert alert-warning">
+                    <h4 class="alert-heading">
+                        Which of the following is a correct function declaration in JavaScript?
+                    </h4>
+                    <p>
+                        There are a few different ways to declare functions, however of the ones below only one is
+                        correct.
+                    </p>
+                    <div class="lab-task-form">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input onclick="baseLab.complete('jsFunction', 1)" class="form-check-input" type="radio"
+                                       name="jsFunction">
+                                <code>var getName = string function(number id) {...}</code>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input onclick="baseLab.complete('jsFunction', 2)" class="form-check-input" type="radio"
+                                       name="jsFunction">
+                                <code>getName(id) {...}</code>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input onclick="baseLab.complete('jsFunction', 3)" class="form-check-input" type="radio"
+                                       name="jsFunction">
+                                <code>var getName = function(id) {...}</code>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="lab-task-completed">
+                        <hr>
+                        <p>Right. <code>var getName = function(id) {...}</code></p>
+                    </div>
+                    <div class="lab-task-error alert alert-danger">
+                        Incorrect. JavaScript functions do not have return types and need the <code>function</code>
+                        keyword.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="JSDebugging"></a>
+            <h3>JavaScript Debugging</h3>
+            <p>
+                Now is a good time to mention the excellent debugging options in your browser, open it with F12 (in all
+                major browsers). Open the console to get an interactive JavaScript interpreter. There is also the option
+                of setting breakpoints and stepping through the code, however the specifics depend on which browser you
+                are using. If the debugger is hard to use, resorting to <code>console.log(str)</code> print outs is
+                fine. The print outs can be viewed with the console window open. Also, <code>alert(str)</code> can be
+                used, which creates a pop-up. Alerts are also used for error handling purposes in BASE.
+            </p>
+
+            <div class="lab-task-group" id="jsDebugging">
+                <div class="lab-task-info alert alert-warning">
+                    <h4 class="alert-heading">JavaScript console</h4>
+                    <p>Open the console and see what the result of this code execution is (by copy-paste): </p>
+                    <pre><code>(![]+[])[+!![]]</code></pre>
+                    <form onsubmit="return jsDebuggingValidate(event)" class="lab-task-form">
+                        <div class="form-group">
+                            <input class="form-control" type="text" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Validate</button>
+                    </form>
+                    <div class="lab-task-completed">
+                        <hr>
+                        Right. No wonder that JavaScript has a <q>reputation</q>. This is the work of implicit type
+                        conversion:
+                        <pre><code>
+                        ![] === false;          // [] is converted to true since the object is not undefined
+                        false+[] === "false";   // string concatenation between empty string [] and false.toString()
+                        // Thus, the first part in ()-parenthesis defines a string,
+                        // while the second part in []-brackets performs an array indexing on a string.
+                        !![] === !false === true;
+                        +!![] === +true === 1;  // conversion to number
+                        ("false")[1] === "a";   // array indexing
+                    </code></pre>
+                        <a href="http://www.jsfuck.com/" target="_blank">Source.</a>
+                    </div>
+                    <div class="mt-3 lab-task-error alert alert-danger">
+                        Incorrect.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="JSClasses"></a>
+            <h3>Classes in JavaScript</h3>
+            <p>
+                Developer's coming directly from Java might feel lost without the object oriented way of structuring
+                your application. Though there are proper object oriented programming language extensions, here a
+                simplified but elegant version is used. In this course, the following way of constructing classes is
+                recommended:
+            </p>
+            <pre><code>
+            var car = {
+                manufacturer: 'Tesla',
+                model: 'S',
+                getInfo: function() {
+                    return this.manufacturer + " Model " + this.model;
+                }
+             };
+        </code></pre>
+            <p>
+                This defines a singleton object (it has just one instantiation). To have private functions on a
+                singleton we can wrap the declaration in an anonymous function. This anonymous function is immediately
+                called upon declaration. This pattern is called a module-function. In the project this is used a lot,
+                see e.g. <a href="/simple/simple.js" target="_blank">simple.js</a>.
+            </p>
+            <pre><code>
+            var myModule = (function() {
+                var privateField = {something: 'value'};
+                var privateFunction = function() {return privateField.something;};
+                return {
+                   publicFunction: privateFunction
+                };
+            })();
+        </code></pre>
+            <p>
+                This can be called as <code>myModule.publicFunction() === 'value'</code>.
+                The next snippet will be a proper class that can be instantiated as much as needed.
+            </p>
+            <pre><code>
+            var Car = function(manufacturer, model) {
+                this.manufacturer = manufacturer,
+                this.model = model,
+                this.getInfo = function() {
+                    return this.manufacturer + " Model " + this.model + privateFunction();
+                };
+                var privateFunction = function() {
+                    return "™";
+                };
+            };
+        </code></pre>
+            <p>
+                Note that this is just a function. However, calling it like <code>Car('Tesla','S')</code> does nothing
+                since the function does not have a <code>return</code> value. Instead, use the <code>new</code> keyword,
+                exactly like in Java. E.g., <code>new Car('Tesla', 'S').getInfo()</code> returns <code>'Tesla Model
+                S™'</code>; Inheritance is something you will have to live without, unless you figure it out by
+                yourself.
+            </p>
+        </section>
+    </section>
+
+    <!--  ***********************************************************************************************
+          HTML Basics
+          *********************************************************************************************** -->
+    <section class="lab-section language-markup">
+        <a class="anchor" name="HTML"></a>
+        <h1>HTML Basics</h1>
+        <p>
+            HTML is the main structure of a web page. In this section we will go through some of the elements and
+            components that will be need in the project.
+            If the material here is too short, then see a more beginner friendly
+            <a href="http://htmldog.com/guides/html/begibeginnernner/" target="_blank">tutorial</a>.
+        </p>
+        <p>
+            HTML is similar to XML, but is usually not valid XML since some tags do not need a closing tag. Let's show
+            an example of a working document.
+        </p>
+
+        <pre><code>
+            &lt;!DOCTYPE html&gt;
+            &lt;html lang="en" xmlns="http://www.w3.org/1999/html"&gt;
+            &lt;head&gt;
+                &lt;meta charset="utf-8"&gt;
+                &lt;title&lt;MyTitle&lt;/title&gt;
+                &lt;link rel="stylesheet" href="..."&gt;
+                &lt;script src="..."&gt;&lt;/script&gt;
+            &lt;/head&gt;
+            &lt;body&gt;
+            &lt;h4&gt;Medium sized header&lt;/h4&gt;
+            &lt;p&gt;
+                Paragraph of text with some &lt;b&gt;bold&lt;/b&gt;
+            &lt;/p&gt;
+            &lt;/body&gt;
+        </code></pre>
+
+        <div style="border: 1px solid black">
+            <h4>Medium sized header</h4>
+            <p> Paragraph of text with some <b>bold</b></p>
+        </div>
+
+        <p>
+            Note that the white space in the paragraph disappeared, this is because HTML collapses all white space (for
+            now, you can consider it to ignore all white space).
+        </p>
+
+        <p>
+            Below are some of the most common HTML elements used to structure a web site.
+            The rest of the elements you will have to figure out as you go along with the project. Refer to the
+            Mozilla developers guide
+            <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element" target="_blank">reference</a> for a
+            complete list. Some important ommisions are:
+            <code>&lt;table&gt;</code>,
+            <code>&lt;ol&gt;</code>,
+            <code>&lt;ul&gt;</code>, and
+            <code>&lt;li&gt;</code>.
+        </p>
+        <dl class="row">
+            <dt class="col-sm-3"><code>&lt;body&gt;</code></dt>
+            <dd class="col-sm-9">The outer element of all the visible contains.</dd>
+            <dt class="col-sm-3"><code>&lt;head&gt;</code></dt>
+            <dd class="col-sm-9">
+                <code>&lt;head&gt;</code> and its sub-elements contain meta data, such as document title and which
+                script dependencies to load.
+            </dd>
+            <dt class="col-sm-3"><code>&lt;div&gt;</code> and <code>&lt;span&gt;</code></dt>
+            <dd class="col-sm-9">
+                They are structural elements only, without any semantic meaning. <code>&lt;span&gt;</code> can be
+                placed inline on a row, while <code>&lt;div&gt;</code> breaks rows. <code>&lt;div&gt;</code>
+                especially is used to give structure to HTML documents by grouping elements that belong together.
+            </dd>
+            <dt class="col-sm-3"><code>&lt;p&gt;</code></dt>
+            <dd class="col-sm-9">
+                Is identical to <code>&lt;div&gt;</code>, but has the semantic meaning of being a paragraph of text.
+            </dd>
+            <dt class="col-sm-3"><code>&lt;h-{1-6}&gt;</code></dt>
+            <dd class="col-sm-9">
+                Produces headers, with <code>&lt;h1&gt;</code> being the largest. Example of use:
+                <pre><code class="html">
+                        &lt;h1&gt;H1&lt;/h1&gt;&lt;h4&gt;H4&lt;/h4&gt;&lt;h6&gt;H6&lt;/h6&gt;
+                    </code></pre>
+                Results in:
+                <h1>H1</h1>
+                <h4>H4</h4>
+                <h6>H6</h6>
+            </dd>
+            <dt class="col-sm-3"><code>&lt;br&gt;</code></dt>
+            <dd class="col-sm-9">
+                Line-breaks text, does not need a closing tag. Example of use:
+                <pre><code class="html">
+                        &lt;p style="border: 1px solid pink"&gt;text with &lt;br&gt;break&lt;/p&gt;
+                    </code></pre>
+                Results in:
+                <p style="border:1px solid pink">text with <br>break</p>
+            </dd>
+            <dt class="col-sm-3"><code>&lt;a href="link"&gt;</code></dt>
+            <dd class="col-sm-9">
+                Contains links to other web pages, or sometimes links internal to a web page. To open in a new tab
+                add <code>target="_blank"</code> as an attribute.
+                Example:
+                <pre class="html"><code>&lt;a href="http://localhost:8080" target="_blank"&gt;link&lt;/a&gt;</code></pre>
+                Results in: <a href="http://localhost:8080" target="_blank">link</a><br>
+            </dd>
+        </dl>
+
+        <div class="lab-task-group" id="htmlHeader">
+            <div class="lab-task-info alert alert-warning">
+                <h4 class="alert-heading">Which HTML element will produce the largest text?</h4>
+                <div class="lab-task-form">
+                    <form onsubmit="return htmlHeaderValidate(event)">
+                        <div class="form-group">
+                            <label for="htmlHeaderInput">Input an example of the element with any text.</label>
+                            <input class="form-control" id="htmlHeaderInput" type="text">
+                        </div>
+                        <button class="mb-3 btn btn-primary" type="submit">Verify</button>
+                    </form>
+                </div>
+                <div class="lab-task-completed">
+                    <hr>
+                    Right.
+                </div>
+                <div id="htmlHeaderResult" class="mt-3 alert alert-secondary">Result will go here.
+                </div>
+                <div class="lab-task-error alert alert-danger">
+                    Incorrect. Make sure that the result is valid HTML and that you have included some text.
+                </div>
+            </div>
+        </div>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="Forms"></a>
+            <h3>Forms</h3>
+            <p>
+                Form elements are used to get input from users. The common ones are <code>&lt;button&gt;</code> and
+                <code>&lt;input&gt;</code> for text and radio buttons. JavaScript can be attached using
+                <code>onclick="func</code> and <code>oninput="func"</code> respectively. Note that the elements here are
+                styled with <a href="#Bootstrap">Bootstrap</a>.
+            </p>
+            <div class="row mt-3">
+                <div class="col-md-2">
+                    <button class="btn btn-secondary form-control" onclick="alert(event)">Click</button>
+                </div>
+                <div class="col-md-8 offset-md-2">
+                    <code>&lt;button onclick="alert(event)"&gt;Click&lt;/button&gt;</code>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <input type="text" oninput="console.log(event)">
+                </div>
+                <div class="col-md-8 offset-md-1">
+                    <code>&lt;input oninput="console.log(event)"&gt;</code>
+                </div>
+            </div>
+            <p class="mt-5">
+                The HTML <code>&lt;form&gt;</code> element can be used to group multiple buttons and inputs with a
+                single event. It also supports some basic form validation. By default the form will perform a POST to
+                the current URL, this behaviour was standard during the 90's and 00's. Modern web pages build with
+                JavaScript and REST APIs prefer to process the event dynamically instead with JavaScript. To turn off
+                the default POST and still keep the nice form validation, follow the format below of the
+                <code>onsubmit</code> declaration.
+            </p>
+            <div class="lab-task-group" id="htmlFormTryout">
+                <div class="lab-task-info alert alert-warning">
+                    <h4 class="alert-heading">Try to the submit the form below</h4>
+
+                    <pre><code>
+                        &lt;form onsubmit="return (function(event) { event.preventDefault(); /* do stuff */ return false; })(event)"&gt;
+                            &lt!-- It is better to give the function a name than to use anonymous functions, but here you can see
+                                   what the function should look like. -->
+                            &lt;label&gt;
+                                This input must be specified, using the required modifier.
+                                &lt;input type="text" required&gt;
+                            &lt;/label&gt;
+                            &lt;label&gt;
+                                This input should match the RegEx pattern of a number between 1-9 and then any number of numbers.
+                                &lt;input type="text" pattern="[1-9][0-9]*"&gt;
+                            &lt;input type="text" required&gt;
+                            &lt;button type="submit"&gt;Submit&lt;/button&gt;
+                        &lt;/form&gt;
+                    </code></pre>
+                    <form class="lab-task-form" onsubmit="return htmlFormTryoutValidate(event)">
+                        <div class="form-group">
+                            <label>
+                                This input must be specified, using the required modifier.
+                                <input class="form-control" type="text" required>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                This input should match the RegEx pattern of a number between 1-9 and then any number of
+                                numbers.
+                                <input class="form-control" type="text" pattern="[1-9][0-9]*">
+                            </label>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </form>
+                    <div class="lab-task-completed">
+                        <hr>
+                        Easy.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </section>
+
+    <!--  ***********************************************************************************************
+          CSS Basics
+          *********************************************************************************************** -->
+    <section class="lab-section language-css">
+        <a class="anchor" name="CSS"></a>
+        <h1>CSS Basics</h1>
+        <p>
+            HTML provides the structure of a web page, giving it a nice appearance is the job of the cascading style
+            sheets (CSS) language. The language describes the visual appearance of a document using <em>selectors</em>
+            and key/value <em>attributes</em>.
+            As before, a more comprehensive tutorial is available here:
+            <a href="http://htmldog.com/guides/css/beginner/" target="_blank">tutorial</a>.
+            There are many attributes available for styling. Here is an example of a
+            style applied to a span element, using the style attribute <code>background-color</code>.
+        </p>
+        <pre><code class="language-markup">
+            &lt;span style="background-color: red"&gt;Red background on text&lt;/span&gt;
+        </code></pre>
+        <p>
+            The resulting element is styled as follows:
+            <span style="background-color: red">Red background on text</span>
+            As seen, when setting styling elements directly on HTML, the style-attribute of the HTML element is used.
+            Multiple key-value pairs are delimited using semi-colon.
+        </p>
+
+        <p>
+            Here are some of the useful attributes that control the layout of the web page, most of which will be
+            useful for your project. A complete reference can be found
+            <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference" target="_blank">here</a>.
+        </p>
+        <dl class="row language-markup">
+            <dt class="col-sm-3">
+                <code>border: length [solid|dashed|...] color</code>
+            </dt>
+            <dd class="col-sm-9">
+                Used to set a frame around a HTML element. Example
+                <pre><code>
+                        &lt;span style="border: 4px dashed green"&gt;Border gore&lt;/span&gt;
+                    </code></pre>
+                Results in a pretty border around some text:
+                <span style="border: 4px dashed green">Border gore</span>
+            </dd>
+            <dt class="col-sm-3">
+                <code>padding: length</code><br>
+                <code>-{left|right|top|bottom}</code><br>
+            </dt>
+            <dd class="col-sm-9">
+                Padding is extra white space that is added within the element.
+                Example:
+                <pre><code>
+                        &lt;span style="padding-left: 50px; background-color: red"&gt;text&lt;/span&gt;
+                    </code></pre>
+                Results in:
+                <span style="padding-left: 50px; background-color: red">text</span>
+            </dd>
+            <dt class="col-sm-3">
+                <code>margin: length</code><br>
+                <code>-{left|right|top|bottom}</code><br>
+            </dt>
+            <dd class="col-sm-9">
+                Margin adds extra space between elements.
+                Example:
+                <pre><code>
+                        &lt;span style="margin-left: 50px; background-color: red"&gt;text&lt;/span&gt;
+                    </code></pre>
+                Results in:
+                <span style="margin-left: 50px; background-color: red">text</span>
+            </dd>
+            <dt class="col-sm-3">
+                <code>height: length</code>
+            </dt>
+            <dd class="col-sm-9">
+                Controls height of a component in pixels or percent, e.g:
+                <pre><code>&lt;p style="height: 60px; border: 1px solid"&gt;long p&lt;/p&gt;</code></pre>
+                Results in a paragraph that is larger than its content:
+                <p style="height: 60px; border: 1px solid">long p</p>
+            </dd>
+            <dt class="col-sm-3">
+                <code>width: length</code>
+            </dt>
+            <dd class="col-sm-9">
+                Controls width of a component in pixels or percent, e.g:
+                <pre><code>&lt;p style="width: 50%; border: 1px solid"&gt;Half width&lt;/p&gt;</code></pre>
+                Results in a paragraph that that uses half of the available space:
+                <p style="width: 50%; border: 1px solid">Half width</p>
+            </dd>
+            <dt class="col-sm-3">
+                <code>display: {block|inline-block|none}</code>
+            </dt>
+            <dd class="col-sm-9">
+                Decides the layout of the element on the page. All elements have a default behaviour
+                <code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, and <code>&lt;h1&gt;</code> are default block,
+                while <code>&lt;span&gt;</code> default to inline-block. Inlined elements can be placed in a row,
+                and block elements each start a new row. The default layout can be overriden if needed. Elements
+                with <code>display: none</code> are completely removed.
+                <pre><code>
+                        &lt;span&gt;1&lt;/span&gt;
+                        &lt;span&gt;2&lt;/span&gt;
+                        &lt;div&gt;3&lt;/div&gt;
+                        &lt;div style="display: none"&gt;4 (hidden)&lt;/div&gt;
+                    </code></pre>
+                Results in:
+                <div><span>1</span><span>2</span>
+                    <div>3</div>
+                    <div style="display: none"></div>
+                </div>
+            </dd>
+            <dt class="col-sm-3">
+                <code>visibility: [hidden|visible</code>
+            </dt>
+            <dd class="col-sm-9">
+                Used similarly to <code>display: none</code>, but elements with <code>visibility: hidden</code>
+                still take up space. This can be used when loading content without creating an annoying scroll jump.
+            </dd>
+        </dl>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="CSSBoxModel"></a>
+            <h3>CSS Box Model</h3>
+            <p>
+                The actual space that an element uses is not the value specified by <code>width</code> attribute alone,
+                it also includes the border and padding by default. This is not very intuitive. See the example below of
+                what can go wrong. In the example, the developer intended the inner content to be contained within the
+                outer content. However, the developer failed to take into account the correct width setting. In the
+                middle is the fixed version where the width is set correctly. The fixed version still does not use all
+                available space though, which the one to the right does.
+            </p>
+            <div class="row mt-4">
+                <div class="col-sm-4">
+                    <div style="background: #abd6e4">
+                        <div style="background: #e8be74; width: 300px">
+                            Outer content:
+                            <code>width: 300px</code>
+                            <div style="box-sizing: content-box; background: #8fdda7; border: #afafaf 3px solid; padding: 10px; margin: 10px; width: 100%">
+                                Inner content:
+                                <pre><code>
+                                    width: 100%;
+                                    box-sizing: content-box;
+                                    border: #939393 3px solid;
+                                    margin: 10px;
+                                    padding: 10px;
+                                </code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div style="background: #abd6e4">
+                        <div style="background: #e8be74; width: 300px">
+                            Outer content:
+                            <code>width: 300px</code>
+                            <div style="box-sizing: content-box; background: #8fdda7; border: #afafaf 3px solid; padding: 10px; margin: 10px; width: 254px">
+                                Inner content:
+                                <pre><code>
+                                    width: 254px;
+                                    /* = 300-2*10-2*10-2*3 */
+                                    box-sizing: content-box;
+                                    border: #939393 3px solid;
+                                    margin: 10px;
+                                    padding: 10px;
+                                </code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div style="background: #abd6e4">
+                        <div style="background: #e8be74; width: 100%">
+                            Outer content:
+                            <code>width: 100%</code>
+                            <div style="box-sizing: border-box; background: #8fdda7; border: #afafaf 3px solid; padding: 10px; margin: 4%; width: 92%">
+                                Inner content:
+                                <pre><code>
+                                    width: 92%;
+                                    /* = 100-2*4 */
+                                    box-sizing: border-box;
+                                    border: #939393 3px solid;
+                                    margin: 4%;
+                                    padding: 10px;
+                                </code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p>
+                This way of specifying absolute pixel values for elements is not very modern, because it doesn't work
+                well with mobile or tablets. Instead, what is preferred is changing from the default settings to what's
+                called <code>box-sizing: border-box</code>, where the padding and border is included in the actual size
+                of the element. Then the content adapts automatically to the size of your device.
+            </p>
+
+            <div class="alert alert-info mt-4">
+                <b>Note!</b> The CSS framework Bootstrap will change all elements from default
+                <code>box-sizing: content-box</code> to <code>box-sizing: border-box</code> for you!
+            </div>
+
+            <div class="lab-task-group" id="cssSpace">
+                <div class="lab-task-info alert alert-warning">
+                    <h4 class="alert-heading">Which statement is correct about spacing between HTML elements?</h4>
+                    <div class="lab-task-form">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input onclick="baseLab.complete('cssSpace', 1)" class="form-check-input"
+                                       name="cssSpace"
+                                       type="radio">
+                                <ul>
+                                    <li>margin is space between elements</li>
+                                    <li>padding is space between content and border</li>
+                                    <li>border is space padding and margin</li>
+                                </ul>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input onclick="baseLab.complete('cssSpace', 2)" class="form-check-input"
+                                       name="cssSpace" type="radio">
+                                <ul>
+                                    <li>margin is space between elements</li>
+                                    <li>padding is space between content and border</li>
+                                    <li>border has no space</li>
+                                </ul>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input onclick="baseLab.complete('cssSpace', 3)" class="form-check-input"
+                                       name="cssSpace" type="radio">
+                                <ul>
+                                    <li>margin is space between content and border</li>
+                                    <li>padding is space between elements</li>
+                                    <li>border has no space</li>
+                                </ul>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="bm-0 lab-task-completed">
+                        <ul>
+                            <li>margin is space between elements</li>
+                            <li>padding is space between content and border</li>
+                            <li>border is space between content and padding</li>
+                        </ul>
+                        <hr>
+                        Right.
+                    </div>
+                    <div class="lab-task-error alert alert-danger">
+                        Incorrect.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="CSSSheetOptions"></a>
+            <h3>Style Sheets</h3>
+            <p>
+                Using only inline styling is annoying because it is not reusable. This brings us to the concept of
+                style sheets. They are reusable rules that can be applied to multiple HTML elements.
+                There are three options for specifying CSS: inline, internal style sheet, and external style sheet. What
+                was show earlier was inline styling. An example of an internal style sheet follows.
+            </p>
+            <pre class="mb-0"><code class="language-markup">
+                &lt;style&gt;
+                    span {
+                        background-color: red
+                    }
+                &lt;/style&gt;
+            </code></pre>
+
+            <p>Finally, external style sheets are files loaded by the browser containing CSS.</p>
+            <pre><code class="language-markup">&lt;link rel="stylesheet" href="mysheet.css"&gt;</code></pre>
+
+            <p>
+                Note that, the crucial difference between the inline style and the style sheet definitions is that the
+                inline style applies to a single element, while the style sheet applies to all HTML elements of type
+                span. This is the reason that it is so powerful, next we will learn by controlling which element to
+                apply style to using selectors.
+            </p>
+        </section>
+
+        <section class="CSSSelector">
+            <a class="sub-anchor" name="CSSSelector"></a>
+            <h3>Selectors</h3>
+            <p>
+                CSS selectors are used to qualify to which elements the styling should be applied to. They come in three
+                major forms: <code>element</code>, <code>.class</code>, and <code>#id</code>. The first matches the name
+                of an element, the second matches on an elements declared classes, and finally the third matches to a
+                unique identifier. These selectors can be combined in a chain to match parents and then their children
+                in the tree of HTML elements, which is best explained by an example.
+            </p>
+
+            <pre><code class="language-markup">
+            &lt;style&gt;
+                .example-div {
+                    background-color: #d15e5e;
+                    color: white;
+                    font-weight: normal;
+                }
+                .example-div span.bolded {
+                    font-weight: bold;
+                }
+            &lt;/style&gt;
+
+            &lt;div class="example-div"&gt;
+                Top level
+                &lt;span class="bolded"&gt;Some text.&lt;/span&gt;
+                &lt;span&gt;No class here.&lt;/span&gt;
+                &lt;p class="bolded"&gt;Text in p.&lt;/p&gt;
+            &lt;/div&gt;
+        </code></pre>
+
+            <p>This produces the following:</p>
+
+            <div class="top-div">
+                Top level
+                <span class="bolded">Some text.</span>
+                <span>No class here.</span>
+                <p class="bolded">Text in p.</p>
+            </div>
+            <div class="lab-task-group" id="cssSelect">
+                <div class="lab-task-info alert alert-warning">
+                    <h4 class="alert-heading">Which of the following is a class selector?</h4>
+                    <p>The selector should grab <code class="language-markup">&lt;span
+                        class="name"&gt;&lt;/span&gt;</code>
+                    </p>
+                    <div class="lab-task-form">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input onclick="baseLab.complete('cssSelect', 1)" class="form-check-input"
+                                       name="cssSelect" type="radio">
+                                <code>span name</code>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input onclick="baseLab.complete('cssSelect', 2)" class="form-check-input"
+                                       name="cssSelect" type="radio">
+                                <code>#name</code>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input onclick="baseLab.complete('cssSelect', 3)" class="form-check-input"
+                                       name="cssSelect" type="radio">
+                                <code>span.name</code>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="bm-0 lab-task-completed">
+                        Right. <code>.name</code> or <code>span.name</code> works. <code>#name</code> is for the id
+                        attribute and <code>span name</code> would grab something like:
+                        <code class="language-markup">
+                            &lt;span&gt;
+                            &lt;name&gt;&lt;/name&gt;
+                            &lt;/span&gt;
+                        </code>
+                    </div>
+                    <div class="mt-3 lab-task-error alert alert-danger">
+                        Incorrect, try again.
+                    </div>
+                </div>
+            </div>
+
+            <p class="language-javascript mt-5">
+                Selectors can also be used programmatically using: <br>
+                <code>var element = document.querySelector('sel')</code> or <br>
+                <code>var elements = document.querySelectorAll('sel')</code>. <br>
+                These functions are defined on all HTML elements (not just document).
+            </p>
+            <pre><code class="language-javascript">
+                var someDiv = document.querySelector('#someDiv');
+                someDiv.textContent = 'set text' // Do something with someDiv
+                var someDiv.querySelectorAll('span');
+            </code></pre>
+
+
+            <div class="lab-task-group" id="cssSelector">
+                <div class="lab-task-info alert alert-warning">
+                    <h4 class="alert-heading">Write a selector that selects both spans in myDiv </h4>
+                    <pre><code class="language-markup">
+                    &lt;div id="myDiv"&gt;
+                        &lt;b&gt;Don't select me&lt;/b&gt;
+                        &lt;span&gt;
+                            Select me
+                        &lt;/span&gt;
+                        &lt;span&gt;
+                            And me
+                        &lt;/span&gt;
+                    &lt;/div&gt;
+                </code></pre>
+                    <div id="myDiv" style="display: none">
+                        <b>Don't select me</b>
+                        <span>Select me</span>
+                        <span>And me</span>
+                    </div>
+                    <p>
+                        Try debugging in console using
+                        <code class="language-javascript">document.querySelector('sel')</code>.
+                    </p>
+                    <div class="lab-task-form mt-3">
+                        <form onsubmit="return cssSelectorValidate(event)">
+                            <input class="form-control" type="text" placeholder="selector" required>
+                            <button class="mt-3 btn btn-primary" type="submit">Validate</button>
+                        </form>
+                    </div>
+                    <div class="bm-0 lab-task-completed">
+                        <hr>
+                        <code>#myDiv span</code> is the shortest version.
+                        <code>#myDiv :not(:first-child)</code> also works, and many others.
+                        <hr>
+                        Nicely done, that concludes the Basic CSS section.
+                    </div>
+                    <div class="mt-3 lab-task-error alert alert-danger">
+                        Incorrect. Is it a valid selector? Does it also return the <code>&lt;b&gt;</code> tag?
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!--  ***********************************************************************************************
+          Bootstrap Basics
+          *********************************************************************************************** -->
+    <section class="lab-section language-html">
+        <a class="anchor" name="Bootstrap"></a>
+        <h1>Bootstrap (CSS)</h1>
+        <p>
+            There have been a few references to styling by
+            <a href="http://getbootstrap.com/" target="_blank">Bootstrap</a>
+            so far. This section will only go through the bare minimum and refer to their excellent documentation for
+            the
+            rest.
+        </p>
+        <div class="alert alert-info">
+            <b>Heads up!</b>
+            Check out their documentation here with the right version. <br>
+            <a href="https://getbootstrap.com/docs/4.0/getting-started/contents/" target="_blank">
+                https://getbootstrap.com/docs/4.0/getting-started/contents/
+            </a>
+        </div>
+
+        <p>
+            Bootstrap has a grid system that can be used to organize content on the web site. Below is an example of
+            even width columns. Check out their documentation for more options on columns. They also have lots of helper
+            utility classes, such as the <code>border</code> class used below.
+        </p>
+        <pre><code>
+            &lt;div class="row"&gt;
+                &lt;div class="col border"&gt;
+                    Text 1
+                &lt;/div&gt;
+                &lt;div class="col border"&gt;
+                    Text 2
+                &lt;/div&gt;
+            &lt;/div&gt;
+        </code></pre>
+
+        <p>The result of the above:</p>
+        <div class="row">
+            <div class="col border">
+                Text 1
+            </div>
+            <div class="col border">
+                Text 2
+            </div>
+        </div>
+
+        <div class="lab-task-group" id="bootstrapForms">
+            <div class="lab-task-info alert alert-warning">
+                <h4 class="alert-heading">Bootstrap forms</h4>
+                <p>
+                    All forms in this this document have been styled using bootstrap.
+                    Go back to the <a href="#Forms">HTML Forms example</a> and see how to format buttons using
+                    Bootstrap. Did you know that you can right click on any HTML element and select <q>Inspect</q> or
+                    <q>Inspect Element</q>, that can be useful right now.
+                </p>
+                <div class="lab-task-form">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('bootstrapForms', 1)" class="form-check-input"
+                                   name="cssSpace" type="radio">
+                            <code>&lt;button&gt;</code>
+                            I.e. it happens automatically when Bootstrap is used.
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('bootstrapForms', 2)" class="form-check-input"
+                                   name="cssSpace" type="radio">
+                            <code>&lt;button class="btn btn-primary"&gt;</code>
+                            Using classes.
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('bootstrapForms', 3)" class="form-check-input"
+                                   name="cssSpace" type="radio">
+                            <code>&lt;button class="button button-primary"&gt;</code>
+                            Using classes.
+                        </label>
+                    </div>
+                </div>
+                <div class="bm-0 lab-task-completed">
+                    <p>
+                    <hr>
+                    Right.<br>
+                    <code>&lt;button class="btn btn-primary"&gt;</code> produces a blue button. Bootstrap has
+                    thematic colors defined. See
+                    <a target="_blank" href="https://getbootstrap.com/docs/4.0/utilities/colors/">here</a>
+                    options, such as <code>btn-secondary</code> or <code>btn-success</code>. These colors are
+                    analogous to a few other elements.
+                    </p>
+                    <button class="btn btn-primary">Button</button>
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Incorrect, try again.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--  ***********************************************************************************************
+         Modifying Front End
+         *********************************************************************************************** -->
+    <section class="lab-section">
+        <a class="anchor" name="Front-End"></a>
+        <h1>Modifying Front End in BASE</h1>
+        <p>
+            It is time to do modifications to the frontend of the actual <a href="#BASE">BASE system</a>. We are going
+            to add a simple extension to the Simple tab, in addition to the data field, there will be a count of the
+            number of data (could represent a shopping basket?).
+        </p>
+        <p>
+            Base uses the <a href="https://en.wikipedia.org/wiki/Model–view–controller">Model View Controller (MVC)</a>
+            pattern implemented in plain JavaScript. Below is a minimal example of the design pattern in practice. In
+            short, the model encapsulates the data, the view can render the data, and the controller handles user input
+            and other state changes.
+        </p>
+        <pre><code class="language-javascript">
+            var M = {}, V = {}, C = {};
+            M.data = "hello world";
+            V.render = function (M) { alert(M.data); }
+            C.handleOnload = function () { V.render(M); }
+            window.onload = C.handleOnLoad;
+        </code></pre>
+        <a class="mt-0" href="https://stackoverflow.com/questions/8497833/hello-world-in-mvc-pattern#8497887"
+           target="_blank">Source.</a>
+
+        <div class="lab-task-group" id="e2eServer">
+            <div class="lab-task-info alert alert-warning">
+                <h4 class="alert-heading">Server Side Stub</h4>
+                <p>
+                    In order for the server to return data in the format we want the first task will be to modify the
+                    <code>SimpleData.java</code> file. It is located under
+                    <code>base/src/main/java/se/lth/base/server/model/SimpleData.java</code> (sorry about the
+                    long path, its the <q>Java way</q>).
+                </p>
+                <p>
+                    Add a field without modifying the constructor, like this:
+                </p>
+                <pre><code class="language-java">
+                    private final int count = 3; // Feel free to chose another number, but the name must be count
+                </code></pre>
+                <p>
+                    Restart the server when done.
+                </p>
+                <div class="lab-task-form">
+                    <hr>
+                    <p>
+                        The button below will test the implementation. You can test it yourself by opening
+                        <a href="http://localhost:8080/rest/simple"
+                           target="_blank">http://localhost:8080/rest/simple</a>.
+                    </p>
+                    <button class="btn btn-primary" onclick="e2eServerValidate()">Click me when done</button>
+                </div>
+                <div class="lab-task-completed">
+                    <hr>
+                    Nice, well done!
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Incorrect.
+                </div>
+            </div>
+        </div>
+
+        <div class="lab-task-group" id="e2eTable">
+            <div class="lab-task-info alert alert-warning">
+                <h4 class="alert-heading">Modify the Simple View</h4>
+                <p>
+                    Go to the file <a href="view-source:http://localhost:8080/simple/simple.html">simple.html</a>
+                    located under <code>base/src/main/resources/webasets/simple/simple.html</code>. Add a column
+                    to the table header with the text content <q>Count</q> (without quotes). Also, add another <code>
+                    &lt;td&gt;</code> under the <code>&lt;template&gt;</code>. The purpose of this will become clear
+                    soon.
+                </p>
+                <p>
+                    Restart the server when done.
+                </p>
+                <div class="lab-task-form">
+                    <hr>
+                    <p>
+                        The button below will test the implementation (using a JavaScript CSS selector on
+                        <code>simple.js</code>).
+                    </p>
+                    <button class="btn btn-primary" onclick="e2eTableValidate()">Click me when done</button>
+                </div>
+                <div class="lab-task-completed">
+                    <hr>
+                    Nice, well done!
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Incorrect.
+                </div>
+            </div>
+        </div>
+        <div class="lab-task-group" id="e2eDynamic">
+            <div class="lab-task-info alert alert-warning">
+                <h4 class="alert-heading">Modify the Simple View</h4>
+                <p>
+                    Go to the file <a href="view-source:http://localhost:8080/simple/simple.js">simple.js</a>
+                    located under <code>base/src/main/resources/webasets/simple/simple.js</code>.
+                    Find the function that updates a table row, under the <code>view</code> class.
+                    Add something for the next <code>&lt;td&gt;</code>.
+                </p>
+                <p>
+                    Restart the server when done.
+                </p>
+                <div class="lab-task-form">
+                    <hr>
+                    <p>
+                        The button below will not test the implementation, it is just there for your satisfaction.
+                    </p>
+                    <button class="btn btn-primary" onclick="baseLab.complete('e2eDynamic')">Click me when done</button>
+                </div>
+                <div class="lab-task-completed">
+                    <hr>
+                    That's all folks! See you on the next lab. If you are in the front end development team, I hope you
+                    will come back and look at this document again. In case you really want to start from the beginning
+                    run <code class="language-javascript">baseLab.clearAll()</code> in the console (and why wouldn't
+                    you?).
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="lab-section">
+        <b>P.s.</b> total errors during validation are <span id="score"></span> errors.
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js"></script>-->
+<script async src="header.js"></script>
+<script async src="lab1.js"></script>
+<script async src="../rest.js"></script>
+</body>
+</html>

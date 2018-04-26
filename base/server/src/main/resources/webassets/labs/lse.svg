@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="298.95398mm"
+   height="126.71204mm"
+   viewBox="0 0 1059.2858 448.97968"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="base.svg">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4461"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path4463"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4428"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path4193"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker4461-7"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4463-5"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.625;stroke-linejoin:round;stroke-opacity:1"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="569.53587"
+     inkscape:cy="9.9267137"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1031"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(16.475297,-235.82655)">
+    <rect
+       style="opacity:1;fill:#2c82dd;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:0.82341093;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4136"
+       width="409.0105"
+       height="144.2664"
+       x="199.28966"
+       y="247.64432" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="231.80283"
+       y="307.70648"
+       id="text4138"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="231.80283"
+         y="307.70648"
+         style="font-size:35px"
+         id="tspan4144">2. Java backend with</tspan><tspan
+         sodipodi:role="line"
+         x="231.80283"
+         y="351.45648"
+         style="font-size:35px"
+         id="tspan4146">Jetty and Jersey</tspan><tspan
+         sodipodi:role="line"
+         x="231.80283"
+         y="395.20648"
+         style="font-size:35px"
+         id="tspan4142" /></text>
+    <rect
+       style="opacity:1;fill:#ff8080;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:0.73262638;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4136-3"
+       width="347.67273"
+       height="134.35719"
+       x="-16.108984"
+       y="550.0827" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="9.3067265"
+       y="625.90448"
+       id="text4138-6"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="9.3067265"
+         y="625.90448"
+         style="font-size:35px"
+         id="tspan4146-5">Android client</tspan><tspan
+         sodipodi:role="line"
+         x="9.3067265"
+         y="669.65448"
+         style="font-size:35px"
+         id="tspan4142-3" /></text>
+    <rect
+       style="opacity:1;fill:#2c82dd;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:0.74981493;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4136-5"
+       width="376.22696"
+       height="130.05429"
+       x="498.64667"
+       y="549.82593" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="545.48236"
+       y="609.06769"
+       id="text4138-62"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="545.48236"
+         y="609.06769"
+         style="font-size:35px"
+         id="tspan4195">1. Web client with</tspan><tspan
+         sodipodi:role="line"
+         x="545.48236"
+         y="652.81769"
+         style="font-size:35px"
+         id="tspan4199">Bootstrap</tspan><tspan
+         sodipodi:role="line"
+         x="545.48236"
+         y="696.56769"
+         style="font-size:35px"
+         id="tspan4142-2" /></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker4428)"
+       d="M 255.26943,538.94909 334.90837,406.24275"
+       id="path4201"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker4461)"
+       d="M 631.34679,540.15011 558.12859,401.72948"
+       id="path4201-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="362.85715"
+       y="456.64792"
+       id="text5658"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan5660"
+         x="362.85715"
+         y="456.64792">HTTP</tspan><tspan
+         sodipodi:role="line"
+         x="362.85715"
+         y="506.64792"
+         id="tspan5662">API calls</tspan></text>
+    <ellipse
+       style="opacity:1;fill:#2c82dd;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2.59010553;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path4190-6"
+       cx="924.38184"
+       cy="377.39795"
+       rx="116.8478"
+       ry="23.99066" />
+    <rect
+       style="opacity:1;fill:#2c82dd;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4192"
+       width="235.71428"
+       height="115.71429"
+       x="806.95319"
+       y="261.96939" />
+    <ellipse
+       style="opacity:1;fill:#2c82dd;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2.59010553;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path4190"
+       cx="924.6676"
+       cy="261.11224"
+       rx="116.8478"
+       ry="23.99066" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="827.23889"
+       y="325.39795"
+       id="text4209"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4211"
+         x="827.23889"
+         y="325.39795">3. H2 SQL</tspan><tspan
+         sodipodi:role="line"
+         x="827.23889"
+         y="375.39795"
+         id="tspan4213">Database</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:4.36374187;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker4461-7)"
+       d="m 618.71833,302.29204 174.89672,-1.86968"
+       id="path4201-9-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="656.38184"
+       y="365.39795"
+       id="text9997"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="656.38184"
+         y="365.39795"
+         id="tspan10001">JDBC</tspan></text>
+  </g>
+</svg>
