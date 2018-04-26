@@ -1,0 +1,8 @@
+    .example-div {
+        background-color: #d15e5e;
+        color: white;
+        font-weight: normal;
+    }
+    .example-div span.bolded {
+        font-weight: bold;
+    }
