@@ -1,22 +1,17 @@
 package se.lth.base.server.rest;
 
-import se.lth.base.server.Config;
-import se.lth.base.server.data.UserDataAccess;
-import se.lth.base.server.data.User;
-import se.lth.base.server.data.UserCredentials;
-import se.lth.base.server.data.UserRole;
-import se.lth.base.server.data.UserSession;
+import se.lth.base.server.data.*;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Cookie;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -24,16 +19,18 @@ import java.util.concurrent.TimeUnit;
 @Path("user")
 public class UserResource {
 
-    private final String host;
+    public static final String USER_TOKEN = "USER_TOKEN";
+
+    private final ContainerRequestContext context;
     private final User user;
-    private final UserSession userSession;
+    private final Session session;
     private final UserDataAccess userDao;
 
     @Inject
-    public UserResource(@Named("host") String host, User user, UserSession userSession, UserDataAccess userDao) {
-        this.host = host;
-        this.user = user;
-        this.userSession = userSession;
+    public UserResource(ContainerRequestContext context, UserDataAccess userDao) {
+        this.context = context;
+        this.user = (User) context.getProperty(User.class.getSimpleName());
+        this.session = (Session) context.getProperty(Session.class.getSimpleName());
         this.userDao = userDao;
     }
 
@@ -48,73 +45,94 @@ public class UserResource {
     @POST
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response login(UserCredentials credentials,
+    public Response login(Credentials credentials,
                           @QueryParam("remember") @DefaultValue("false") boolean rememberMe)
             throws URISyntaxException {
-        UserSession newSession = userDao.authenticate(credentials.getUsername(), credentials.getPassword());
-        Cookie c = cookie(newSession.getSessionId().toString());
-        NewCookie newCookie;
-        if (rememberMe) {
-            newCookie = new NewCookie(c, "", (int) TimeUnit.DAYS.toSeconds(7), false);
-        } else {
-            newCookie = new NewCookie(c);
-        }
-        return Response.noContent().cookie(newCookie).build();
+        Session newSession = userDao.authenticate(credentials);
+        int maxAge = rememberMe ? (int) TimeUnit.DAYS.toSeconds(7) : NewCookie.DEFAULT_MAX_AGE;
+        return Response.noContent().cookie(newCookie(newSession.getSessionId().toString(), maxAge, null)).build();
+    }
+
+    private NewCookie newCookie(String value, int maxAge, Date expiry) {
+        return new NewCookie(USER_TOKEN,
+                value,                                          // value
+                "/rest",                                        // path
+                context.getUriInfo().getBaseUri().getHost(),    // host
+                NewCookie.DEFAULT_VERSION,                      // version
+                "",                                             // comment
+                maxAge,                                         // max-age
+                expiry,                                         // expiry
+                false,                                          // secure
+                true);                                          // http-onle
+
     }
 
     @Path("logout")
     @POST
-    @RolesAllowed(UserRole.USER)
+    @PermitAll
     public Response logout() {
-        userDao.removeSession(userSession.getSessionId());
-        NewCookie newCookie = new NewCookie(cookie(userSession.getSessionId().toString()), "", 0, false);
-        return Response.noContent().cookie(newCookie).build();
-    }
-
-    private Cookie cookie(String value) {
-        //context.getUriInfo().getBaseUri().getHost());
-        return new Cookie(Config.USER_TOKEN_COOKIE, value, "/", host);
+        userDao.removeSession(session.getSessionId());
+        return Response.noContent().cookie(newCookie("", 0, new Date(0L))).build();
     }
 
     @Path("roles")
     @GET
-    @RolesAllowed(UserRole.ADMIN)
+    @RolesAllowed(Role.Names.ADMIN)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Set<String> getRoles() {
-        return UserRole.ALL_ROLES;
+    public Set<Role> getRoles() {
+        return Role.ALL_ROLES;
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @RolesAllowed(UserRole.ADMIN)
-    public User createUser(UserCredentials credentials) {
-        return userDao.addUser(credentials.getUsername(), credentials.getRole(), credentials.getPassword());
+    @RolesAllowed(Role.Names.ADMIN)
+    public User createUser(Credentials credentials) {
+        if (!credentials.hasPassword() || !credentials.validPassword()) {
+            throw new WebApplicationException("Password too short", Response.Status.BAD_REQUEST);
+        }
+        return userDao.addUser(credentials);
     }
 
     @Path("all")
     @GET
-    @RolesAllowed(UserRole.ADMIN)
+    @RolesAllowed(Role.Names.ADMIN)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<User> getUsers() {
         return userDao.getUsers();
     }
 
     @Path("{id}")
-    @RolesAllowed(UserRole.ADMIN)
     @GET
+    @RolesAllowed(Role.Names.ADMIN)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public User getUser(@PathParam("id") int userId) {
         return userDao.getUser(userId);
     }
 
     @Path("{id}")
-    @RolesAllowed(UserRole.ADMIN)
+    @RolesAllowed(Role.Names.ADMIN)
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public User putUser(@PathParam("id") int userId, Credentials credentials) {
+        if (credentials.hasPassword() && !credentials.validPassword()) {
+            throw new WebApplicationException("Password too short", Response.Status.BAD_REQUEST);
+        }
+        if (userId == user.getId() && user.getRole().getLevel() > credentials.getRole().getLevel()) {
+            throw new WebApplicationException("Cant't demote yourself", Response.Status.BAD_REQUEST);
+        }
+        return userDao.updateUser(userId, credentials);
+    }
+
+    @Path("{id}")
+    @RolesAllowed(Role.Names.ADMIN)
     @DELETE
     public void deleteUser(@PathParam("id") int userId) {
         if (userId == currentUser().getId()) {
-            throw new WebApplicationException("Don't delete yourself", 400);
+            throw new WebApplicationException("Don't delete yourself", Response.Status.BAD_REQUEST);
         }
         if (!userDao.deleteUser(userId)) {
-            throw new WebApplicationException(404);
+            throw new WebApplicationException("User not found", Response.Status.NOT_FOUND);
         }
     }
 }

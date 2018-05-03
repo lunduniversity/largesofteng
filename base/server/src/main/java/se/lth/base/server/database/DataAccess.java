@@ -12,24 +12,34 @@ import java.util.stream.StreamSupport;
 /**
  * Base class for H2 database connections. Contains helper methods for common JDBC use cases
  * Also contains a method for setting up the database schema.
+ * To use this class, extend this class with a target data type parameter and provide a mapper for said type.
  *
  * @author Rasmus Ros, rasmus.ros@cs.lth.se
- * @see CreateSchema#main(String[])
+ * @see Mapper
  */
-public abstract class DataAccess {
+public class DataAccess<T> {
 
     private final String driverUrl;
+    private final Mapper<T> mapper;
 
-
-    protected DataAccess(String driverUrl) {
+    public DataAccess(String driverUrl, Mapper<T> mapper) {
         this.driverUrl = driverUrl;
+        this.mapper = mapper;
     }
 
-    Connection getConnection() throws SQLException {
+    public String getDriverUrl() {
+        return driverUrl;
+    }
+
+    public Mapper<T> getMapper() {
+        return mapper;
+    }
+
+    public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(driverUrl, "sa", "");
     }
 
-    protected int execute(String sql, Object... objects) {
+    public int execute(String sql, Object... objects) {
         try (Connection conn = getConnection();
              PreparedStatement statement = conn.prepareStatement(sql);) {
             for (int i = 0; i < objects.length; i++) {
@@ -42,7 +52,7 @@ public abstract class DataAccess {
     }
 
     @SuppressWarnings("unchecked")
-    protected <T> T insert(String sql, Object... objects) {
+    public <S> S insert(String sql, Object... objects) {
         try (Connection conn = getConnection();
              PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);) {
             for (int i = 0; i < objects.length; i++) {
@@ -51,14 +61,18 @@ public abstract class DataAccess {
             statement.execute();
             try (ResultSet keys = statement.getGeneratedKeys();) {
                 keys.next();
-                return (T) keys.getObject(1);
+                return (S) keys.getObject(1);
             }
         } catch (SQLException e) {
             throw toException(e, e.getErrorCode());
         }
     }
 
-    protected Stream<ResultSet> query(String sql, Object... objects) {
+    public T queryFirst(String sql, Object... objects) {
+        return query(sql, objects).findFirst().orElseThrow(() -> new DataAccessException(ErrorType.NOT_FOUND));
+    }
+
+    public Stream<T> query(String sql, Object... objects) {
         UncheckedCloseable close = null;
         try {
             Connection connection = getConnection();
@@ -83,7 +97,7 @@ public abstract class DataAccess {
                         throw toException(e, e.getErrorCode());
                     }
                 }
-            }, false).onClose(close);
+            }, false).onClose(close).map(mapper);
         } catch (SQLException e) {
             if (close != null)
                 try {

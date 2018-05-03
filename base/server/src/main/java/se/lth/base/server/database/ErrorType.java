@@ -8,15 +8,24 @@ import java.util.logging.Level;
  * @author Rasmus Ros, rasmus.ros@cs.lth.se
  */
 public enum ErrorType {
-    UNKNOWN(Level.SEVERE), DUPLICATE(Level.WARNING), NOT_FOUND(Level.WARNING), DATA_QUALITY(Level.WARNING);
+    UNKNOWN(500, Level.SEVERE),
+    DUPLICATE(400, Level.WARNING),
+    NOT_FOUND(404, Level.WARNING),
+    DATA_QUALITY(400, Level.WARNING);
 
     private final Level level;
+    private final int httpCode;
 
-    ErrorType(Level level) {
+    ErrorType(int httpCode, Level level) {
+        this.httpCode = httpCode;
         this.level = level;
     }
 
-    public Level logLevel() {
+    public int getHttpCode() {
+        return httpCode;
+    }
+
+    public Level getLevel() {
         return level;
     }
 }
