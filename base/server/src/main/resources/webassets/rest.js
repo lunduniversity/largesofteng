@@ -1,55 +1,116 @@
-var baseRest = {
-    getUser: function() {
-        return baseFetch('/rest/user');
-    },
-    login: function(username, password, rememberMe) {
-        var loginObj = {username: username, password: password};
-        return baseFetch('/rest/user/login?remember=' + rememberMe, {
-            method: 'POST',
-            body: JSON.stringify(loginObj),
-            headers: jsonHeader()});
-    },
-    logout: function() {
-        return baseFetch('/rest/user/logout', {method: 'POST'});
-    },
-    getUsers: function() {
-        return baseFetch('/rest/user/all');
-    },
-    getRoles: function() {
-        return baseFetch('/rest/user/roles');
-    },
-    putUser: function(user) {
-        return baseFetch('/rest/user', {
-            credentials: 'same-origin',
-            method: 'POST',
-            body: JSON.stringify(user),
-            headers: jsonHeader()});
-    },
-    deleteUser: function(username) {
-        return baseFetch('/rest/user/'+username, {method: 'DELETE'});
-    },
-    getSimple: function(userId) {
-        var postfix = "";
-        if (typeof userId !== "undefined") postfix = "/" + userId;
-        return baseFetch('/rest/simple' + postfix);
-    },
-    putSimple: function(simpleData) {
-        return baseFetch('/rest/simple', {
-            method: 'POST',
-            body: JSON.stringify(simpleData),
-            headers: jsonHeader()});
+var base = base || {};
+base.rest = (function() {
+
+    var Simple = function(json) {
+        Object.assign(this, json);
+        this.createdDate = new Date(this.created);
+    };
+
+    var Role = function(role) {
+        this.name = role;
+        this.label = this.name[0] + this.name.toLowerCase().slice(1);
+    };
+
+    var User = function(json) {
+        Object.assign(this, json);
+        this.role = new Role(json.role);
+        this.json = json;
+
+        this.isAdmin = function() {
+            return this.role.name === 'ADMIN';
+        };
+        this.isNone = function() {
+            return this.role.name === 'NONE';
+        };
+    };
+
+
+    var objOrError = function(json, cons) {
+        if (json.error) {
+            return json;
+        } else {
+            return new cons(json);
+        }
+    };
+
+    base.Simple = Simple;
+    base.User = User;
+    base.Role = Role;
+
+    var baseFetch = function(url, config) {
+        config = config || {};
+        config.credentials = 'same-origin';
+        var bf = fetch(url, config).catch(function(error) {
+            alert(error);
+            throw error;
+        });
+        return bf;
     }
-};
 
-function baseFetch(url, config) {
-    config = config || {};
-    config.credentials = 'same-origin';
-    return fetch(url, config).catch(function(error) {
-        alert(error);
-        throw error;
-    });
-}
+    var jsonHeader = {
+        'Content-Type': 'application/json;charset=utf-8'
+    }
 
-function jsonHeader() {
-    return {'Content-Type': 'application/json;charset=utf-8'};
-}
+    return {
+        getUser: function() {
+            return baseFetch('/rest/user')
+                .then(response => response.json())
+                .then(u => new User(u));
+        },
+        login: function(username, password, rememberMe) {
+            var loginObj = {username: username, password: password};
+            return baseFetch('/rest/user/login?remember=' + rememberMe, {
+                    method: 'POST',
+                    body: JSON.stringify(loginObj),
+                    headers: jsonHeader});
+        },
+        logout: function() {
+            return baseFetch('/rest/user/logout', {method: 'POST'});
+        },
+        getUsers: function() {
+            return baseFetch('/rest/user/all')
+                .then(response => response.json())
+                .then(users => users.map(u => new User(u)));
+        },
+        getRoles: function() {
+            return baseFetch('/rest/user/roles')
+                .then(response => response.json())
+                .then(roles => roles.map(r => new Role(r)));
+        },
+        addUser: function(credentials) {
+            return baseFetch('/rest/user', {
+                    method: 'POST',
+                    body: JSON.stringify(credentials),
+                    headers: jsonHeader})
+                .then(response => response.json())
+                .then(u => objOrError(u, User));
+        },
+        putUser: function(id, credentials) {
+            return baseFetch('/rest/user/'+id, {
+                    method: 'PUT',
+                    body: JSON.stringify(credentials),
+                    headers: jsonHeader})
+                .then(response => response.json())
+                .then(u => objOrError(u, User));
+        },
+        deleteUser: function(username) {
+            return baseFetch('/rest/user/'+username, {method: 'DELETE'});
+        },
+        getSimples: function(userId) {
+            var postfix = "";
+            if (typeof userId !== "undefined") postfix = "/" + userId;
+            return baseFetch('/rest/simple' + postfix)
+                .then(response => response.json())
+                .then(simples => simples.map(s => new Simple(s)));
+        },
+        addSimple: function(simple) {
+            return baseFetch('/rest/simple', {
+                    method: 'POST',
+                    body: JSON.stringify(simple),
+                    headers: jsonHeader})
+                .then(response => response.json())
+                .then(s => new Simple(s));
+        }
+    };
+})();
+

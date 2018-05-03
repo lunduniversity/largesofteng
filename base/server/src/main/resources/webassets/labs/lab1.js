@@ -25,9 +25,9 @@ document.addEventListener("DOMContentLoaded", function() {
 var testJavaScript = function(param1, param2) {alert(param1 + "" + param2);}
 
 var systemBrowseValidate = function() {
-    baseRest.getUser()
+    base.rest.getUser()
         .catch(error => baseLab.complete('systemBrowse', false))
-        .then(response => response.json()).then(function(user) {
+        .then(function(user) {
             if (user.role !== 'None') {
                 baseLab.complete('systemBrowse', true);
             } else {
@@ -60,6 +60,13 @@ var jsDebuggingValidate = function(event) {
         throw error;
     }
     return false;
+};
+
+var htmlDOMDemo = function() {
+    var div = document.createElement('div');
+    div.innerHTML = '<b>browser will parse this and create HTML elements</b>';
+    var target = document.getElementById('putItHere');
+    target.appendChild(div);
 };
 
 var htmlHeaderValidate = function(submitEvent) {
@@ -100,7 +107,7 @@ var cssSelectorValidate = function(submitEvent) {
 };
 
 var e2eServerValidate = function() {
-    baseRest.getSimple().then(response => response.json()).then(function(data) {
+    base.rest.getSimples().then(function(data) {
         if (data.error) {
             alert('Received error from server: ' + data.message);
             baseLab.complete('e2eServer', false);

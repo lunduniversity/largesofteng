@@ -7,10 +7,18 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class CreateSchema extends DataAccess {
+/**
+ * Contains helpers for creating the database schema. Each time the server starts the @{@link #createSchemaIfNotExists()}
+ * method is called.
+ *
+ * @author Rasmus Ros, rasmus.ros@cs.lth.se
+ */
+public class CreateSchema {
+
+    private final String driverUrl;
 
     public CreateSchema(String driverUrl) {
-        super(driverUrl);
+        this.driverUrl = driverUrl;
     }
 
     public static void main(String[] args) throws Exception {
@@ -20,21 +28,20 @@ public class CreateSchema extends DataAccess {
     }
 
     public void dropAll() {
-        execute("DROP ALL OBJECTS");
+        new DataAccess<>(driverUrl, Mapper.NONE).execute("DROP ALL OBJECTS");
     }
 
     public void createSchema() {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = new DataAccess<>(driverUrl, Mapper.NONE).getConnection()) {
             runScript(conn);
         } catch (SQLException e) {
             throw new DataAccessException(e, ErrorType.UNKNOWN);
         }
     }
 
-
     public boolean createSchemaIfNotExists() {
-        boolean tableExists = query("SELECT COUNT(*) AS COUNT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'USER'")
-                .map((Mapper<Long>) rs -> rs.getLong(1)).findFirst().orElseGet(() -> 0L) > 0;
+        DataAccess<Long> counter = new DataAccess<>(driverUrl, (rs) -> rs.getLong(1));
+        boolean tableExists = counter.queryFirst("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'USER'") > 0L;
         if (!tableExists) {
             createSchema();
         }

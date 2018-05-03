@@ -15,6 +15,11 @@ import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+/**
+ * This class converts all objects in the REST API to/from JSON using Gson.
+ *
+ * @author Rasmus Ros, rasmus.ros@cs.lth.se
+ */
 @Provider
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -31,8 +36,9 @@ public class JsonProvider implements MessageBodyReader<Object>, MessageBodyWrite
     public Object readFrom(Class<Object> aClass, Type type, Annotation[] annotations, MediaType mediaType,
                            MultivaluedMap<String, String> multivaluedMap, InputStream entityStream)
             throws IOException, WebApplicationException {
-        InputStreamReader streamReader = new InputStreamReader(entityStream, "UTF-8");
-        return GSON.fromJson(streamReader, type);
+        try (InputStreamReader streamReader = new InputStreamReader(entityStream, "UTF-8");) {
+            return GSON.fromJson(streamReader, type);
+        }
     }
 
     @Override

@@ -2,7 +2,6 @@ package se.lth.base.server.database;
 
 import org.junit.After;
 import org.junit.Before;
-import se.lth.base.server.database.CreateSchema;
 
 import java.sql.SQLException;
 
@@ -11,7 +10,8 @@ import java.sql.SQLException;
  *
  * @author Rasmus Ros, rasmus.ros@cs.lth.se
  */
-public abstract class DataAccessTest {
+public abstract class BaseDataAccessTest {
+
     public static final String IN_MEM_DRIVER_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
     private final CreateSchema createSchema = new CreateSchema(IN_MEM_DRIVER_URL);
 

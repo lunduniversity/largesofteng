@@ -1,39 +1,44 @@
-var loginController = (function() {
-    var loginView = {
-        show: function() {
-            document.querySelector('form').style.visibility = 'visible';
-        },
+var base = base || {};
+base.changeLocation = function(url) {
+    window.location.replace(url);
+};
+base.loginController = (function() {
+    var view = {
         showFailure: function(msg) {
             alert(msg);
         }
     };
     var controller = {
+        view,
         load: function() {
-            baseRest.getUser().then(response => response.json()).then(function(user) {
-                if (user.role == 'None') {
-                    loginView.show();
-                } else {
-                    window.location.replace('/');
+            document.getElementById('login-form').onsubmit = function(event) {
+                event.preventDefault;
+                controller.loginUser();
+                return false;
+            };
+            base.rest.getUser().then(function(user) {
+                if (!user.isNone()) {
+                    base.changeLocation('/');
                 }
             });
         },
-        loginUser: function(submitEvent) {
-            submitEvent.preventDefault();
+        loginUser: function() {
             var username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
             var remember = document.getElementById('remember').checked;
-            baseRest.login(username, password, remember)
+            base.rest.login(username, password, remember)
                 .then(function(response) {
                     if (response.ok) {
-                        window.location.replace('/');
+                        base.changeLocation('/');
                     } else {
-                        document.getElementById('password').value = "";
-                        response.json().then(error => loginView.showFailure(error.message));
+                        document.getElementById('password').value = '';
+                        response.json().then(error => view.showFailure(error.message));
                     }
                 });
-            return false;
+        },
+        initOnLoad: function() {
+            document.addEventListener('DOMContentLoaded', base.loginController.load);
         }
     };
     return controller;
 })();
-document.addEventListener("DOMContentLoaded", loginController.load);

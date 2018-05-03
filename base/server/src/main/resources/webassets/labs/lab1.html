@@ -550,7 +550,7 @@
             &lt;/body&gt;
         </code></pre>
 
-        <div style="border: 1px solid black">
+        <div class="border p-1 mb-3">
             <h4>Medium sized header</h4>
             <p> Paragraph of text with some <b>bold</b></p>
         </div>
@@ -573,11 +573,16 @@
         </p>
         <dl class="row">
             <dt class="col-sm-3"><code>&lt;body&gt;</code></dt>
-            <dd class="col-sm-9">The outer element of all the visible contains.</dd>
+            <dd class="col-sm-9">Most of the content is placed in this tag.</dd>
             <dt class="col-sm-3"><code>&lt;head&gt;</code></dt>
             <dd class="col-sm-9">
                 <code>&lt;head&gt;</code> and its sub-elements contain meta data, such as document title and which
-                script dependencies to load.
+                script dependencies to load. As seen in the example above, the <code>&lt;script&gt;</code> tag is used
+                to load JavaScript by referencing them in the src attribute.
+                Note that the order of the script tags matter, so scripts that depend on other scripts must be loaded
+                after their dependencies. The <code>&lt;link&gt;</code> is used to load CSS stylesheets.
+                <code>&lt;script&gt;</code> tags can be places in the <code>&lt;body&gt;</code> as well, which speeds up
+                loading.
             </dd>
             <dt class="col-sm-3"><code>&lt;div&gt;</code> and <code>&lt;span&gt;</code></dt>
             <dd class="col-sm-9">
@@ -643,6 +648,34 @@
             </div>
         </div>
 
+        <section class="lab-sub-section language-javascript">
+            <a class="sub-anchor" name="DOM"></a>
+            <h3>DOM</h3>
+            <p>
+                HTML files are loaded and parsed by the browser. The HTML tags can be programmatically manipulated
+                through an API called the Domain Object Model (DOM). When content is loaded dynamically the DOM API is
+                used to create HTML elements and add them to the page. In addition, most interaction is handled through
+                the API, as is the case for <a href="#Forms">forms</a>, containing e.g. button and text inputs.
+                For the software engineers in the front end group, I recommend reading the tutorial
+                <a href=https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction"
+                   target="_blank"> here</a> on the DOM.
+            </p>
+            <p>
+                The following is an example of what using the DOM API looks like. Through the DOM API we can create
+                elements:
+            </p>
+            <pre><code>
+                var div = document.createElement('div');
+                div.innerHTML = '&lt;b&gt;your browser will parse this and create HTML elements&lt;/b&gt;';
+                var target = document.getElementById('putItHere');
+                target.appendChild(div);
+            </code></pre>
+            <button onclick="htmlDOMDemo()" class="mb-3 btn btn-secondary">> Run</button>
+            <div class="border p-3" id="putItHere">
+                This is a div with <code class="language-markup">id='putItHere'</code>.
+            </div>
+        </section>
+
         <section class="lab-sub-section">
             <a class="sub-anchor" name="Forms"></a>
             <h3>Forms</h3>
@@ -653,16 +686,16 @@
                 styled with <a href="#Bootstrap">Bootstrap</a>.
             </p>
             <div class="row mt-3">
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <button class="btn btn-secondary form-control" onclick="alert(event)">Click</button>
                 </div>
-                <div class="col-md-8 offset-md-2">
+                <div class="col-md-8 offset-md-1">
                     <code>&lt;button onclick="alert(event)"&gt;Click&lt;/button&gt;</code>
                 </div>
             </div>
             <div class="row mt-3">
                 <div class="col-md-3">
-                    <input type="text" oninput="console.log(event)">
+                    <input class="form-control" type="text" oninput="console.log(event)">
                 </div>
                 <div class="col-md-8 offset-md-1">
                     <code>&lt;input oninput="console.log(event)"&gt;</code>
@@ -672,8 +705,8 @@
                 The HTML <code>&lt;form&gt;</code> element can be used to group multiple buttons and inputs with a
                 single event. It also supports some basic form validation. By default the form will perform a POST to
                 the current URL, this behaviour was standard during the 90's and 00's. Modern web pages build with
-                JavaScript and REST APIs prefer to process the event dynamically instead with JavaScript. To turn off
-                the default POST and still keep the nice form validation, follow the format below of the
+                JavaScript and REST APIs processes the events dynamically instead with JavaScript. To turn off
+                the default POST and still keep the useful form validation, follow the format below of the
                 <code>onsubmit</code> declaration.
             </p>
             <div class="lab-task-group" id="htmlFormTryout">
@@ -695,6 +728,9 @@
                             &lt;button type="submit"&gt;Submit&lt;/button&gt;
                         &lt;/form&gt;
                     </code></pre>
+                    <p>
+                        <b>Try input</b> some valid data and submit the form when done.
+                    </p>
                     <form class="lab-task-form" onsubmit="return htmlFormTryoutValidate(event)">
                         <div class="form-group">
                             <label>
@@ -1043,7 +1079,7 @@
             </div>
             <div class="lab-task-group" id="cssSelect">
                 <div class="lab-task-info alert alert-warning">
-                    <h4 class="alert-heading">Which of the following is a class selector?</h4>
+                    <h4 class="alert-heading">Which of the following uses a class selector?</h4>
                     <p>The selector should grab <code class="language-markup">&lt;span
                         class="name"&gt;&lt;/span&gt;</code>
                     </p>
@@ -1086,7 +1122,7 @@
             </div>
 
             <p class="language-javascript mt-5">
-                Selectors can also be used programmatically using: <br>
+                Selectors can also be used programmatically using the <a href="#DOM">DOM</a> API: <br>
                 <code>var element = document.querySelector('sel')</code> or <br>
                 <code>var elements = document.querySelectorAll('sel')</code>. <br>
                 These functions are defined on all HTML elements (not just document).
@@ -1252,10 +1288,11 @@
         <p>
             It is time to do modifications to the frontend of the actual <a href="#BASE">BASE system</a>. We are going
             to add a simple extension to the Simple tab, in addition to the data field, there will be a count of the
-            number of data (could represent a shopping basket?).
+            number of data. This could represent the number of items in a shopping basket etc.
         </p>
         <p>
-            Base uses the <a href="https://en.wikipedia.org/wiki/Model–view–controller">Model View Controller (MVC)</a>
+            BASE is build using the
+            <a href="https://en.wikipedia.org/wiki/Model–view–controller">Model View Controller (MVC)</a>
             pattern implemented in plain JavaScript. Below is a minimal example of the design pattern in practice. In
             short, the model encapsulates the data, the view can render the data, and the controller handles user input
             and other state changes.
@@ -1270,14 +1307,23 @@
         <a class="mt-0" href="https://stackoverflow.com/questions/8497833/hello-world-in-mvc-pattern#8497887"
            target="_blank">Source.</a>
 
+        <p>
+            Single page web application
+            The code is organized according to the items displayed in the top navigation bar, there is the
+            <a href="index.html">index.html</a>
+            <a href="login/login.html">login.html</a>
+            <a href="simple/simple.html">simple/simple.html</a>
+            <a href="admin/user-admin.html">admin/user-admin.html</a>
+        </p>
+
         <div class="lab-task-group" id="e2eServer">
             <div class="lab-task-info alert alert-warning">
                 <h4 class="alert-heading">Server Side Stub</h4>
                 <p>
                     In order for the server to return data in the format we want the first task will be to modify the
                     <code>SimpleData.java</code> file. It is located under
-                    <code>base/src/main/java/se/lth/base/server/model/SimpleData.java</code> (sorry about the
-                    long path, its the <q>Java way</q>).
+                    <code>base/src/main/java/se/lth/base/server/data/Simple.java</code> (sorry about the
+                    long path, it's the <q>Java way</q>).
                 </p>
                 <p>
                     Add a field without modifying the constructor, like this:
@@ -1312,7 +1358,7 @@
                 <h4 class="alert-heading">Modify the Simple View</h4>
                 <p>
                     Go to the file <a href="view-source:http://localhost:8080/simple/simple.html">simple.html</a>
-                    located under <code>base/src/main/resources/webasets/simple/simple.html</code>. Add a column
+                    located under <code>server/src/main/resources/webasets/simple/simple.html</code>. Add a column
                     to the table header with the text content <q>Count</q> (without quotes). Also, add another <code>
                     &lt;td&gt;</code> under the <code>&lt;template&gt;</code>. The purpose of this will become clear
                     soon.
@@ -1337,6 +1383,30 @@
                 </div>
             </div>
         </div>
+
+        <h3>Unit Testing with Jasmine</h3>
+        <p>
+            There is a pre-written unit test for this functionality that is temporarily disabled. Find it in
+            the file
+            <a href="/spec/simple-spec.js" target="_blank">server/src/main/resources/webassets/spec/simple-spec.js</a>.
+            To enable it simply remove the <code>x</code> from the <code>xit</code> function definition.
+        </p>
+        <pre><code class="language-javascript">
+            xit('should have count in table', function(done) {
+                // code already implemented
+            }
+        </code></pre>
+        <p>
+            Run the tests by opening the file
+            <a href="/specs.html" target="_blank">server/src/main/resources/webassets/specs.html</a>.
+        </p>
+
+        <p>
+            The tests are implemented using the <a href="https://jasmine.github.io/" target="_blank">Jasmine</a>
+            framework.
+            describe, it, afterEach, beforeEach, expect
+        </p>
+
         <div class="lab-task-group" id="e2eDynamic">
             <div class="lab-task-info alert alert-warning">
                 <h4 class="alert-heading">Modify the Simple View</h4>
@@ -1364,6 +1434,13 @@
                     you?).
                 </div>
             </div>
+        </div>
+
+        <div class="alert alert-info mt-5">
+            <h4 class="alert-heading">Present to your TA</h4>
+            Show that <b>all tasks in this lab</b> are completed and that the <b>jasmine unit tests pass</b>. That means
+            that everything in <a target="_blank" href="/specs.html">jasmine specs</a> should be green, nothing red or
+            yellow. Don't forget to ask any remaining questions.
         </div>
     </section>
 

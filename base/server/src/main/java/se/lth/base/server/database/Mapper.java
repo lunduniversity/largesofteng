@@ -9,12 +9,16 @@ import java.util.function.Function;
 
 /**
  * Helper to make working with JDBC's checked exception easier.
+ *
  * @param <T> Java type of mapped object.
  * @author Rasmus Ros, rasmus.ros@cs.lth.se
  */
 public interface Mapper<T> extends Function<ResultSet, T> {
 
-    Function<ResultSet, Map<String, Object>> MAP_MAPPER = (Mapper<Map<String, Object>>) resultSet -> {
+    /**
+     * This is a convenience class which is useful for debugging SQL queries without having to write a fixed Mapper.
+     */
+    Mapper<Map<String, Object>> MAP_MAPPER = resultSet -> {
         ResultSetMetaData metaData = resultSet.getMetaData();
         int c = metaData.getColumnCount();
         Map<String, Object> map = new LinkedHashMap<>();
@@ -23,6 +27,8 @@ public interface Mapper<T> extends Function<ResultSet, T> {
         }
         return map;
     };
+
+    Mapper<Void> NONE = resultSet -> null;
 
     @Override
     default T apply(ResultSet resultSet) {

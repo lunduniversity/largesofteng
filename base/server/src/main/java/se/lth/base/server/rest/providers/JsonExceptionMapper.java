@@ -13,6 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * This converts all Exceptions to HTTP responses for the REST API. It has special handling for WebApplicationException
+ * and DataAccessException.
+ *
+ * @author Rasmus Ros, rasmus.ros@cs.lth.se
+ */
 @Provider
 public class JsonExceptionMapper implements ExceptionMapper<Exception> {
     @Override
@@ -22,7 +28,7 @@ public class JsonExceptionMapper implements ExceptionMapper<Exception> {
         if (exception instanceof DataAccessException) {
             DataAccessException dataAccessException = (DataAccessException) exception;
             errorType = dataAccessException.getErrorType();
-            status = 400;
+            status = errorType.getHttpCode();
         }
         if (exception instanceof WebApplicationException) {
             WebApplicationException webApplicationException = (WebApplicationException) exception;
@@ -32,7 +38,7 @@ public class JsonExceptionMapper implements ExceptionMapper<Exception> {
         jsonObject.put("error", errorType);
         jsonObject.put("message", exception.getMessage());
         jsonObject.put("status", status);
-        Logger.getLogger(BaseServer.class.getSimpleName()).log(errorType.logLevel(), exception.getMessage(), exception);
+        Logger.getLogger(BaseServer.class.getSimpleName()).log(errorType.getLevel(), exception.getMessage(), exception);
         return Response.status(status)
                 .header("Content-Type", MediaType.APPLICATION_JSON + ";charset=utf-8")
                 .entity(jsonObject)
