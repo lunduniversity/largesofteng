@@ -1,34 +1,33 @@
 <h1 class="d-sm-block d-none">Simple</h1>
-<div class="row">
-    <div class="col-md-4">
-        <form onsubmit="return simpleController.submitSimpleData(event)">
-            <div class="form-group">
-                <label>
-                    Simple data
-                    <input class="form-control" type="text" placeholder="Enter data" required>
-                </label>
-                <small class="form-text text-muted">
-                    <em>Simple</em> is an end-to-end example of a simple table display. Try adding some data and
-                    figure out how it is implemented by following this form's onsubmit event.
-                </small>
-            </div>
-            <div class="form-group">
-                <button class="form-control btn btn-primary" type="submit">Submit</button>
-            </div>
-        </form>
-    </div>
-    <div class="col-md-8">
-        <table class="table" style="background: white">
+<p>
+    <em>Simple</em> is an end-to-end example of a simple table display. TODO better text
+</p>
+<div>
+    <form id="simple-form">
+        <div class="form-group">
+            <label for="simple-input"> Payload </label>
+            <input id="simple-input" class="form-control" type="text" placeholder="Enter payload" required>
+        </div>
+        <button class="form-control btn btn-primary" type="submit">Submit</button>
+    </form>
+</div>
+<div>
+    <table class="table" style="background: white">
+        <thead>
+        <tr>
+            <th scope="col">Payload</th>
+            <th>Date</th>
+            <th>count</th>
+        </tr>
+        </thead>
+        <tbody>
+        <template id="simple-template">
             <tr>
-                <th scope="col">Data</th>
-                <th>Date</th>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
-            <template id="simple-template">
-                <tr>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </template>
-        </table>
-    </div>
+        </template>
+        </tbody>
+    </table>
 </div>

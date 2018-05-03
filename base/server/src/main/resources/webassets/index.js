@@ -1,71 +1,81 @@
-
-var mainModel = {};
-
-var routing = {
-    'simple': {
-        partial: 'simple/simple.html',
-        controller: simpleController
-    },
-    'admin': {
-        partial: 'admin/admin.html',
-        controller: adminController
-    }
+var base = base || {};
+base.changeLocation = function(url) {
+    window.location.replace(url);
 };
+base.mainController = (function() {
 
-var mainView = {
-    render: function() {
-        var activeLink = document.querySelector('ul.navbar-nav>li.active');
-        if (activeLink) activeLink.classList.remove('active');
-        var link = document.querySelector('a[href="#/'+mainModel.selected+'"]');
-        link.parentElement.classList.add('active');
+    var routingTable = {
+        // first in table is the default
+        'simple': {
+            partial: 'simple/simple.html',
+            controller: base.simpleController
+        },
+        'admin': {
+            partial: 'admin/user-admin.html',
+            controller: base.userAdminController
+        }
+    };
 
-        //var activeDiv = document.querySelector('.main-tab');
-        //if (activeDiv) activeDiv.classList.remove('active');
-        //document.getElementById(mainModel.selected).classList.add('active');
+    var model = {
+        route: ''
+    };
 
-        document.getElementById('username').textContent = mainModel.user.username;
-        document.querySelector('body').style.visibility = 'visible';
-    },
-    hideAdminLinks() {
-        document.querySelectorAll('ul.navbar-nav>li.admin-only').forEach(li => li.style.display = 'none');
-    }
-};
+    var view = {
+        render: function() {
+            var nav = document.getElementById('main-nav');
+            var activeTabLink = nav.querySelector('li.active');
+            if (activeTabLink) activeTabLink.classList.remove('active');
+            var newActiveTabLink = nav.querySelector('a[href="#/'+model.route+'"]');
+            if (newActiveTabLink) newActiveTabLink.parentElement.classList.add('active');
+        },
+        hideAdminLinks() {
+            document.querySelectorAll('#main-nav li.admin-only').forEach(li => li.style.display = 'none');
+        },
+        renderUsername: function() {
+            document.getElementById('username').textContent = model.user.username;
+        }
+    };
 
-var mainController = {
-    tabTo: function() {
-        var tabId = location.hash.slice(2);
-        mainModel.selected = tabId;
-        mainView.render();
-        fetch(routing[tabId].partial)
-            .then(response => response.text())
-            .then(function(tabHtml) {
-                document.getElementById('main-tab').innerHTML = tabHtml;
-                routing[tabId].controller.load();
+    var controller = {
+        routingTable: routingTable,
+        changeRoute: function() {
+            var newRoute = location.hash.slice(2);
+            if (!controller.routingTable[newRoute]) {
+                location.hash = '/'+Object.keys(controller.routingTable)[0];
+                return;
+            }
+            model.route = newRoute;
+            fetch(controller.routingTable[newRoute].partial)
+                .then(response => response.text())
+                .then(function(tabHtml) {
+                    document.getElementById('main-tab').innerHTML = tabHtml;
+                    controller.routingTable[newRoute].controller().load();
+                });
+            view.render();
+        },
+        load: function() {
+            document.getElementById('logout').onclick = controller.logout;
+            window.onhashchange = base.mainController.changeRoute;
+            base.mainController.changeRoute();
+            base.rest.getUser().then(function(user) {
+                model.user = user;
+                view.renderUsername();
+                if (user.isNone()) {
+                    base.changeLocation('/login/login.html');
+                } else if (!user.isAdmin()) {
+                    view.hideAdminLinks();
+                }
             });
-    },
-    load: function() {
-        baseRest.getUser().then(response => response.json()).then(function(user) {
-            mainModel.user = user;
-            if (user.role == 'None') {
-                window.location.replace('/login/login.html');
-            }
-            if (user.role !== 'Admin') {
-                mainView.hideAdminLinks();
-            }
-            if (!location.hash) {
-                location.hash = '/simple';
-            } else {
-                mainController.tabTo();
-            }
-        });
-    },
-    logout: function() {
-        mainModel.user = userNone;
-        baseRest.logout().then(function(response) {
-            window.location.replace('/login/login.html');
-        });
-    }
-};
+        },
+        logout: function() {
+            base.rest.logout().then(function(response) {
+                base.changeLocation('/login/login.html');
+            });
+        },
+        initOnLoad: function() {
+            document.addEventListener("DOMContentLoaded", base.mainController.load);
+        }
+    };
+    return controller;
+})();
 
-document.addEventListener("DOMContentLoaded", mainController.load);
-window.addEventListener("hashchange", mainController.tabTo);

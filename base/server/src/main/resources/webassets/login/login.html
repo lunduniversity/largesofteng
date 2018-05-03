@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="login.css">
 </head>
 <body class="text-center">
-<form class="form-signin" onsubmit="return loginController.loginUser(event)" style="visibility: hidden">
+<form class="form-signin" id="login-form">
     <img class="mb-4" src="/logo.svg" alt="" width="160" height="100">
     <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
     <input id="username" type="text" class="form-control" placeholder="Username" required>
@@ -21,5 +21,8 @@
 </form>
 <script src="/rest.js"></script>
 <script src="login.js"></script>
+<script type="application/javascript">
+    base.loginController.initOnLoad();
+</script>
 </body>
 </html>

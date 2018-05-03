@@ -1,0 +1,81 @@
+<h1>User Admin</h1>
+<div id="user-view" class="row">
+    <div id="user-list" class="col-md-3">
+        <div class="list-group">
+            <template id="user-template">
+                <button type="button" class="list-group-item list-group-item-action"></button>
+            </template>
+        </div>
+        <div class="list-group mt-3">
+            <button type="button" id="new-user" class="list-group-item list-group-item-action list-group-item-success">
+                ➕ Add New User
+            </button>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <form id="user-form">
+            <div class="form-group row show-edit">
+                <label class="col-md-2 col-form-label" for="user-id">Id</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="user-id" disabled>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label" for="set-username">Username</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="set-username" placeholder="Enter username" required
+                           pattern=".{4,}">
+                    <small id="edit-username-help" class="form-text text-muted">Minimum 4 characters.
+                    </small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label" for="set-password">Password</label>
+                <div class="col-md-10">
+                    <div class="row">
+                        <div class="col">
+                            <input type="password" class="form-control" id="set-password" placeholder="Password"
+                                   required pattern=".{8,}">
+                            <small id="edit-password-help" class="form-text text-muted">Minimum 8 characters.
+                            </small>
+                        </div>
+                        <div class="show-edit col-md-2">
+                            <button id="change-password" class="w-100 btn btn-secondary">Change</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label" for="set-role">Select role</label>
+                <div class="col-md-10">
+                    <select class="form-control" id="set-role">
+                        <template id="role-template">
+                            <option></option>
+                        </template>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="offset-md-2 col">
+                    <div class="row">
+                        <div class="col-md">
+                            <button id="submit-user" type="submit" class="ml-auto mr-3 btn btn-primary">Submit</button>
+                            <button id="reset-user" type="reset" class="mr-auto btn btn-secondary">Reset</button>
+                        </div>
+                        <div class="col-md-2 show-edit">
+                            <button id="delete-user" type="button" class="w-100 btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="show-edit mt-5">
+            <h3>Users Simple</h3>
+            <div id="user-data">
+                <a target="_blank">JSON</a>
+            </div>
+        </div>
+    </div>
+</div>
+

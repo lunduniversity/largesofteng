@@ -4,23 +4,27 @@
     <meta charset="utf-8">
     <title>BASE</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="admin/user-admin.css">
 </head>
-<body style="visibility: hidden">
+<body>
 
-<nav class="navbar navbar-expand navbar-dark bg-primary">
-    <a class="navbar-brand d-sm-block d-none" href="#">BASE</a>
+<nav id="main-nav" class="navbar navbar-expand navbar-dark bg-primary">
+    <span class="navbar-brand d-sm-block d-none">BASE</span>
     <ul class="navbar-nav mr-auto">
         <li class="nav-item">
             <a class="nav-link" href="#/simple">Simple</a>
         </li>
         <li class="nav-item admin-only">
-            <a class="nav-link" href="#/admin">Admin</a>
+            <a class="nav-link" href="#/admin">User admin</a>
+        </li>
+        <li class="nav-item admin-only">
+            <a class="nav-link" href="specs.html">Unit tests</a>
         </li>
     </ul>
     <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-            <a class="nav-link" onclick="mainController.logout()">Sign out as</a>
+            <a id="logout" class="nav-link">Sign out as</a>
         </li>
         <li class="nav-item">
             <span class="navbar-text" id="username"></span>
@@ -28,19 +32,15 @@
     </ul>
 </nav>
 
-<div class="mt-3 d-sm-block d-none"></div>
+<section id="main-tab" class="mt-3 container"></section>
 
-<section id="main-tab" class="container">
-    <!--<section class="main-tab" id="simple"></section>-->
-    <!--<section class="main-tab" id="admin"></section>-->
-</section>
-
-<script src="user.js"></script>
 <script src="rest.js"></script>
 <script src="simple/simple.js"></script>
-<script src="admin/admin.js"></script>
+<script src="admin/user-admin.js"></script>
 <script src="index.js"></script>
+<script type="application/javascript">
+    base.mainController.initOnLoad();
+</script>
 
 </body>
 </html>
-
