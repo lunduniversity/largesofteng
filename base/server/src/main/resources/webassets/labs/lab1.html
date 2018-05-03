@@ -4,9 +4,11 @@
     <meta charset="utf-8">
     <title>BASE Lab 1 Manual</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <!--<link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/default.min.css">-->
     <link rel="stylesheet" href="header.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="header.js"></script>
+    <script src="lab1.js"></script>
+    <script src="../rest.js"></script>
 </head>
 <body>
 <div id="header"></div>
@@ -95,13 +97,12 @@
         <p>
             The system consists of three components: the web server in java (with a database), an Android client, and a
             web client. Exactly what goes into the components is flexible, but must be decided by the student groups and
-            the course teacher. Note that you are not supposed to do double implementation of functionality in
-            <em>both</em> android and web, each functionality should go in <em>either</em> client. For example, the web
-            client might be for administrators and the web client for normal day to day users. Below is a picture of the
-            components in the system with their main supporting frameworks indicated. The Android client is described in
-            another lab manual found on the course web page and will not be further detailed here. None of the code is
-            shared between the modules and they communicate only through a HTTP REST API on the server (see below for
-            an explanation of these terms).
+            the course teacher. Note that the android and web client are not supposed to be identical and can support
+            different use cases. For example, the web client might be for administrators and the web client for normal
+            day to day users. Below is a picture of the components in the system with their main supporting frameworks
+            indicated. The Android client is described in another lab manual found on the course web page and will not
+            be further detailed here. None of the code is shared between the modules and they communicate only through a
+            HTTP REST API on the server (see below for an explanation of these terms).
         </p>
 
         <figure>
@@ -170,9 +171,9 @@
                     servers. As usual, there are alternatives, such as
                     <a href="http://www.jboss.org/resteasy" target="_blank">RESTEasy</a>, or
                     <a href="https://en.wikipedia.org/wiki/Restlet" target="_blank">Restlet</a>.
-                    However, they all implement the same specification (
-                    <a href="https://en.wikipedia.org/wiki/Java_API_for_RESTful_Web_Services" target="_blank">JAX-RS</a>),
-                    but Jersey is the reference implementation.
+                    However, they all implement the same specification
+                    (<a href="https://en.wikipedia.org/wiki/Java_API_for_RESTful_Web_Services" target="_blank">JAX-RS</a>),
+                    where Jersey is the reference implementation.
                 </li>
                 <li>
                     <b>H2 SQL database</b>. SQL is suitable for the project in the course, because of the highly
@@ -185,9 +186,9 @@
             </ol>
             <p>
                 This is many components to learn in a short time, but students are not expected to learn <em>all</em>
-                parts of the system. In fact, the system has been designed so that it should not be possible. Instead
-                you have to rely on an efficient process and delegation of responsibility between to all team members,
-                so that you can all master different parts of the system.
+                parts of the system in detail. In fact, the system has been designed so that it should not be possible.
+                Instead you have to rely on an efficient process and delegation of responsibility between to all team
+                members, so that you can all master different parts of the system.
             </p>
         </section>
         <div class="lab-task-group" id="systemBrowse">
@@ -205,9 +206,7 @@
                     <button class="btn btn-primary" onclick="systemBrowseValidate()">I am done</button>
                 </div>
                 <div class="lab-task-completed">
-                    Since this lab manual is located on the same server as the BASE system, the login you performed is
-                    also valid from the JavaScript in this document. Hence it is possible to detect your login by doing
-                    a asynchronous HTTP request to the web server.
+                    Excellent.
                 </div>
                 <div class="mt-3 lab-task-error alert alert-danger">
                     Did you really login? The lab script can not detect your login. Login using the link above.
@@ -224,18 +223,19 @@
         <h1>JavaScript Basics</h1>
         <p>
             JavaScript is a dynamically typed scripting language for the web. Its actual name is ECMAScript, but for
-            historic reasons it is still called JavaScript. The language itself is fairly small.
-            JavaScript is needed in the project to dynamically load data from the server and for some
-            interactivity. If the material here is not sufficient, please see the tutorial by:
+            historic reasons it is still called JavaScript. The JavaScript in BASE is executed in the browser. The
+            language itself is fairly small. JavaScript is needed in the project to dynamically load data from the
+            server and for some interactivity. If the material here is not sufficient, please see the tutorial by:
             <a href="http://htmldog.com/guides/javascript/" target="_blank">htmldog</a>.
         </p>
         <p>
             Anyway, since JavaScript is a functionally oriented language let's start of by defining a function.
-            This assigns a function to a variable, denoted by the <code>var</code>. In fact, <code>var</code> is used
-            for all assignments, regardless of type. The function have two parameters without any specific type, it
+            This assigns a function to a variable, denoted by the <code>var</code>-keyword. In fact, <code>var</code> is
+            used for all assignments, regardless of type. The function have two parameters without any specific type, it
             works on strings, numbers, or any other object. Since the function is a normal variable, it can be passed
             around as a normal object to other functions. The function can be called as expected, use the button below
-            to see what <code>alert</code> does.
+            to see what <code>alert</code> does. Functions can return values with the <code>return</code>-keyword, like
+            in Java.
         </p>
         <pre><code class="language-javascript">
             var testJavaScript = function(param1, param2) {
@@ -287,8 +287,8 @@
             <p>Add elements to the end of an array like so:
                 <code>arr.push(4)</code>, check their length with <code>arr.length</code>, select a subset of the array
                 with
-                <code>arr.slice(begin,end)</code>, find elements with <code>arr.indexOf(obj)</code>remove elements using
-                <code>arr.remove(index)</code>, etc.
+                <code>arr.slice(begin,end)</code>, find elements with <code>arr.indexOf(obj)</code>, and remove elements
+                using <code>arr.remove(index)</code>, etc.
             </p>
             <h4>Loops</h4>
             <p>Iterate using for loops like this:</p>
@@ -308,6 +308,11 @@
             <h4>Objects</h4>
             <p>Objects are created as such:</p>
             <pre><code>var obj = {'myArray': arr, 'myNumber': 1};</code></pre>
+            <p>
+                This will create a new object called <code>obj</code> with two properties, 'myArray' and 'myNumber'.
+                The values of these properties will be a reference to the object <code>arr</code> and the number
+                <code>1</code> respectively.
+            </p>
             <p>
                 Any object can be dynamically extended with new properties, e.g. <code>obj.more = 'yes';</code>.
                 <code>delete obj.more</code> removes the property again.
@@ -329,17 +334,23 @@
             </code></pre>
 
             <h4>Functional JavaScript</h4>
-            <p>Loops and data manipulation is easy to do with the functional API in JavaScript, which is very similar
-                to the Stream API in Java.</p>
+            <p>
+                Loops and data manipulation is elegant with the functional API in JavaScript, which is very similar
+                to the Stream API in Java.
+            </p>
             <pre><code>
                 arr.forEach(function(a) {
                     console.log(a);
                 });
             </code></pre>
-            <p>Map and reduce is also available <code>arr.map(func)</code>:</p>
+            <p>
+                Students familiar with functional programming will recognise the map and reduce. The example below will
+                calculate the lengths of all strings in the array.
+            </p>
             <pre><code>
                 var arr = ['a', 'b', '', 'db', '1a'];
-                arr.map(s => s.length).reduce((accumulator, currentValue) => accumulator + currentValue);
+                arr.map(s => s.length)
+                   .reduce((accumulator, currentValue) => accumulator + currentValue);
             </code></pre>
             <p>
                 This examples illustrates the arrow function expression (like <code>-></code> in Java). It is simply a
@@ -352,7 +363,10 @@
                     <h4 class="alert-heading">JavaScript objects</h4>
                     <p> Create an object with property <code>'fruit'</code> and value <code>'banana'</code></p>
                     <form onsubmit="return jsPropertyValidate(event)" class="lab-task-form">
-                        <input class="form-control" placeholder="{ example: 'something' }">
+                        <div class="form-inline">
+                            <code class="m-0">var obj =</code>
+                            <input style="margin: 0px 3px" class="form-control" placeholder="{ example: 'something' }">
+                            <code class="m-0">;</code></div>
                         <button class="mt-3 btn btn-primary" type="submit">Validate</button>
                     </form>
                     <div class="lab-task-completed">
@@ -404,7 +418,7 @@
                         <hr>
                         <p>Right. <code>var getName = function(id) {...}</code></p>
                     </div>
-                    <div class="lab-task-error alert alert-danger">
+                    <div class="mt-3 lab-task-error alert alert-danger">
                         Incorrect. JavaScript functions do not have return types and need the <code>function</code>
                         keyword.
                     </div>
@@ -416,8 +430,9 @@
             <a class="sub-anchor" name="JSDebugging"></a>
             <h3>JavaScript Debugging</h3>
             <p>
-                Now is a good time to mention the excellent debugging options in your browser, open it with F12 (in all
-                major browsers). Open the console to get an interactive JavaScript interpreter. There is also the option
+                Now is a good time to mention the excellent debugging options in your browser, open it with F12 (in most
+                major browsers) or cmd+shift+k on MacOS.
+                Open the console to get an interactive JavaScript interpreter. There is also the option
                 of setting breakpoints and stepping through the code, however the specifics depend on which browser you
                 are using. If the debugger is hard to use, resorting to <code>console.log(str)</code> print outs is
                 fine. The print outs can be viewed with the console window open. Also, <code>alert(str)</code> can be
@@ -443,7 +458,7 @@
                         ![] === false;          // [] is converted to true since the object is not undefined
                         false+[] === "false";   // string concatenation between empty string [] and false.toString()
                         // Thus, the first part in ()-parenthesis defines a string,
-                        // while the second part in []-brackets performs an array indexing on a string.
+                        // while the second part in []-brackets performs an array indexing on the string "false".
                         !![] === !false === true;
                         +!![] === +true === 1;  // conversion to number
                         ("false")[1] === "a";   // array indexing
@@ -462,8 +477,8 @@
             <h3>Classes in JavaScript</h3>
             <p>
                 Developer's coming directly from Java might feel lost without the object oriented way of structuring
-                your application. Though there are proper object oriented programming language extensions, here a
-                simplified but elegant version is used. In this course, the following way of constructing classes is
+                your application. Though there are proper object oriented programming language extensions, here is a
+                simplified and succinct version is used. In this course, the following way of constructing classes is
                 recommended:
             </p>
             <pre><code>
@@ -479,7 +494,7 @@
                 This defines a singleton object (it has just one instantiation). To have private functions on a
                 singleton we can wrap the declaration in an anonymous function. This anonymous function is immediately
                 called upon declaration. This pattern is called a module-function. In the project this is used a lot,
-                see e.g. <a href="/simple/simple.js" target="_blank">simple.js</a>.
+                see e.g. <a href="/index.js" target="_blank">index.js</a>.
             </p>
             <pre><code>
             var myModule = (function() {
@@ -1071,9 +1086,9 @@
 
             <p>This produces the following:</p>
 
-            <div class="top-div">
+            <div style="background-color: #d15e5e; color:white">
                 Top level
-                <span class="bolded">Some text.</span>
+                <span style="font-weight: bold">Some text.</span>
                 <span>No class here.</span>
                 <p class="bolded">Text in p.</p>
             </div>
@@ -1291,11 +1306,20 @@
             number of data. This could represent the number of items in a shopping basket etc.
         </p>
         <p>
-            BASE is build using the
-            <a href="https://en.wikipedia.org/wiki/Model–view–controller">Model View Controller (MVC)</a>
+            When a user goes to <a href="/" target="_blank">localhost:8080</a> the server serves the
+            <a href="/index.html">index.html</a> and <a target="_blank" href="/index.js">index.js</a> files. They
+            contain the contents for the navigation header and the code for replacing the tab with either 'Simple' or
+            'User Admin' stuff. In the script there is an object containing the routing information for said tabs. If
+            additional tabs are needed in your project, then it is sufficient to modify the <code>routingTable</code>
+            object and to add a script tag in <code>index.html</code>.
+        </p>
+        <p>
+            BASE is built using the
+            <a href="https://en.wikipedia.org/wiki/Model–view–controller" target="_blank">Model View Controller
+                (MVC)</a>
             pattern implemented in plain JavaScript. Below is a minimal example of the design pattern in practice. In
             short, the model encapsulates the data, the view can render the data, and the controller handles user input
-            and other state changes.
+            and other state changes. Each tab in BASE has a model/view/controller.
         </p>
         <pre><code class="language-javascript">
             var M = {}, V = {}, C = {};
@@ -1307,13 +1331,11 @@
         <a class="mt-0" href="https://stackoverflow.com/questions/8497833/hello-world-in-mvc-pattern#8497887"
            target="_blank">Source.</a>
 
-        <p>
-            Single page web application
-            The code is organized according to the items displayed in the top navigation bar, there is the
-            <a href="index.html">index.html</a>
-            <a href="login/login.html">login.html</a>
-            <a href="simple/simple.html">simple/simple.html</a>
-            <a href="admin/user-admin.html">admin/user-admin.html</a>
+        <p class="mt-3">
+            When the user clicks on the 'Simple' link in the navigation header the script in <code>index.js</code>
+            loads the <a target="_blank" href="/simple/simple.html">simple.html</a> and adds it to the web page. It
+            then calls the load function of the controller <code>base.simpleController</code>, defined in
+            <a target="_blank" href="/simple/simple.js">simple.js</a>.
         </p>
 
         <div class="lab-task-group" id="e2eServer">
@@ -1321,9 +1343,8 @@
                 <h4 class="alert-heading">Server Side Stub</h4>
                 <p>
                     In order for the server to return data in the format we want the first task will be to modify the
-                    <code>SimpleData.java</code> file. It is located under
-                    <code>base/src/main/java/se/lth/base/server/data/Simple.java</code> (sorry about the
-                    long path, it's the <q>Java way</q>).
+                    <code>Simple.java</code> file. It is located in
+                    <code>server/src/main/java/se/lth/base/server/data/Simple.java</code>.
                 </p>
                 <p>
                     Add a field without modifying the constructor, like this:
@@ -1353,15 +1374,47 @@
             </div>
         </div>
 
+        <h3 class="mt-5">Unit Testing with Jasmine</h3>
+        <p>
+            A unit test is a piece of code that tests the implementation of a specific functionality.
+            There is a pre-written unit test for this functionality that is temporarily disabled. Find it in
+            the file
+            <a href="/spec/simple-spec.js" target="_blank">server/src/main/resources/webassets/spec/simple-spec.js</a>.
+            To enable it simply remove the <code>x</code> from the <code>xit</code> function call.
+        </p>
+        <pre><code class="language-javascript">
+            xit('should have count in table', function(done) {
+                // code already implemented
+            }
+        </code></pre>
+        <p>
+            Run the tests by opening the file
+            <a href="/specs.html" target="_blank">server/src/main/resources/webassets/specs.html</a>. One of the test
+            cases will be marked as failed in red. The task at hand is to implement functionality that passes the unit
+            test.
+        </p>
+
+        The tests are implemented using the
+        <a href="https://jasmine.github.io/tutorials/your_first_suite" target="_blank">Jasmine</a>
+        framework. Each unit test is defined with the <code>it</code>-function. Assertions are made using the
+        <code>expect</code>-function. Example:
+        </p>
+        <pre><code class="language-javascript">
+            it('should return 5 when myFunction is called', function() {
+                var testResult = myFunction();
+                expect(testResult).toBe(5);
+            });
+        </code></pre>
+
         <div class="lab-task-group" id="e2eTable">
             <div class="lab-task-info alert alert-warning">
                 <h4 class="alert-heading">Modify the Simple View</h4>
                 <p>
-                    Go to the file <a href="view-source:http://localhost:8080/simple/simple.html">simple.html</a>
+                    Go to the file <a target="_blank" href="/simple/simple.html">simple.html</a> (use view source)
                     located under <code>server/src/main/resources/webasets/simple/simple.html</code>. Add a column
                     to the table header with the text content <q>Count</q> (without quotes). Also, add another <code>
                     &lt;td&gt;</code> under the <code>&lt;template&gt;</code>. The purpose of this will become clear
-                    soon.
+                    in the next task.
                 </p>
                 <p>
                     Restart the server when done.
@@ -1384,37 +1437,15 @@
             </div>
         </div>
 
-        <h3>Unit Testing with Jasmine</h3>
-        <p>
-            There is a pre-written unit test for this functionality that is temporarily disabled. Find it in
-            the file
-            <a href="/spec/simple-spec.js" target="_blank">server/src/main/resources/webassets/spec/simple-spec.js</a>.
-            To enable it simply remove the <code>x</code> from the <code>xit</code> function definition.
-        </p>
-        <pre><code class="language-javascript">
-            xit('should have count in table', function(done) {
-                // code already implemented
-            }
-        </code></pre>
-        <p>
-            Run the tests by opening the file
-            <a href="/specs.html" target="_blank">server/src/main/resources/webassets/specs.html</a>.
-        </p>
-
-        <p>
-            The tests are implemented using the <a href="https://jasmine.github.io/" target="_blank">Jasmine</a>
-            framework.
-            describe, it, afterEach, beforeEach, expect
-        </p>
-
         <div class="lab-task-group" id="e2eDynamic">
             <div class="lab-task-info alert alert-warning">
                 <h4 class="alert-heading">Modify the Simple View</h4>
                 <p>
-                    Go to the file <a href="view-source:http://localhost:8080/simple/simple.js">simple.js</a>
-                    located under <code>base/src/main/resources/webasets/simple/simple.js</code>.
+                    Go to the file <a target="_blank" href="/simple/simple.js">simple.js</a>
+                    located under <code>server/src/main/resources/webasets/simple/simple.js</code>.
                     Find the function that updates a table row, under the <code>view</code> class.
                     Add something for the next <code>&lt;td&gt;</code>.
+                    The code uses the <code>&lt;template&gt;</code>-HTML tag through the DOM API.
                 </p>
                 <p>
                     Restart the server when done.
@@ -1445,13 +1476,8 @@
     </section>
 
     <div class="lab-section">
-        <b>P.s.</b> total errors during validation are <span id="score"></span> errors.
+        <b>P.s.</b> total errors during validation were <span id="score"></span>.
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<!--<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js"></script>-->
-<script async src="header.js"></script>
-<script async src="lab1.js"></script>
-<script async src="../rest.js"></script>
 </body>
 </html>

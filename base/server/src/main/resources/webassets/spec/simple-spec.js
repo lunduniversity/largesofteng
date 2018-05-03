@@ -6,9 +6,9 @@ describe('simpleController', function() {
 
     // Some dummy data
     var simples = [
-        new base.Simple({id: 1, userId: 1, payload: 's1', created: 0}),
-        new base.Simple({id: 2, userId: 1, payload: 's2', created: 1}),
-        new base.Simple({id: 3, userId: 1, payload: 's3', created: 2})
+        new base.Simple({id: 1, userId: 1, payload: 's1', created: 0, count: 3}),
+        new base.Simple({id: 2, userId: 1, payload: 's2', created: 1, count: 2}),
+        new base.Simple({id: 3, userId: 1, payload: 's3', created: 2, count: 1})
     ];
 
     var node;
@@ -47,6 +47,7 @@ describe('simpleController', function() {
         }).finally(done);
     });
 
+    // Change here for lab 1
     xit('should have count in table', function(done) {
         var simplesPromise = Promise.resolve([simples[0]]);
         spyOn(base.rest, 'getSimples').and.returnValue(simplesPromise);
@@ -56,8 +57,9 @@ describe('simpleController', function() {
             var tds = tr.querySelectorAll('td');
             expect(tds.length).toBe(3);
             expect(tds[0].textContent).toBe(simples[0].payload);
-            expect(tds[1].textContent).toBe(simples[0].createdDate.toISOString());
-            expect(tds[2].textContent).toBe(simples[2].payload);
+            var d = simples[0].createdDate;
+            expect(tds[1].textContent).toBe(d.toLocaleDateString() + ' ' + d.toLocaleTimeString());
+            expect(tds[2].textContent).toBe(''+simples[0].count);
         }).finally(done);
      });
 

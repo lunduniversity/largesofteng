@@ -34,7 +34,7 @@ public class SimpleResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RolesAllowed(Role.Names.USER)
-    public List<Simple> getSimple() {
+    public List<Simple> getSimples() {
         return simpleDao.getUsersSimple(user.getId());
     }
 

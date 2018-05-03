@@ -4,3 +4,6 @@ body {
 ul.navbar-nav > li > a {
     cursor: pointer;
 }
+.list-group-item-action {
+    cursor: pointer;
+}
