@@ -44,8 +44,9 @@ public class CreateSchema {
         boolean tableExists = counter.queryFirst("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'USER'") > 0L;
         if (!tableExists) {
             createSchema();
+            return true;
         }
-        return tableExists;
+        return false;
     }
 
     private static void runScript(Connection conn) throws SQLException {
