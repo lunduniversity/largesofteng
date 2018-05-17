@@ -12,7 +12,6 @@ public class Simple {
     private final int userId;
     private final String payload;
     private final long created;
-    private int count = 3;
 
     public Simple(int id, int userId, String payload, long created) {
         this.id = id;

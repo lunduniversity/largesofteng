@@ -1,7 +1,4 @@
 var base = base || {};
-base.changeLocation = function(url) {
-    window.location.replace(url);
-};
 base.mainController = (function() {
 
     var routingTable = {
@@ -79,3 +76,6 @@ base.mainController = (function() {
     return controller;
 })();
 
+base.changeLocation = function(url) {
+    window.location.replace(url);
+};

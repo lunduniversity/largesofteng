@@ -18,21 +18,17 @@ var answerSheet = {
     e2eTable: true
 };
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function(event) {
     baseLab.init(answerSheet, null, 'lab2.html');
 });
 
-var testJavaScript = function(param1, param2) {alert(param1 + "" + param2);}
+var testJavaScript = function(param1, param2) {alert(param1 + param2);}
 
 var systemBrowseValidate = function() {
     base.rest.getUser()
         .catch(error => baseLab.complete('systemBrowse', false))
         .then(function(user) {
-            if (user.role !== 'None') {
-                baseLab.complete('systemBrowse', true);
-            } else {
-                baseLab.complete('systemBrowse', false);
-            }
+            baseLab.complete('systemBrowse', !user.isNone());
         });
 };
 
@@ -44,6 +40,7 @@ var jsPropertyValidate = function(submitEvent) {
         baseLab.complete('jsProperty', ok);
         return false;
     } catch(error) {
+        alert(error);
         baseLab.complete('jsProperty', false);
         throw error;
     }

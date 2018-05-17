@@ -1,5 +1,6 @@
 package se.lth.base.server.rest.providers;
 
+import org.eclipse.jetty.util.log.StdErrLog;
 import se.lth.base.server.BaseServer;
 import se.lth.base.server.database.DataAccessException;
 import se.lth.base.server.database.ErrorType;
@@ -11,7 +12,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * This converts all Exceptions to HTTP responses for the REST API. It has special handling for WebApplicationException
@@ -38,7 +39,9 @@ public class JsonExceptionMapper implements ExceptionMapper<Exception> {
         jsonObject.put("error", errorType);
         jsonObject.put("message", exception.getMessage());
         jsonObject.put("status", status);
-        Logger.getLogger(BaseServer.class.getSimpleName()).log(errorType.getLevel(), exception.getMessage(), exception);
+        if (errorType.getLevel() == Level.SEVERE) {
+            StdErrLog.getLogger(BaseServer.class).warn(exception.getMessage(), exception);
+        }
         return Response.status(status)
                 .header("Content-Type", MediaType.APPLICATION_JSON + ";charset=utf-8")
                 .entity(jsonObject)

@@ -4,37 +4,35 @@
     <meta charset="utf-8">
     <title>BASE Lab 2 Manual</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/default.min.css">
     <link rel="stylesheet" href="header.css">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="header.js"></script>
+    <script src="lab2.js"></script>
+    <script src="../rest.js"></script>
 </head>
 <body>
 <div id="header"></div>
 
 <div class="container">
-    <h1 class="display-2">Lab 2 Manual for the BASE System</h1>
+    <h1 class="display-2">BASE Lab Manual:</h1>
+    <h1>Lab 2 Back End</h1>
     <h4 class="text-muted mt-3">Created by Rasmus Ros in 2018,
         <a href="mailto:rasmus.ros@cs.lth.se?Subject=Lab%20rant">rasmus.ros@cs.lth.se</a>,
         for the course in Large Scale Software Engineering at LTH, Lund University.</h4>
     <p class="lead mt-3">
-        In this lab you will learn about front and backend web development in the context of the BASE system. This can
-        appear daunting, however, you need only a holistic understanding of the concepts within. By now you should have
-        been assigned a specific team and role within your larger group, so pay extra attention to the lab parts that
-        concern the technology in that team. As for rest, what is touched upon in this manual will suffice. It is not a
-        problem if some of the details in this document that do not concern your group escapes your understanding.
-        The progression of the lab is as follows:
-        Overview of the BASE system, JavaScript, HTML, CSS, Front End Task, Jetty and Jersey (java), H2 (java),
-        End-to-End Task.
+        This lab continues the introduction of the BASE System, the progression is as follows:
+        REST, Jetty and Jersey, SQL, and then a final end-to-end task that expands on the previous lab.
     </p>
+
 
     <!--  ***********************************************************************************************
           REST, HTTP, and JSON
           *********************************************************************************************** -->
-    <div class="lab-section">
-        <a class="anchor"></a>
+    <section class="lab-section">
+        <a class="anchor" name="REST"></a>
         <h1>REST, HTTP, and JSON</h1>
         <p>
-            Please go back to the <a href="lab1.html#2.%20BASE%20System%20Overview">system overview</a> of the previous
+            Please go back to the <a href="lab1.html#BASE">system overview</a> of the previous
             lab if anything is unclear
         </p>
 
@@ -44,23 +42,85 @@
             <a href="https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm" target="_blank">
                 Original REST thesis</a>
         </p>
-    </div>
+
+        questions:
+        what is REST?
+          architectural style
+          network protocol
+          data-interchange format
+
+        which HTTP verb should be used to create a new resource?
+         GET
+         POST
+         PUT
+         PUT or POST
+
+
+
+    </section>
 
 
     <!--  ***********************************************************************************************
           Jetty and Jersey
           *********************************************************************************************** -->
-    <div class="lab-section">
-        <a class="anchor"></a>
+    <section class="lab-section">
+        <a class="anchor" name="JettyJersey"></a>
         <h1>Jetty and Jersey</h1>
-    </div>
+
+        resources mapping to HTTP
+        webapplicationexception/java objects
+        response (cookies)
+
+        providers:
+          filters
+          exceptionmapper
+          serialisation
+
+        authentication
+
+        which of the following http requests will match this jax-rs definition?
+        <pre><code class="language-java">
+            @Path("rest/user")
+            public class UserResource {
+                @Path("{id}")
+                @Produces("application/json")
+                @GET
+                public User getUser(@PathParam("id") int userId) {
+                    return null; // TODO
+                }
+            }
+        </code></pre>
+
+        GET rest/user/id
+        GET 2
+        GET rest/user/3
+        GET user/4
+
+        Jersey unit test
+
+    </section>
 
     <!--  ***********************************************************************************************
          H2 SQL
          *********************************************************************************************** -->
-    <div class="lab-section">
-        <a class="anchor"></a>
+    <section class="lab-section">
+        <a class="anchor" name="H2SQL"></a>
         <h1>H2 SQL</h1>
+        select
+        join
+        update
+        insert
+        delete
+
+        create table
+        schema
+
+        JDBC: Connection/PreparedStatement/ResultSet
+        DataAccess
+          Mapper&lt;T&gt;
+          query (select), queryFirst, insert, execute (update/delete)
+        SimpleDataAccess
+
         <div class="lab-task-group" id="h2Statements">
             <div class="lab-task-info alert alert-warning">
                 <h4 class="alert-heading">Which SQL is used to </h4>
@@ -80,28 +140,40 @@
                 Incorrect.
             </div>
         </div>
-    </div>
+
+        Unti testing
+    </section>
 
     <!--  ***********************************************************************************************
           Action Lifecycle
           *********************************************************************************************** -->
-    <div class="lab-section">
-        <a class="anchor"></a>
+    <section class="lab-section">
+        <a class="anchor" name="Lifecycle"></a>
         <h1>Action Lifecycle</h1>
+        <p>Now enough information to understand the whole BASE.</p>
         <p>3 tier architecture</p>
-        <p>
-        </p>
-    </div>
+        <p>user arrives at /</p>
+        <p>gets index.html</p>
+        <p>queries for more scripts defined in index.html, rest.js, simple.js, user-admin.js, index.js</p>
+        <p>mainController is loaded, route set to default #/simple, check for current user (rest call)</p>
+        <p>simpleController is loaded</p>
+        <p>users simple is loaded through rest</p>
+        <p>jetty resolves rest to jersey</p>
+        <p>mapped to SimpleResource getSimples</p>
+        <p>calls H2 database through SimpleDataAccess</p>
+        <p>returns List&lt;Simple></p>
+        <p>Serialised to JSON</p>
+        <p>Deserialised by rest.js</p>
+        <p>Table is populated</p>
+    </section>
 
     <!--  ***********************************************************************************************
           Modifying Back End
           *********************************************************************************************** -->
-    <div class="lab-section">
-        <a class="anchor"></a>
+    <section class="lab-section">
+        <a class="anchor" name="E2E"></a>
         <h1>Completing the End to End Task</h1>
-    </div>
+    </section>
 </div>
-<script src="header.js"></script>
-<script src="lab2.js"></script>
 </body>
 </html>

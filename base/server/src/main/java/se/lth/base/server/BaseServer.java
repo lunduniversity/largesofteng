@@ -1,13 +1,12 @@
 package se.lth.base.server;
 
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.log.StdErrLog;
 import org.eclipse.jetty.util.resource.Resource;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -29,11 +28,15 @@ import java.util.logging.Logger;
 
 public class BaseServer {
 
-
     public static void main(String[] args) {
-        new CreateSchema(Config.DATABASE_DRIVER).createSchemaIfNotExists();
+        if (new CreateSchema(Config.DATABASE_DRIVER).createSchemaIfNotExists()) {
+            StdErrLog.getLogger(BaseServer.class).info("Installed database to " + Config.DATABASE_DIR);
+        }
 
         Server server = new Server(Config.PORT);
+
+        server.setRequestLog((request, response) -> StdErrLog.getLogger(BaseServer.class).info(
+                request.getMethod() + " " + request.getOriginalURI() + " " + response.getStatus()));
 
         // Handlers take care of server request in the order given
         HandlerList handlers = new HandlerList(
@@ -46,7 +49,7 @@ public class BaseServer {
             server.start();
             server.join();
         } catch (Exception ex) {
-            Logger.getLogger(BaseServer.class.getName()).log(Level.SEVERE, null, ex);
+            StdErrLog.getLogger(BaseServer.class).warn(ex);
         } finally {
             server.destroy();
         }
