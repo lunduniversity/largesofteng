@@ -53,20 +53,4 @@ public class FooResource {
     public List<Foo> getAllFoos() {
         return fooDao.getAllFoo();
     }
-
-    @POST
-    @RolesAllowed(Role.Names.USER)
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @Path("{fooId}/total")
-    public int updateFoo(@PathParam("fooId") int fooId, int totalDelta) {
-        return fooDao.updateTotal(fooId, user.getId(), totalDelta);
-    }
-
-    @DELETE
-    @RolesAllowed(Role.Names.USER)
-    @Path("{fooId}")
-    public void deleteFoo(@PathParam("fooId") int fooId) {
-        fooDao.deleteFoo(fooId, user.getId());
-    }
 }

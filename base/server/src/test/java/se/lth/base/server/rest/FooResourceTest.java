@@ -99,29 +99,4 @@ public class FooResourceTest extends BaseResourceTest {
                 .get(FOO_LIST);
         assertEquals("tests", testsFoos.get(0).getPayload());
     }
-
-    @Test
-    public void updateFoo() {
-        Foo foo = target("foo")
-                .request()
-                .post(Entity.json(Collections.singletonMap("payload", "new foo")), Foo.class);
-        int updated = target("foo")
-                .path(Integer.toString(foo.getId()))
-                .path("total")
-                .request()
-                .post(Entity.json(1), Integer.class);
-        assertEquals(2, updated);
-    }
-
-    @Test
-    public void deleteFoo() {
-        Foo foo = target("foo")
-                .request()
-                .post(Entity.json(Collections.singletonMap("payload", "new foo")), Foo.class);
-        target("foo")
-                .path(Integer.toString(foo.getId()))
-                .request()
-                .delete();
-        assertTrue(target("foo").request().get(FOO_LIST).isEmpty());
-    }
 }

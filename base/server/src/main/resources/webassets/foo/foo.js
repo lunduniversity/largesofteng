@@ -24,25 +24,6 @@ base.fooController = function() {
             view.update(t.content.querySelector('tr'), foo);
             var clone = document.importNode(t.content, true);
             t.parentElement.appendChild(clone);
-
-            var trElement = document.querySelector('#foo-template').parentElement.querySelector('tr:last-of-type');
-            var buttons = trElement.querySelectorAll('button');
-            var updateFoo = function(newTotal) {
-                foo.total = newTotal;
-                view.update(trElement, foo);
-            };
-            buttons[0].onclick = function(event) {
-                if (foo.total == 1) {
-                    base.rest.deleteFoo(foo.id).then(function() {
-                        trElement.parentElement.removeChild(trElement);
-                    });
-                } else {
-                    base.rest.updateFoo(foo.id, -1).then(updateFoo);
-                }
-            };
-            buttons[2].onclick = function() {
-                base.rest.updateFoo(foo.id, 1).then(updateFoo);
-            };
         },
         // Update a single table row to display a foo
         update: function(trElement, foo) {
@@ -51,8 +32,6 @@ base.fooController = function() {
             var d = foo.createdDate;
             tds[1].textContent = d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
             // Edit here in lab 1
-            var buttons = tds[2].querySelectorAll('button');
-            buttons[1].textContent = foo.total;
         },
         template: function() {
             return document.getElementById('foo-template');

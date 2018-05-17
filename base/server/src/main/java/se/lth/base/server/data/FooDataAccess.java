@@ -28,8 +28,7 @@ public class FooDataAccess extends DataAccess<Foo> {
             return new Foo(resultSet.getInt("foo_id"),
                     resultSet.getInt("user_id"),
                     resultSet.getString("payload"),
-                    resultSet.getObject("created", Date.class).getTime(),
-                    resultSet.getInt("total"));
+                    resultSet.getObject("created", Date.class).getTime());
         }
     }
 
@@ -47,7 +46,7 @@ public class FooDataAccess extends DataAccess<Foo> {
         long created = System.currentTimeMillis();
         int fooId = insert("INSERT INTO foo (user_id, payload, created) VALUES (?,?,?)",
                 userId, payload, new Date(created));
-        return new Foo(fooId, userId, payload, created, 1);
+        return new Foo(fooId, userId, payload, created);
     }
 
     /**
@@ -65,15 +64,5 @@ public class FooDataAccess extends DataAccess<Foo> {
      */
     public List<Foo> getUsersFoo(int userId) {
         return query("SELECT * FROM foo WHERE user_id = ?", userId).collect(Collectors.toList());
-    }
-
-    public boolean deleteFoo(int fooId, int userId) {
-        return execute("DELETE FROM foo WHERE foo_id = ? AND user_id = ?", fooId, userId) > 0;
-    }
-
-    public int updateTotal(int fooId, int userId, int totalDelta) {
-        execute("UPDATE foo SET total = total + ? WHERE foo_id = ? AND user_id = ?", totalDelta, fooId, userId);
-        DataAccess<Integer> totalDao = new DataAccess<>(getDriverUrl(), resultSet -> resultSet.getInt("total"));
-        return totalDao.queryFirst("SELECT total FROM foo WHERE foo_id = ? AND user_id = ?", fooId, userId);
     }
 }
