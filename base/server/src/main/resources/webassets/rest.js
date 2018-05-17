@@ -1,7 +1,7 @@
 var base = base || {};
 base.rest = (function() {
 
-    var Simple = function(json) {
+    var Foo = function(json) {
         Object.assign(this, json);
         this.createdDate = new Date(this.created);
     };
@@ -33,7 +33,7 @@ base.rest = (function() {
         }
     };
 
-    base.Simple = Simple;
+    base.Foo = Foo;
     base.User = User;
     base.Role = Role;
 
@@ -45,11 +45,11 @@ base.rest = (function() {
             throw error;
         });
         return bf;
-    }
+    };
 
     var jsonHeader = {
         'Content-Type': 'application/json;charset=utf-8'
-    }
+    };
 
     return {
         getUser: function() {
@@ -96,20 +96,30 @@ base.rest = (function() {
         deleteUser: function(username) {
             return baseFetch('/rest/user/'+username, {method: 'DELETE'});
         },
-        getSimples: function(userId) {
+        getFoos: function(userId) {
             var postfix = "";
-            if (typeof userId !== "undefined") postfix = "/" + userId;
-            return baseFetch('/rest/simple' + postfix)
+            if (typeof userId !== "undefined") postfix = "/user/" + userId;
+            return baseFetch('/rest/foo' + postfix)
                 .then(response => response.json())
-                .then(simples => simples.map(s => new Simple(s)));
+                .then(foos => foos.map(f => new Foo(f)));
         },
-        addSimple: function(simple) {
-            return baseFetch('/rest/simple', {
+        addFoo: function(foo) {
+            return baseFetch('/rest/foo', {
                     method: 'POST',
-                    body: JSON.stringify(simple),
+                    body: JSON.stringify(foo),
                     headers: jsonHeader})
                 .then(response => response.json())
-                .then(s => new Simple(s));
+                .then(f => new Foo(f));
+        },
+        deleteFoo: function(fooId) {
+            return baseFetch('/rest/foo/'+fooId, {method: 'DELETE'});
+        },
+        updateFoo: function(fooId, delta) {
+            return baseFetch('/rest/foo/'+fooId+'/total', {
+                    method: 'POST',
+                    body: JSON.stringify(delta),
+                    headers: jsonHeader})
+                .then(response => response.json());
         }
     };
 })();

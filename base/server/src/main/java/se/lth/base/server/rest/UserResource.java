@@ -1,12 +1,13 @@
 package se.lth.base.server.rest;
 
+import se.lth.base.server.Config;
 import se.lth.base.server.data.*;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
@@ -24,14 +25,12 @@ public class UserResource {
     private final ContainerRequestContext context;
     private final User user;
     private final Session session;
-    private final UserDataAccess userDao;
+    private final UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
 
-    @Inject
-    public UserResource(ContainerRequestContext context, UserDataAccess userDao) {
+    public UserResource(@Context ContainerRequestContext context) {
         this.context = context;
         this.user = (User) context.getProperty(User.class.getSimpleName());
         this.session = (Session) context.getProperty(Session.class.getSimpleName());
-        this.userDao = userDao;
     }
 
     @GET

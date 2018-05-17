@@ -14,6 +14,9 @@ var answerSheet = {
 
     bootstrapForms: 2,
 
+    e2eTabHtml: true,
+    e2eTabRoute: true,
+
     e2eServer: true,
     e2eTable: true
 };
@@ -50,7 +53,7 @@ var jsDebuggingValidate = function(event) {
     event.preventDefault();
     var input = document.querySelector('#jsDebugging input');
     try {
-        baseLab.complete('jsDebugging', input.value);
+        baseLab.complete('jsDebugging', input.value.replace(/['"]+/g, ''));
     } catch (error) {
         alert(error);
         baseLab.complete('jsDebugging', false);
@@ -86,7 +89,10 @@ var htmlHeaderValidate = function(submitEvent) {
 
 var htmlFormTryoutValidate = function(submitEvent) {
     submitEvent.preventDefault();
-    baseLab.complete('htmlFormTryout');
+    if (localStorage.getItem('htmlFormTryout') !== 'true') {
+        baseLab.complete('htmlFormTryout');
+    }
+    return false;
 }
 
 var cssSelectorValidate = function(submitEvent) {
@@ -101,22 +107,26 @@ var cssSelectorValidate = function(submitEvent) {
         baseLab.complete('cssSelector', false);
         throw error;
     }
+    return false;
 };
 
 var e2eServerValidate = function() {
-    base.rest.getSimples().then(function(data) {
+    base.rest.getFoos().then(function(data) {
         if (data.error) {
             alert('Received error from server: ' + data.message);
             baseLab.complete('e2eServer', false);
         } else if (data.length == 0) {
             baseLab.complete('e2eServer', false);
-            alert('No data on the user, please add some so the implementation can be verified.');
-        } else if (typeof data[0].count === "undefined") {
+            alert('There is no data added to the foo table for the user you have logged in with.' +
+                'For this verification to work there needs to be at least one row in the table. '+
+                'Please go to http://localhost:8080 and input some.');
+        } else if (typeof data[0].total === "undefined") {
             baseLab.complete('e2eServer', false);
-            alert('Count not added, did you restart the server after completing the task?');
-        } else if (typeof data[0].count !== "number") {
+            alert('Count not find total in the response from http://localhost:8080/rest/foo.' +
+                ' Did you remember to restart the server?');
+        } else if (typeof data[0].total !== "number") {
             baseLab.complete('e2eServer', false);
-            alert('Wrong type of "count"? expected number but got ' + typeof data[0].count);
+            alert('The "total" field has the wrong type. It should be number but got ' + typeof data[0].total);
         } else {
             baseLab.complete('e2eServer', true);
         }
@@ -125,8 +135,80 @@ var e2eServerValidate = function() {
     });
 };
 
+var e2eTabHtmlValidate = function() {
+    var p1 = fetch('/hello/hello.html').then(function(response) {
+        if (response.ok) {
+            return response.text();
+        } else {
+            throw 'Could not find the HTML file /hello/hello.html';
+        }
+    }).then(function(html) {
+        var d = document.createElement('div');
+        d.innerHTML = html;
+        var h = d.querySelector('h1');
+        if (!h || h.textContent === '') {
+            throw 'Could not find a h1 tag with text';
+        }
+    });
+    var p2 = fetch('/hello/hello.js').then(function(response) {
+        if (response.ok) {
+            return response.text();
+        } else {
+            throw 'Could not find the JavaScript file /hello/hello.js';
+        }
+    }).then(function(js) {
+        eval(js);
+        if (typeof base.helloController !== "function") {
+            throw 'The JavaScript in hello.js should define the helloController as a function.';
+        }
+        if (typeof base.helloController().load !== "function") {
+            throw 'The helloController should have a load function.';
+        }
+    });
+    Promise.all([p1,p2]).then(function() {
+        baseLab.complete('e2eTabHtml', true);
+    }).catch(function(error) {
+        if (error) {
+            alert(error + '. Did you remember to restart the server?');
+        }
+        baseLab.complete('e2eTabHtml', false);
+    });
+};
+
+var e2eTabRouteValidate = function() {
+    var p1 = fetch('/index.html').then(response => response.text()).then(function(html) {
+        var d = document.createElement('div');
+        d.innerHTML = html;
+        if (Array.from(d.querySelectorAll('a.nav-link'))
+                .map(a => a.href)
+                .filter(link => link.indexOf('#/hello') >= 0).length == 0) {
+            throw 'Could not find an a-tag with class nav-link and href #/hello in the file index.html';
+        }
+        if (Array.from(d.querySelectorAll('script'))
+                .map(el => el.src)
+                .filter(src => src.indexOf('hello/hello.js') >= 0).length == 0) {
+            throw 'Could not find a script tag with src hello/hello.js';
+        }
+    });
+    var p2 = fetch('/index.js').then(response => response.text()).then(function(js) {
+        eval(js);
+        var hello = base.mainController.routingTable.hello;
+        if (!hello || hello.partial !== 'hello/hello.html') {
+            throw 'Routing information in index.js is not correct.';
+        }
+    });
+    Promise.all([p1,p2]).then(function() {
+        baseLab.complete('e2eTabRoute', true);
+    }).catch(function(error) {
+        if (error) {
+            alert(error + '. Did you remember to restart the server?');
+        }
+        baseLab.complete('e2eTabRoute', false);
+    });
+};
+
 var e2eTableValidate = function() {
-    fetch('/simple/simple.html').then(response => response.text()).then(function(html) {
+    fetch('/foo/foo.html').then(response => response.text()).then(function(html) {
         var d = document.createElement('div');
         d.innerHTML = html;
         var ths = d.querySelectorAll('table tr th');
@@ -136,7 +218,7 @@ var e2eTableValidate = function() {
         } else {
             var headerOk = false;
         }
-        var tdsOk = d.querySelector('#simple-template').content.querySelectorAll('td').length == 3;
+        var tdsOk = d.querySelector('#foo-template').content.querySelectorAll('td').length == 3;
         baseLab.complete('e2eTable', thsOk && headerOk && tdsOk);
     }).catch(function(error) {
         baseLab.complete('e2eTable', false);

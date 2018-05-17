@@ -1,56 +1,56 @@
 package se.lth.base.server.rest;
 
+import se.lth.base.server.Config;
+import se.lth.base.server.data.Foo;
+import se.lth.base.server.data.FooDataAccess;
 import se.lth.base.server.data.Role;
-import se.lth.base.server.data.Simple;
-import se.lth.base.server.data.SimpleDataAccess;
 import se.lth.base.server.data.User;
 
 import javax.annotation.security.RolesAllowed;
-import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.net.URISyntaxException;
 import java.util.List;
 
-@Path("simple")
-public class SimpleResource {
+@Path("foo")
+public class FooResource {
 
+    private final FooDataAccess fooDao = new FooDataAccess(Config.instance().getDatabaseDriver());
     private final User user;
-    private final SimpleDataAccess simpleDao;
 
-    @Inject
-    public SimpleResource(ContainerRequestContext context, SimpleDataAccess simpleDao) {
+    public FooResource(@Context ContainerRequestContext context) {
         this.user = (User) context.getProperty(User.class.getSimpleName());
-        this.simpleDao = simpleDao;
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RolesAllowed(Role.Names.USER)
-    public Simple addData(Simple simple) {
-        return simpleDao.addSimple(user.getId(), simple.getPayload());
+    public Foo addFoo(Foo foo) throws URISyntaxException {
+        return fooDao.addFoo(user.getId(), foo.getPayload());
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RolesAllowed(Role.Names.USER)
-    public List<Simple> getSimples() {
-        return simpleDao.getUsersSimple(user.getId());
+    public List<Foo> getFoos() {
+        return fooDao.getUsersFoo(user.getId());
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RolesAllowed(Role.Names.ADMIN)
-    @Path("{userId}")
-    public List<Simple> getUsersSimple(@PathParam("userId") int userId) {
-        return simpleDao.getUsersSimple(userId);
+    @Path("user/{userId}")
+    public List<Foo> getUsersFoos(@PathParam("userId") int userId) {
+        return fooDao.getUsersFoo(userId);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RolesAllowed(Role.Names.ADMIN)
     @Path("all")
-    public List<Simple> getAllSimple() {
-        return simpleDao.getAllSimple();
+    public List<Foo> getAllFoos() {
+        return fooDao.getAllFoo();
     }
 }

@@ -5,14 +5,15 @@ import com.google.gson.annotations.Expose;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.nio.ByteBuffer;
+import java.nio.LongBuffer;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-import java.util.Base64;
+import java.util.UUID;
 
 /**
- * Temporary object used for authentication and user operations requiring passwords.
+ * Used for authentication and user operations requiring passwords.
  *
  * @author Rasmus Ros, rasmus.ros@cs.lth.se
  */
@@ -48,18 +49,18 @@ public class Credentials {
 
     /**
      * Hash password using hashing algorithm intended for this purpose.
-     * Hashing salt will be userId.
      *
      * @return base64 encoded hash result.
      */
-    public String generatePasswordHash(long salt) {
+    public UUID generatePasswordHash(long salt) {
         try {
             KeySpec spec = new PBEKeySpec(password.toCharArray(),
                     ByteBuffer.allocate(8).putLong(salt).array(),
                     ITERATION_COST, SIZE);
             SecretKeyFactory f = SecretKeyFactory.getInstance(ALGORITHM);
             byte[] blob = f.generateSecret(spec).getEncoded();
-            return Base64.getEncoder().encodeToString(blob);
+            LongBuffer lb = ByteBuffer.wrap(blob).asLongBuffer();
+            return new UUID(lb.get(), lb.get());
         } catch (NoSuchAlgorithmException ex) {
             throw new IllegalStateException("Missing algorithm: " + ALGORITHM, ex);
         } catch (InvalidKeySpecException ex) {
@@ -75,7 +76,6 @@ public class Credentials {
         return password != null;
     }
 
-
     public static void main(String[] args) {
         long s1 = generateSalt();
         long s2 = generateSalt();
@@ -83,6 +83,6 @@ public class Credentials {
         System.out.println(new Credentials("Admin", "password", Role.ADMIN).generatePasswordHash(s1));
 
         System.out.println(s2);
-        System.out.println(new Credentials("Test", "password", Role.ADMIN).generatePasswordHash(s2));
+        System.out.println(new Credentials("Test", "password", Role.USER).generatePasswordHash(s2));
     }
 }

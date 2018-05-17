@@ -11,7 +11,7 @@ CREATE TABLE user(user_id INT AUTO_INCREMENT NOT NULL,
                   role_id TINYINT NOT NULL,
                   username VARCHAR_IGNORECASE NOT NULL UNIQUE, -- username should be unique
                   salt BIGINT NOT NULL,
-                  password_hash VARCHAR NOT NULL,
+                  password_hash UUID NOT NULL,
                   PRIMARY KEY (user_id),
                   FOREIGN KEY (role_id) REFERENCES user_role (role_id),
                   CHECK (LENGTH(username) >= 4)); -- ensures that username have 4 or more characters
@@ -26,13 +26,41 @@ CREATE TABLE session(session_uuid UUID DEFAULT RANDOM_UUID(),
 
 INSERT INTO user_role VALUES (1, 'ADMIN'), (2, 'USER');
 INSERT INTO user (role_id, username, salt, password_hash)
-    VALUES (1, 'Admin', -3084944687275696311, 'dUAYAH1GMtGGoLSNdNeAgzwikcCgDKXhTB7ZWjrncsc='),
-           (2, 'Test', 6240894663902665109, 'zn8DL+k4yWjhhS9S2NcbUfBNfSEBPhpm7s87YBi+w4g=');
+    VALUES (1, 'Admin', -2883142073796788660, '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59'),
+           (2, 'Test', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd');
 
 -- Example table containing some data per user, you are expected to remove this table in your project.
-CREATE TABLE simple(simple_id INT AUTO_INCREMENT NOT NULL,
-                    payload VARCHAR NOT NULL,
-                    user_id INT NOT NULL,
-                    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
-                    PRIMARY KEY(simple_id),
-                    FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE);
+CREATE TABLE foo(
+    -- First the four columns are specified:
+
+    foo_id INT AUTO_INCREMENT,
+    -- foo_id is the first column with type INT. The AUTO_INCREMENT keyword is H2 specific and indicates
+    -- that the column is supplied with a default value that is incremented for each row. The first row
+    -- will automatically get foo_id = 1, the second one will get foo_id = 2, and so on.
+
+    payload VARCHAR NOT NULL,
+    -- payload is the second column with type VARCHAR. There is no limit to how long the string can be.
+    -- NOT NULL specifies that the row must have a payload.
+
+    user_id INT NOT NULL,
+    -- user_id is the third column with type INT.
+
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP() NOT NULL,
+    -- created is the fourth and final column with type TIMESTAMP. This column also has a default value
+    -- which is created by the function CURRENT_TIMESTAMP() if not supplied during creation.
+
+    total INT NOT NULL DEFAULT 1,
+
+    -- Here are some additional constraints that the data must relate to:
+
+    PRIMARY KEY(foo_id),
+    -- This defines foo_id as the unique identifier of the table. It adds NOT NULL to the column and
+    -- enforces that the values rows all have a unique identifier.
+
+    FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE,
+    -- This informs that the column user_id is a relation to another table's primary key. In this way it is
+    -- not possible to enter data that is not connected to a user.
+    -- The ON DELETE CASCADE ensures that when a user is deleted then all their foo data will also be deleted.
+
+    CHECK(total > 0)
+);

@@ -35,7 +35,7 @@ public interface Mapper<T> extends Function<ResultSet, T> {
         try {
             return map(resultSet);
         } catch (SQLException e) {
-            throw new DataAccessException(e, ErrorType.UNKNOWN);
+            throw new DataAccessException(e, ErrorType.MAPPING);
         }
     }
 
