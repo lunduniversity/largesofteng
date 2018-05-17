@@ -1,6 +1,7 @@
 package se.lth.base.server.data;
 
 import org.junit.Test;
+import se.lth.base.server.Config;
 import se.lth.base.server.database.DataAccessException;
 import se.lth.base.server.database.BaseDataAccessTest;
 
@@ -15,7 +16,7 @@ import static org.junit.Assert.assertNotEquals;
  */
 public class UserDataAccessTest extends BaseDataAccessTest {
 
-    private final UserDataAccess userDao = new UserDataAccess(IN_MEM_DRIVER_URL);
+    private final UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
 
     @Test
     public void addNewUser() {

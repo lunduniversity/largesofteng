@@ -1,5 +1,6 @@
 package se.lth.base.server.rest.providers;
 
+import se.lth.base.server.Config;
 import se.lth.base.server.data.Session;
 import se.lth.base.server.data.User;
 import se.lth.base.server.data.UserDataAccess;
@@ -7,11 +8,11 @@ import se.lth.base.server.database.DataAccessException;
 import se.lth.base.server.database.ErrorType;
 
 import javax.annotation.Priority;
-import javax.inject.Inject;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
@@ -28,12 +29,7 @@ import java.util.UUID;
 @PreMatching
 public class AuthenticationFilter implements ContainerRequestFilter {
 
-    private final UserDataAccess userDataAccess;
-
-    @Inject
-    public AuthenticationFilter(UserDataAccess userDataAccess) {
-        this.userDataAccess = userDataAccess;
-    }
+    private final UserDataAccess userDataAccess = new UserDataAccess(Config.instance().getDatabaseDriver());
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {

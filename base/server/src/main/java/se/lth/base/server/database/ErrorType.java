@@ -9,6 +9,7 @@ import java.util.logging.Level;
  */
 public enum ErrorType {
     UNKNOWN(500, Level.SEVERE),
+    MAPPING(500, Level.SEVERE),
     DUPLICATE(400, Level.WARNING),
     NOT_FOUND(404, Level.WARNING),
     DATA_QUALITY(400, Level.WARNING);

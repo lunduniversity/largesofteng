@@ -21,150 +21,1598 @@
         for the course in Large Scale Software Engineering at LTH, Lund University.</h4>
     <p class="lead mt-3">
         This lab continues the introduction of the BASE System, the progression is as follows:
-        REST, Jetty and Jersey, SQL, and then a final end-to-end task that expands on the previous lab.
+        H2 database, REST, Jetty and Jersey, and then a final end-to-end task that expands on the previous lab.
+        It might be useful to review to the <a href="lab1.html#BASE">system overview</a> of the previous lab.
     </p>
 
-
     <!--  ***********************************************************************************************
-          REST, HTTP, and JSON
+          Server Overview.
           *********************************************************************************************** -->
     <section class="lab-section">
-        <a class="anchor" name="REST"></a>
-        <h1>REST, HTTP, and JSON</h1>
+        <a class="anchor" name="Server"></a>
+        <h1>Server Overview</h1>
         <p>
-            Please go back to the <a href="lab1.html#BASE">system overview</a> of the previous
-            lab if anything is unclear
+            The code in BASE is organized in a
+            <a href="https://en.wikipedia.org/wiki/Multitier_architecture" target="_blank">three tier architecture</a>.
+            The top tier is the user interface, either the Android client or the web front end. The middle tier is the
+            REST API definitions, implemented by Jersey in Java, the final tier is the Java code interfacing the H2
+            database. The bottom two layers are represented as two packages in the server code,
+            <code>se.lth.base.server.data</code> and <code>se.lth.se.base.server.rest</code> respectively. The purpose
+            of separating code in this way is that it is easier to perform unit testing of them and that they can be
+            easily replaced or worked on separately. The principle is called
+            <a href="https://en.wikipedia.org/wiki/Loose_coupling" target="_blank">loose coupling</a>.
         </p>
-
-        <pre><code>var testJavaScript = function(param1, param2) {console.log('asdf');}</code></pre>
         <p>
-            <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP" target="_blank">Mozilla HTTP reference</a>
-            <a href="https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm" target="_blank">
-                Original REST thesis</a>
+            <b>Note!</b> This hierarchy does not reflect size of the codebase or difficulty of the programming
+            involved.
         </p>
-
-        questions:
-        what is REST?
-          architectural style
-          network protocol
-          data-interchange format
-
-        which HTTP verb should be used to create a new resource?
-         GET
-         POST
-         PUT
-         PUT or POST
-
-
-
-    </section>
-
-
-    <!--  ***********************************************************************************************
-          Jetty and Jersey
-          *********************************************************************************************** -->
-    <section class="lab-section">
-        <a class="anchor" name="JettyJersey"></a>
-        <h1>Jetty and Jersey</h1>
-
-        resources mapping to HTTP
-        webapplicationexception/java objects
-        response (cookies)
-
-        providers:
-          filters
-          exceptionmapper
-          serialisation
-
-        authentication
-
-        which of the following http requests will match this jax-rs definition?
-        <pre><code class="language-java">
-            @Path("rest/user")
-            public class UserResource {
-                @Path("{id}")
-                @Produces("application/json")
-                @GET
-                public User getUser(@PathParam("id") int userId) {
-                    return null; // TODO
-                }
-            }
-        </code></pre>
-
-        GET rest/user/id
-        GET 2
-        GET rest/user/3
-        GET user/4
-
-        Jersey unit test
+        <figure>
+            <img src="Overview_of_a_three-tier_application_vectorVersion.svg"
+                 class="img-fluid mx-auto d-block">
+            <figcaption class="mx-auto d-block figure-caption" style="text-align: center">
+                Example of a three tier architecture, the corresponding parts in BASE are added in red.
+                <a href="https://en.wikipedia.org/wiki/Multitier_architecture#/media/File:Overview_of_a_three-tier_application_vectorVersion.svg"
+                   target="_blank">Source.</a>
+            </figcaption>
+        </figure>
 
     </section>
 
     <!--  ***********************************************************************************************
-         H2 SQL
+         H2 Database
          *********************************************************************************************** -->
     <section class="lab-section">
         <a class="anchor" name="H2SQL"></a>
-        <h1>H2 SQL</h1>
-        select
-        join
-        update
-        insert
-        delete
+        <h1>H2 Database</h1>
+        <p>
+            H2 is a relational database that is accessed using Structured Query Language (SQL) queries. A relational
+            database has tables with columns, the columns can have relations to other columns in other tables.
+            The columns are pre-defined and all rows must conform to the pre-defined structure, known as a
+            <em>schema</em>. Beyond this document, here are some references to learn more about SQL and H2.
+        </p>
+        <ul>
+            <li><a href="http://www.h2database.com/html/grammar.html" target="_blank">H2 API reference</a></li>
+            <li><a target="_blank" href="http://cs.lth.se/edaf75/">EDAF75 - Course in database technology</a>
+                (go here for tutorials, books, etc.)
+            </li>
+        </ul>
+        <p>
+            Below is an example of the table used for storing the data for <em>foo</em> rows.
+        </p>
+        <table class="table table-sm table-striped">
+            <tr class="thead-dark">
+                <th>foo_id</th>
+                <th>payload</th>
+                <th>user_id</th>
+                <th>created</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>a</td>
+                <td>2</td>
+                <td>2018-05-16T06:37:56.446493Z</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>b</td>
+                <td>2</td>
+                <td>2018-05-16T06:37:56.446494Z</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>c</td>
+                <td>2</td>
+                <td>2018-05-16T06:37:56.446495Z</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>d</td>
+                <td>2</td>
+                <td>2018-05-16T06:37:56.446496Z</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>e</td>
+                <td>1</td>
+                <td>2018-05-16T06:37:56.446497Z</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>f</td>
+                <td>1</td>
+                <td>2018-05-16T06:37:56.446498Z</td>
+            </tr>
+        </table>
+        <p>
+            When the schema is defined the types of the various columns are also defined. For example, the types of the
+            above table are: <code>INT</code> for foo_id, <code>VARCHAR</code> for payload, <code>INT</code> for
+            user_id, <code>TIMESTAMP</code> for created. <code>VARCHAR</code> is the SQL name for String in Java. See
+            the <a href="http://www.h2database.com/html/datatypes.html" target="_blank">H2 API reference</a> for all
+            types that H2 support. The database will make sure that only values that match the correct format for the
+            types can be entered in the database.
+        </p>
+        <p>
+            In the example above the <code>user_id</code> column refers to another table. Note that it does not store
+            the actual username, only the unique identifier of the user. In this way, the username can be changed
+            without changing all the data rows. This is an example of
+            <a href="https://en.wikipedia.org/wiki/Database_normalization">normalization</a>.
+        </p>
+        <p>
+            Many databases must be installed and come equipped with a graphical interface for accessing
+            it. In this course we will use H2 as an embedded database that is used as a library. You still have the
+            option of using a graphical interface though, which we will now demonstrate through a task.
+        </p>
 
-        create table
-        schema
+        <div class="lab-task-group alert alert-warning" id="h2Gui">
+            <h4 class="alert-heading">Try out the H2 graphical interface</h4>
+            <ol>
+                <li>Open a console terminal (in Linux or MacOS) and execute these commands:</li>
+            </ol>
+            <pre><code class="language-bash">
+                > cd ~/ROOT_DIR/base/server       # Replace ROOT_DIR with the directory you cloned the repository to
+                > mvn clean package               # This will build your project
+                > java -cp target/base-server-jar-with-dependencies.jar org.h2.tools.Console
+            </code></pre>
+            <ol start="2">
+                <li>Make sure the BASE server is closed to release the lock on the database.</li>
+                <li>Enter <code>jdbc:h2:~/base-server/data</code> into the <code>JDBC URL</code> input.</li>
+                <li>Click the <q>Connect</q> button.</li>
+                <li>Enter this query into the large text area:</li>
+            </ol>
+            <pre><code class="language-sql">
+                SELECT salt FROM user
+                WHERE user_id = 2
+            </code></pre>
+            <ol start="6">
+                <li>Click the <q>Run</q> button to execute the query.</li>
+                <li>What is the result of the query?</li>
+            </ol>
+            <div class="lab-task-form">
+                <div class="form-check">
+                    <form onsubmit="return h2GuiValidate(event)" class="lab-task-form">
+                        <div class="form-group">
+                            <input class="form-control" type="text" placeholder="input long number" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Validate</button>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-3 lab-task-error alert alert-danger">
+                Incorrect, try again.
+            </div>
+            <div class="lab-task-completed">
+                <hr>
+                <p>Right. Curious about what a password
+                    <a target="_blank" href="https://en.wikipedia.org/wiki/Salt_(cryptography)">salt</a> is?
+                <hr>
+            </div>
+            <ol class="mt-3" start="8">
+                <li class="language-sql">
+                    You might also want to execute these queries (one at a time) to see what is stored in the rest of
+                    the tables:<br>
+                    <code>SELECT * FROM user</code><br>
+                    <code>SELECT * FROM foo</code><br>
+                    <code>SELECT * FROM user_role</code><br>
+                    <code>SELECT * FROM session</code>
+                </li>
+                <li>Go back to the terminal and kill the program using Ctrl+C.</li>
+                <li>Restart the BASE server.</li>
+            </ol>
+        </div>
 
-        JDBC: Connection/PreparedStatement/ResultSet
-        DataAccess
-          Mapper&lt;T&gt;
-          query (select), queryFirst, insert, execute (update/delete)
-        SimpleDataAccess
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="SQL"></a>
+            <h3 class="mt-3">SQL Basics</h3>
+            <p>
+                SQL is a language for manipulating the data in the relational database. By now you have already tried
+                <code class="language-sql">SELECT</code> SQL query statement. There are more types of statements in the
+                SQL standard, the ones you should know in the project are included below.
+            </p>
+            <div class="alert alert-info">
+                <b>Note!</b> SQL is a very useful skill to have in many professions, even outside software engineering
+                and IT operations. Many data sets are stored in relational databases and must be accessed with SQL
+                queries. As such, knowing SQL is essential for business analysts, data scientists/engineers,
+                quantitative researchers, etc. SQL can be used to aggregate, sort, and slice such data sets in order to
+                produce statistics and reports.
+            </div>
 
-        <div class="lab-task-group" id="h2Statements">
-            <div class="lab-task-info alert alert-warning">
-                <h4 class="alert-heading">Which SQL is used to </h4>
-                <p>
-                    SQL statements
-                </p>
+            <dl class="row language-sql">
+                <dt class="col-sm-3"><code>INSERT query</code></dt>
+                <dd class="col-sm-9">
+                    To add new data into the database the <code>INSERT</code> statement is used. Below is an example of
+                    inserting a row into the foo table.
+                    <pre><code>
+                        INSERT INTO foo VALUES (41, 'data', 2, '2018-05-15 16:02:49')
+                    </code></pre>
+                    Some values can be omitted if they have default values specified in the schema. In that case, the
+                    syntax is as follows.
+                    <pre><code>
+                        INSERT INTO foo (payload, user_id) VALUES ('data', 2)
+                    </code></pre>
+                </dd>
+                <dt class="col-sm-3"><code>SELECT query</code></dt>
+                <dd class="col-sm-9">
+                    Used to query for rows from the database. A select statement never alters the data in the database.
+                    Example of an select statement that fetches all rows in the table:
+                    <pre><code>SELECT * FROM foo</code></pre>
+                    The asterix can be replaced by an enumeration of columns, like so:
+                    <pre><code>SELECT payload, user_id FROM foo</code></pre>
+                </dd>
+                <dt class="col-sm-3"><code>JOIN clause</code></dt>
+                <dd class="col-sm-9">
+                    To select data from multiple tables the <code>JOIN</code> clause can be added to a
+                    <code>SELECT</code>.
+                    The example below selects all columns from foo and adds the username from the user table. In case a
+                    column exists in both tables that are joined the name is qualified with the table name.
+                    <pre><code>
+                        SELECT foo.*, user.username FROM foo
+                        JOIN user ON user.user_id = foo.user_id
+                    </code></pre>
+                    The <code>ON</code> keyword specifies a condition that is matched between the tables. Multiple
+                    tables can be joined as well by adding more join clauses.
+                </dd>
+                <dt class="col-sm-3"><code>WHERE clause</code></dt>
+                <dd class="col-sm-9">
+                    Add optional additional qualifiers to <code>SELECT</code>, <code>UPDATE</code>, and
+                    <code>DELETE</code> queries with the <code>WHERE</code> clause. The operation will only be performed
+                    on those rows that match the test.
+                    <pre><code>
+                        SELECT * FROM foo
+                        WHERE user_id = 2
+                    </code></pre>
+                    Other operators can also be used, such as &lt;, &gt;, and &lt;&gt; (not equals). Additionally,
+                    multiple operators can be combined with <code>OR</code> and <code>AND</code>.
+                    If both <code>WHERE</code> and <code>JOIN</code> is used, the <code>WHERE</code> clause must be
+                    placed last.
+                </dd>
+                <dt class="col-sm-3"><code>UPDATE query</code></dt>
+                <dd class="col-sm-9">
+                    Updating an existing table is done through the <code>UPDATE</code> statement. An example follows.
+                    <pre><code>
+                        UPDATE foo SET payload = 'New payload'
+                        WHERE foo_id = 41
+                    </code></pre>
+                    <p>Multiple columns can be updated after the <code>SET</code> keyword with a comma separated list.
+                    </p>
+                </dd>
+                <dt class="col-sm-3"><code>DELETE query</code></dt>
+                <dd class="col-sm-9">
+                    Finally, the <code>DELETE</code> statement is used to remove rows from the database.
+                    As an example, this will delete all foo data from a user with id 2:
+                    <pre><code>
+                        DELETE FROM foo
+                        WHERE user_id = 2
+                    </code></pre>
+                </dd>
+            </dl>
+
+            <section class="alert alert-info lab-section-optional">
+                <details>
+                    <summary>
+                        Aggregating Queries Teaser
+                    </summary>
+                    <p>
+                        SQL has very powerful syntax for performing data aggregations. Let's illustrate with an example:
+                    </p>
+                    <pre><code class="language-sql">
+                        SELECT user.username, COUNT(foo.user_id) FROM user
+                        LEFT JOIN foo ON foo.user_id = user.user_id
+                        GROUP BY user.user_id
+                        ORDER BY user.username
+                    </code></pre>
+                    <p>
+                        This counts the number of foo's for each user, the result of the query might be something like
+                        this:
+                    </p>
+
+                    <table class="table table-sm table-striped bg-light">
+                        <tr class="thead-dark">
+                            <th>COUNT(foo.user_id)</th>
+                            <th>username</th>
+                        </tr>
+                        <tr>
+                            <td>Admin</td>
+                            <td>9</td>
+                        </tr>
+                        <tr>
+                            <td>Test</td>
+                            <td>11</td>
+                        </tr>
+                        <tr>
+                            <td>Newbie</td>
+                            <td>0</td>
+                        </tr>
+                    </table>
+                    <p>
+                        The example introduced a lot of new types of functions and clauses: COUNT, LEFT JOIN, GROUP BY,
+                        and ORDER BY. You will have to figure out the specifics of how to use these functions on your
+                        own.
+                    </p>
+                </details>
+            </section>
+
+            <div class="lab-task-group language-sql alert alert-warning" id="sqlSelect">
+                <h4 class="alert-heading">
+                    Which query is correct?
+                </h4>
+                <p>Which of these queries will return all columns from the USER table with the username 'Test'?</p>
                 <div class="lab-task-form">
-                    <button class="btn btn-primary" onclick="baseLab.complete('h2Statements')">Click me to complete
-                    </button>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('sqlSelect', 1)" class="form-check-input" type="radio"
+                                   name="sqlSelect">
+                            <code>SELECT VALUES FROM user WHERE username='Test' </code>
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('sqlSelect', 2)" class="form-check-input" type="radio"
+                                   name="sqlSelect">
+                            <code>SELECT * FROM user WHERE username='Test'</code>
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('sqlSelect', 3)" class="form-check-input" type="radio"
+                                   name="sqlSelect">
+                            <code>SELECT * FROM user JOIN ON username='Test'</code>
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('sqlSelect', 4)" class="form-check-input" type="radio"
+                                   name="sqlSelect">
+                            <code>SELECT username='Test' FROM user</code>
+                        </label>
+                    </div>
                 </div>
                 <div class="lab-task-completed">
                     <hr>
-                    Nice, well done!
+                    Right, well done!
+                </div>
+                <div class="lab-task-error alert alert-danger">
+                    Incorrect, try again.
                 </div>
             </div>
-            <div class="lab-task-error alert alert-danger">
-                Incorrect.
-            </div>
-        </div>
 
-        Unti testing
+            <div class="lab-task-group language-sql alert alert-warning" id="sqlQuery">
+                <h4 class="alert-heading">
+                    What does this query do?
+                </h4>
+                <pre><code class="language-sql">
+                    SELECT user_role.role FROM user
+                    JOIN user_role ON user.role_id = user_role.role_id
+                    WHERE username = 'Admin' AND password_hash = '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59'
+                </code>
+                </pre>
+
+                <div class="lab-task-form">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('sqlQuery', 1)" class="form-check-input" type="radio"
+                                   name="sqlQuery">
+                            Adds the default user_role to the matching user.
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('sqlQuery', 2)" class="form-check-input" type="radio"
+                                   name="sqlQuery">
+                            Selects the data from all columns in user of the matching user.
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('sqlQuery', 3)" class="form-check-input" type="radio"
+                                   name="sqlQuery">
+                            Updates the password_hash of the matching user.
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('sqlQuery', 4)" class="form-check-input" type="radio"
+                                   name="sqlQuery">
+                            Selects the data from column role in user_role of the matching user.
+                        </label>
+                    </div>
+                </div>
+                <div class="lab-task-completed">
+                    <hr>
+                    Right, well done!
+                </div>
+                <div class="lab-task-error alert alert-danger">
+                    Incorrect, try again.
+                </div>
+            </div>
+        </section>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="SQLBASE"></a>
+            <h3>SQL in BASE</h3>
+            <p>
+                There is a built in API in Java for accessing databases through SQL, called
+                <a href="https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html" target="_blank">JDBC</a>.
+                This API existed before many modern Java features (like lambdas or generics), so the code requires a lot
+                of boilerplate.
+            </p>
+            <p>
+                Here is an example that executes a query and populates a list with Java objects from the database.
+            </p>
+            <pre><code class="language-java">
+                String driverUrl = "jdbc:h2:~/base-server/data";
+                List&lt;Foo&gt; foos = new ArrayList<>();
+                try (Connection connection = DriverManager.getConnection(driverUrl, "sa", "");
+                    PreparedStatement statement = connection.prepareStatement("SELECT * FROM foo WHERE user_id = ?");) {
+                    // Parameters in JDBC are set through indexing, starting with 1.
+                    statement.setInt(1, 2);
+                    try (ResultSet resultSet = statement.executeQuery();) {
+                        while (resultSet.next()) {
+                            int fooId = resultSet.getInt("foo_id");
+                            int userId = resultSet.getInt("user_id");
+                            String payload = resultSet.getString("payload");
+                            long timestamp = resultSet.getObject("created", Date.class).getTime();
+                            Foo foo = new Foo(fooId, userId, payload, timestamp);
+                            foos.add(foo);
+                        }
+                    }
+                } catch (SQLException exception) {
+                    // Handle exceptions somehow or add exception to method signature
+                }
+            </code></pre>
+            <p>
+                To make such queries easier there is a helper class that has much of the boiler plate already defined.
+                Below is the same example using the
+                <code>server/src/main/java/se/lth/base/server/database/DataAccess.java</code> class.
+            </p>
+
+            <pre><code class="language-java">
+                String driverUrl = "jdbc:h2:~/base-server/data";
+                Mapper&lt;Foo&gt; mapper = new Mapper&lt;Foo&gt;() {
+                    @Override
+                    public Foo map(ResultSet resultSet) throws SQLException {
+                        return new Foo(resultSet.getInt("foo_id"),
+                                resultSet.getInt("user_id"),
+                                resultSet.getString("payload"),
+                                resultSet.getObject("created", Date.class).getTime());
+                    }
+                };
+                DataAccess&lt;Foo&gt; fooDao = new DataAccess&lt;&gt;(driverUrl);
+                Stream&lt;Foo&gt; fooStream = fooDao.query("SELECT * FROM foo WHERE user_id = ?", 2);
+                List&lt;Foo&gt; foos = fooStream.collect(Collectors.toList());
+            </code></pre>
+            <p>
+                The major benefit of this is that the same data access object can be re-used for many queries. That is,
+                without changing the Mapper.
+            </p>
+            <p>
+                There are a few more helper functions in the DataAccess&lt;T&gt; class: <code>queryFirst: T</code> for
+                select on a single row, <code>&lt;S&gt; insert: S</code> for getting auto generated keys,
+                <code>execute: int</code> for counting how many rows were affected by an update/insert.
+            </p>
+            <pre><code class="language-java">
+                // Continuing on the example above
+
+                // The method insert returns an auto generated id
+                // (if there is nothing that is auto generated, then use execute instead)
+                int autoGeneratedFooId = fooDao.insert("INSERT INTO foo (user_id, payload) VALUES (?,?)", 2, "data");
+
+                // Execute returns number of rows changed, which will be one in this case.
+                int numberRowsChanged = fooDao.execute("UPDATE foo SET payload = ? WHERE foo_id = ?", "changed my mind", autoGeneratedFooId);
+
+                // Finally queryFirst returns the first item in the stream or throws an exception if there is none.
+                Foo foo = fooDao.queryFirst("SELECT * FROM foo WHERE foo_id = ?", autoGeneratedFooId);
+            </code></pre>
+            <p>
+                See <code>base/server/src/main/java/se/lth/base/server/data/FooDataAccess.java</code> and
+                <code>base/server/src/test/java/se/lth/base/server/data/FooDataAccessTest.java</code> for the database
+                code concerning foo.
+            </p>
+
+            <div class="lab-task-group language-sql alert alert-warning" id="sqlBase">
+                <h4 class="alert-heading">
+                    What is the purpose of enforcing the Mapper interface?
+                </h4>
+                <p>The interface is defined as such (the Function interface is built into Java):</p>
+                <pre><code class="langauge-java">
+                    public interface Mapper&lt;T&gt; extends Function&lt;ResultSet, T&gt; {
+                        T map(ResultSet resultSet) throws SQLException;
+
+                        @Override
+                        default T apply(ResultSet resultSet) {
+                            try {
+                                return map(resultSet);
+                            } catch (SQLException e) {
+                                throw new DataAccessException(e, ErrorType.MAPPING);
+                            }
+                        }
+                    }
+                </code></pre>
+                <p>
+                    An implementing class of the Mapper interface should implement the <code>map: T</code> method. It
+                    should return an object for a row in the ResultSet. Why is this a good idea? Check all that apply.
+                </p>
+
+                <form onsubmit="return sqlBaseValidate(event)" class="lab-task-form">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input value="1" class="form-check-input" type="checkbox" name="sqlBase">
+                            It reduces the risk for errors with resources that must be closed: Connection,
+                            PreparedStatement, and the ResultSet.
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input value="2" class="form-check-input" type="checkbox" name="sqlBase">
+                            The SQL query is optimized for better performance when done through a single method call.
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input value="3" class="form-check-input" type="checkbox" name="sqlBase">
+                            It provides a structure for code reuse between multiple methods in the data access class.
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input value="4" class="form-check-input" type="checkbox" name="sqlBase">
+                            It facilitates default error handling of the checked exception SQLException, by setting
+                            which error type it has.
+                        </label>
+                    </div>
+                    <button type="submit" class="mt-3 btn btn-primary">Validate</button>
+                </form>
+
+                <div class="lab-task-completed">
+                    <hr>
+                    Right, well done!
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Incorrect, try again.
+                </div>
+            </div>
+
+        </section>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="Schema"></a>
+            <h3 class="mt-3">Database Schema</h3>
+            <p>
+                A database schema is the skeleton structure that is used by the whole database. The schema defines
+                constraints that enforces data integrity, how data is organized, and the relations between tables. The
+                schema is created with SQL queries. A table in the schema is created through the
+                <code class="language-sql">CREATE TABLE</code> query. Below is an excerpt from the schema used in BASE
+                that
+                creates the foo table.
+            </p>
+            <pre><code class="language-sql">
+                CREATE TABLE foo(
+                    -- First the four columns are specified:
+
+                    foo_id INT AUTO_INCREMENT,
+                    -- foo_id is the first column with type INT. The AUTO_INCREMENT keyword is H2 specific and indicates
+                    -- that the column is supplied with a default value that is incremented for each row. The first row
+                    -- will automatically get foo_id = 1, the second one will get foo_id = 2, and so on.
+
+                    payload VARCHAR NOT NULL,
+                    -- payload is the second column with type VARCHAR. There is no limit to how long the string can be.
+                    -- NOT NULL specifies that the row must have a payload.
+
+                    user_id INT NOT NULL,
+                    -- user_id is the third column with type INT.
+
+                    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP() NOT NULL,
+                    -- created is the fourth and final column with type TIMESTAMP. This column also has a default value
+                    -- which is created by the function CURRENT_TIMESTAMP() if not supplied during creation.
+
+                    -- Here are some additional constraints that the data must relate to:
+
+                    PRIMARY KEY(foo_id),
+                    -- This defines foo_id as the unique identifier of the table. It adds NOT NULL to the column and
+                    -- enforces that the values rows all have a unique identifier.
+
+                    FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE
+                    -- This informs that the column user_id is a relation to another table's primary key. In this way it is
+                    -- not possible to enter data that is not connected to a user.
+                    -- The ON DELETE CASCADE ensures that when a user is deleted then all their foo data will also be deleted.
+                );
+            </code></pre>
+            <p>
+                The statements are contained in a file:
+                <code>base/server/main/resources/se/lth/base/server/database/schema.sql</code>.
+                By default the schema will be installed into a directory in your home directory when the BASE server is
+                started for the first time, the directory is located in : <code>~/base-server</code>.
+                There is also a main Java class that executes the schema:
+                <code>base/server/main/java/se/lth/base/server/database/CreateSchema.java</code>.
+                If you make changes to the schema file, these changes are only implemented by running main method in the
+                CreateSchema class, which loads the file and runs the statements.
+            </p>
+
+            <div class="lab-task-group language-sql alert alert-warning" id="sqlSchema">
+                <h4 class="alert-heading">
+                    Which statements about SQL keys are true?
+                </h4>
+                <p>
+                    Check all that applies.
+                </p>
+
+                <form onsubmit="return sqlSchemaValidate(event)" class="lab-task-form">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input value="1" class="form-check-input" type="checkbox" name="sqlSchema">
+                            Primary keys uniquely identify a row in a table.
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input value="2" class="form-check-input" type="checkbox" name="sqlSchema">
+                            Foreign keys cannot accept NULL values.
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input value="3" class="form-check-input" type="checkbox" name="sqlSchema">
+                            There can be only one primary key but multiple foreign key references.
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input value="4" class="form-check-input" type="checkbox" name="sqlSchema">
+                            There must be a primary key in each table.
+                        </label>
+                    </div>
+                    <button type="submit" class="mt-3 btn btn-primary">Validate</button>
+                </form>
+
+                <div class="lab-task-completed">
+                    <hr>
+                    Right, well done!
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Incorrect, try again.
+                </div>
+            </div>
+        </section>
+
+        <section class="alert alert-info lab-section-optional">
+            <details>
+                <summary>
+                    Indices
+                </summary>
+                <p>
+                    To have a well performing SQL database under reasonable load indices are required. An index is added
+                    to a table with a list of specific columns that are included in the index. A query can then hit or
+                    miss an index. Ideally no queries should miss indices all together.
+                    For example, an index on foo's user_id would be needed in order for select queries
+                    like this to hit an index:
+                </p>
+                <pre><code class="language-sql">SELECT * FROM foo WHERE user_id = 1</code></pre>
+                <p>
+                    The syntax for adding an index that supports the query above in H2 is as follows.
+                </p>
+                <pre><code class="language-sql">CREATE INDEX foo_user_id_idx ON foo(user_id)</code></pre>
+                <p>
+                    Note that primary keys are indexed by default. As such, a query for a primary key will always hit an
+                    index.
+                </p>
+            </details>
+        </section>
+
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="H2Test"></a>
+            <h3 class="mt-3">H2 Unit Tests</h3>
+            <p>
+                H2 has the option of placing the entire database in-memory which is very useful for testing purposes.
+                Database tests in BASE should extend
+                <code>base/server/src/test/se/lth/base/server/database/BaseDataAccessTest.java</code> to create a
+                temporary database for each test. Thus, each unit test has an isolated fresh copy of the schema.
+            </p>
+        </section>
     </section>
 
     <!--  ***********************************************************************************************
-          Action Lifecycle
-          *********************************************************************************************** -->
+           REST, HTTP, and JSON
+           *********************************************************************************************** -->
     <section class="lab-section">
-        <a class="anchor" name="Lifecycle"></a>
-        <h1>Action Lifecycle</h1>
-        <p>Now enough information to understand the whole BASE.</p>
-        <p>3 tier architecture</p>
-        <p>user arrives at /</p>
-        <p>gets index.html</p>
-        <p>queries for more scripts defined in index.html, rest.js, simple.js, user-admin.js, index.js</p>
-        <p>mainController is loaded, route set to default #/simple, check for current user (rest call)</p>
-        <p>simpleController is loaded</p>
-        <p>users simple is loaded through rest</p>
-        <p>jetty resolves rest to jersey</p>
-        <p>mapped to SimpleResource getSimples</p>
-        <p>calls H2 database through SimpleDataAccess</p>
-        <p>returns List&lt;Simple></p>
-        <p>Serialised to JSON</p>
-        <p>Deserialised by rest.js</p>
-        <p>Table is populated</p>
+        <a class="anchor" name="REST"></a>
+        <h1>REST</h1>
+        <p>
+            The BASE server is an API for the Android client and the web client. The API follows the
+            <a href="https://en.wikipedia.org/wiki/Representational_state_transfer" target="_blank">
+                Representational state transfer (REST)</a> architectural style. The
+            <a href="https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm" target="_blank">
+                original REST</a> principles are hard to achieve to in practice, leading to RESTful APIs that exhibit
+            some of the REST principles.
+            <a href="https://restfulapi.net/rest-architectural-constraints/" target="_blank">Here</a> is a nice
+            description of the REST principles and design constraints.
+            Another interesting read is the
+            <a href="https://martinfowler.com/articles/richardsonMaturityModel.html" target="_blank">maturity model</a>
+            of REST APIs.
+            An introduction to some of the REST principles and constraints follows.
+        </p>
+        <p>
+            A <b>client</b> is the person or software that uses the API, i.e. the web front end or Android client.
+            <b>Resources</b> are types of data that are manipulated through the API calls. For example,
+            <em>users</em> and <em>foo</em>. Each resource is identified through a unique identifier.
+            Both users and foos have integer ids: <a target="_blank" href="/rest/user/1">/rest/user/1</a> fetches the
+            user with id 1.
+        </p>
+        <p>
+            As evident from the name, client state should not be maintained on the server between requests.
+            The result of an API call should be the same regardless of which client context it has. That is,
+            <code>/user/1</code> should be the same resource as another call to <code>/user/1</code> at another time or
+            by another user, unless the resource itself has changed. It should not matter if the client is coming from
+            this or that part of the application before performing the request. In practice, many REST APIs (including
+            BASE) make <em>an</em> exception to this principle to handle authorization.
+        </p>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="HTTP"></a>
+            <h3>HTTP Basics</h3>
+            <p>
+                HTTP is an application protocol for transferring information across the internet. A HTTP request is
+                issued to a server using a <em>header</em> and an optional <em>body</em>. The header must have a
+                Uniform Resource Identifier (URI), a <em>verb</em>, and a version indicator. The URI identifies which
+                resource to do something with, and the verb what to do with that resource.
+                In addition there are header parameters that can be set, most importantly Cookie and Content-Type.
+                Content-Type decides which data format is used to send information back and forth. In BASE the Cookie
+                keeps track of the logged in session, without the Cookie the user is not authorized to perform most
+                operations.
+            </p>
+            <p>
+                After a client request, a <em>response</em> is returned to the client. It also has a header and an
+                optional body. However, instead of a verb the server has <em>status codes</em>. Many are already
+                familiar with some of the HTTP status codes, such as <code>404</code>, which is issued when a resource
+                cannot be found.
+            </p>
+            <p>
+                Below is an example of a HTTP request/response that is issued when a user submits a new foo in
+                BASE. You can see many more examples of HTTP request/responses through your web browsers console, in the
+                network tab.
+            </p>
+            <p>Request by the web browser:</p>
+            <pre><code class="language-http">
+                 POST http://localhost:8080/rest/foo HTTP/1.1
+                 Host: localhost:8080
+                 Cookie: USER_TOKEN=6e70a6b2-66be-4ac4-9f9e-dba1d1e6386d
+                 Accept: */*
+                 Content-Type: application/json;charset=utf-8
+                 Content-Length: 15
+                 Connection: keep-alive
+            </code></pre>
+            <pre><code class="language-javascript">{"payload":"a"}</code></pre>
+
+            <p>Response by the server:</p>
+            <pre><code class="language-http">
+                HTTP/1.1 201 OK
+                Content-Length: 57
+                Content-Type: application/json;charset=utf-8
+                Date: Fri, 04 May 2018 07:17:48 GMT
+                Server: Jetty(9.4.9.v20180320)
+            </code></pre>
+            <pre><code class="language-javascript">
+                {"id":1,"userId":1,"payload":"a","created":1525418268449}</code></pre>
+
+            <p>
+                For more information about HTTP see the
+                <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP" target="_blank">Mozilla HTTP reference</a>.
+            </p>
+
+            <div class="alert alert-info">
+                <b>Note!</b> Your code will not send such HTTP requests/responses directly. Libraries are used to send
+                the correct header and body in the right format. However, you still need to know which verbs/codes to
+                use in the design of your API.
+            </div>
+
+            <h4>HTTP Verbs</h4>
+            <p>A description of some of the HTTP verbs follow, you will not need any more than these.</p>
+            <dl class="row">
+                <dt class="col-sm-3"><code>GET</code></dt>
+                <dd class="col-sm-9">Fetches a resource. It may not have a request body.
+                    This method should not change anything on the server.
+                </dd>
+                <dt class="col-sm-3"><code>PUT</code></dt>
+                <dd class="col-sm-9">Replaces the resource at a URI with the one in the request body.</dd>
+                <dt class="col-sm-3"><code>POST</code></dt>
+                <dd class="col-sm-9">Sends general information to the server.</dd>
+                <dt class="col-sm-3"><code>DELETE</code></dt>
+                <dd class="col-sm-9">Deletes the resource at a specific URI.</dd>
+            </dl>
+
+            <h4>HTTP Status Codes</h4>
+            <p>
+                HTTP status codes follow a pattern, where the first digit indicate the type of status.
+                <code>2XX</code> is ok, <code>3XX</code> indicates further action is needed by the client,
+                <code>4XX</code> indicates the client has made some error, and finally <code>5XX</code> indicates the
+                server has made some error.
+            </p>
+            <dl class="row">
+                <dt class="col-sm-3"><code>200</code> OK and <code>204</code> OK (No Content)</dt>
+                <dd class="col-sm-9">Everything went as planned. <code>200</code> is expected for a <code>GET</code>.
+                </dd>
+                <dt class="col-sm-3"><code>201</code> Created</dt>
+                <dd class="col-sm-9">Like <code>OK</code>, but used when a new resource is created.</dd>
+                <dt class="col-sm-3"><code>400</code> Bad Request</dt>
+                <dd class="col-sm-9">The client has made an error in the request, such as bad syntax. A catch all for
+                    client bugs.
+                </dd>
+                <dt class="col-sm-3"><code>404</code> Not Found</dt>
+                <dd class="col-sm-9">The resource specified by the URI cannot be found.</dd>
+                <dt class="col-sm-3"><code>403</code> Forbidden</dt>
+                <dd class="col-sm-9">The client is not authorized to peform the operation.</dd>
+                <dt class="col-sm-3"><code>500</code> Internal Server Error</dt>
+                <dd class="col-sm-9">Something went wrong with the server. A catch all for server bugs.</dd>
+            </dl>
+            <h4>Fetch in JavaScript </h4>
+            <p>
+                In JavaScript the <code>fetch</code> function is used by BASE for all HTTP requests. These calls are
+                made in the script file <a href="/rest.js" target="_blank">rest.js</a>. See
+                <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" target="_blank">here</a> for
+                complete documentation of the fetch function.
+            </p>
+        </section>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="JSON"></a>
+            <h3>JSON</h3>
+            <p>
+                JavaScript Object Notation (JSON) is a popular data-interchange format. It is a sub-set of
+                JavaScript, with primarily functions removed. JSON is used to
+                <a href="https://en.wikipedia.org/wiki/Serialization" target="_blank">serialize</a>
+                data, so that that it can be sent in a structured form between the client and server.
+                JavaScript support JSON through built-in funtcions. Also, JSON is human readable
+                (see <a href="/rest/user" target="_blank">/rest/user</a> for an example).
+                However, in Java we need a supporting library
+                <a href="https://github.com/google/gson" target="_blank">Gson</a>
+                to provide this functionality. The <code>JsonProvider.java</code> class in
+                <code>server/src/main/java/se/lth/base/server/rest/providers/</code> has the necessary glue to connect
+                Gson with the rest of the server code. As such, the specifics of this serialization and deserialization
+                will be mostly hidden from students during the project.
+            </p>
+            <p>
+                Here is a demonstration of the the JavaScript built-in support for JSON.
+            </p>
+            <pre><code class="language-javascript">
+                var obj = {'a': 1, 'list': [1,2,3]};
+                var serialized = JSON.stringify(obj);
+                console.log(serialized);
+                var deserializedObj = JSON.parse(serialized);
+            </code></pre>
+            <p>
+                The result of evaluating this in a JavaScript console is not very exciting, essentially a string
+                representation of the original object:
+            </p>
+            <code class="language-javascript">'{"a":1,"list":[1,2,3]}'</code>
+        </section>
+
+        <div class="lab-task-group alert alert-warning" id="restDefinition">
+            <h4 class="alert-heading">
+                What is REST?
+            </h4>
+            <p>
+            </p>
+            <div class="lab-task-form">
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('restDefinition', 1)" class="form-check-input" type="radio"
+                               name="restDefinition">
+                        A networking protocol to transfer data between clients and servers.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('restDefinition', 2)" class="form-check-input" type="radio"
+                               name="restDefinition">
+                        An architectural style with principles and constraints guidelines.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('restDefinition', 3)" class="form-check-input" type="radio"
+                               name="restDefinition">
+                        A data-interchange format for serializing data.
+                    </label>
+                </div>
+            </div>
+            <div class="lab-task-completed">
+                <hr>
+                <p>Right.
+            </div>
+            <div class="mt-3 lab-task-error alert alert-danger">
+                Incorrect, try again.
+            </div>
+        </div>
+
+        <div class="lab-task-group alert alert-warning" id="restVerb">
+            <h4 class="alert-heading">
+                Which HTTP verb should be used to create a new resource with unknown identifier?
+            </h4>
+            <p>
+            </p>
+            <div class="lab-task-form">
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('restVerb', 1)" class="form-check-input" type="radio"
+                               name="restVerb">
+                        GET
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('restVerb', 2)" class="form-check-input" type="radio"
+                               name="restVerb">
+                        POST
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('restVerb', 3)" class="form-check-input" type="radio"
+                               name="restVerb">
+                        PUT
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('restVerb', 4)" class="form-check-input" type="radio"
+                               name="restVerb">
+                        PUT or POST
+                    </label>
+                </div>
+            </div>
+            <div class="lab-task-completed">
+                <hr>
+                <p>
+                    Right. POST is used in general to send information to the server. PUT is only used to update a
+                    resource with a known identifier.
+                </p>
+            </div>
+            <div class="mt-3 lab-task-error alert alert-danger">
+                Incorrect, try again.
+            </div>
+        </div>
+    </section>
+
+
+    <!--  ***********************************************************************************************
+          REST in Java
+          *********************************************************************************************** -->
+    <section class="lab-section language-java">
+        <a class="anchor" name="JettyJersey"></a>
+        <h1>Jetty and Jersey</h1>
+        <p>
+            Jetty is a HTTP web server written in Java. Jetty is configured and started in the
+            <code>server/src/main/java/se/lth/base/server/BaseServer.java</code> class. In Jetty, each request goes
+            through handlers. Jersey is one such handler, registered under the <code>/rest</code> prefix. Another
+            handler is configured to serve all the static content under the webassets folder in
+            <code>server/src/main/resources/webassets</code>.
+        </p>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="JerseyResources"></a>
+            <h3 class="mt-4">Jersey Resources</h3>
+            <p>
+                Jersey is a layer above Java web servers that makes it easy to implement REST APIs. Jersey is the
+                reference
+                implementation of a standard called
+                <a href="https://en.wikipedia.org/wiki/Java_API_for_RESTful_Web_Services" target="_blank">JAX-RS</a>.
+                Here
+                is the complete
+                <a href="https://jersey.github.io/documentation/latest/index.html" target="_blank">Jersey
+                    documentation</a>,
+                in particular the chapter on
+                <a href="https://jersey.github.io/documentation/latest/jaxrs-resources.html"
+                   target="_blank">resources</a>
+                serves as a more detailed complement to this section. REST resources in Jersey are created as normal
+                Java objects, decorated with annotations. Annotations in Java is syntactic meta-data that can be
+                interpreted by code. An example of an annotation that you might have seen through auto generated code is
+                the <code>@Override</code> annotation, which signals to the Java compiler that the method overrides a
+                method from a super class. In Jersey, the annotations are used to map HTTP requests to Java methods.
+            </p>
+            <p>
+                To map a HTTP request to a Java method, the path and a HTTP verb is mandatory. The annotation
+                <code>@Path("value")</code>, can be added to classes and methods. Path on class level is added as a
+                prefix to all method annotations. Each HTTP verb has a corresponding annotation, such as
+                <code>@GET</code>. Classes that have these annotations are called resources (from the resource concept
+                in REST). See this example that is used for foo in BASE:
+            </p>
+            <pre><code>
+                @Path("foo")                     // Tells Jersey to route request to "foo" to this resource
+                public class FooResource {
+                    @GET                            // HTTP verb
+                    @Produces("application/json")   // Sets the Media-Type: application/json header
+                    public List&lt;Foo&gt; getFoos() {
+                    }
+                }
+            </code></pre>
+            <p>
+                It will match HTTP requests conforming to <code>GET /rest/foo</code>. The prefix <code>/rest</code>
+                is added globally in the BaseServer initialization code. The example returns
+                <code>List&lt;Foo&gt;</code>, which will be converted to a HTTP body by Jersey.
+                The status code will be <code>200</code>. The serialization of the object to <a href="#JSON">JSON</a> is
+                explained in the previous section.
+            </p>
+            <p>
+                In the example above only the class itself had the <code>@Path</code> annotation, but it could have been
+                added to the method as well. This is needed for example if there are two different <code>GET</code>
+                in the same class.
+            </p>
+
+            <h3>Path Parameters</h3>
+            <p>
+                It is often necessary to extract data from the URI to identify which resource is used. Jersey has
+                support for this using the <code>@PathParam</code> annotation. The value of the <code>@PathParam</code>
+                should be equal to something in the <code>@Path</code> within curly brackets. The example above will
+                extract an integer from the path.
+            </p>
+            <pre><code>
+                @DELETE
+                @Path("{id}")
+                public void deleteFoo(@PathParam("id") int id) {
+                   // Do something with id here ...
+                }
+            </code></pre>
+            <p>
+                When adding this method to the FooResource class defined above, it will match HTTP requests such as
+                this: <code>DELETE /rest/foo/3</code>. Non-integer values such as
+                <code>DELETE /rest/foo/foo</code> will not match.
+            </p>
+
+            <h3>Jersey Context</h3>
+            <p>
+                The resource classes, like FooResource, are created by Jersey for each request. For some requests it
+                is necessary to know which user performs the request, such as getting the users information. This is
+                available in the ContainerRequestContext. To add this to your class add a constructor where the
+                parameter is annotated with the <code>@Context</code> annotation. This pattern is called
+                <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a>. Below is an
+                example:
+            </p>
+            <pre><code>
+                public class FooResource {
+                    private final User user;
+
+                    public FooResource(@Context ContainerRequestContext context) {
+                        this.user = (User) context.getProperty(User.class.getSimpleName());
+                    }
+                }
+            </code></pre>
+        </section>
+
+        <div class="lab-task-group alert alert-warning" id="jerseyResource">
+            <h4 class="alert-heading">In Jersey, what is a resource?</h4>
+            <div class="lab-task-form">
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('jerseyResource', 1)" class="form-check-input" type="radio"
+                               name="jerseyResource">
+                        A method with <code>@Path</code> annotation.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('jerseyResource', 2)" class="form-check-input" type="radio"
+                               name="jerseyResource">
+                        A method with <code>@Path</code> and HTTP verb annotation.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('jerseyResource', 3)" class="form-check-input" type="radio"
+                               name="jerseyResource">
+                        A class with <code>@Path</code> annotation and method(s) with HTTP verb annotation(s).
+                    </label>
+                </div>
+            </div>
+            <div class="lab-task-completed">
+                <hr>
+                <p>Right.
+            </div>
+            <div class="mt-3 lab-task-error alert alert-danger">
+                Incorrect, try again.
+            </div>
+        </div>
+
+        <div class="lab-task-group alert alert-warning" id="jerseyPath">
+            <h4 class="alert-heading">What URI will the method in this resource match?</h4>
+            <pre><code>
+                @Path("/rest/foo")
+                public FooResource {
+                    @Path("all")
+                    @GET
+                    public List&lt;Foo&gt; getFoos() {
+                        // ...
+                    }
+                }
+            </code></pre>
+            <div class="lab-task-form">
+                <div class="form-check">
+                    <form onsubmit="return jerseyPathValidate(event)" class="lab-task-form">
+                        <div class="form-group">
+                            <input class="form-control" type="text" placeholder="/path/to/resource" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Validate</button>
+                    </form>
+                </div>
+            </div>
+            <div class="lab-task-completed">
+                <hr>
+                <p>Right.
+            </div>
+            <div class="mt-3 lab-task-error alert alert-danger">
+                Incorrect, try again.
+            </div>
+        </div>
+
+        <div class="lab-task-group alert alert-warning" id="jerseyExample">
+            <h4 class="alert-heading">
+                Which of the following HTTP requests will match getUser below?
+            </h4>
+            <pre><code class="language-java">
+                    @Path("rest/user")
+                    public class UserResource {
+                        @Path("{id}")
+                        @Produces("application/json")
+                        @GET
+                        public User getUser(@PathParam("id") int userId) {
+                            throw new WebApplicationException("Not implemented yet", 500);
+                        }
+                    }
+                </code></pre>
+            <div class="lab-task-form">
+                <p>HTTP version is omitted from the headers.</p>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('jerseyExample', 1)" class="form-check-input" type="radio"
+                               name="jerseyExample">
+                        <code>GET /rest/user/id</code>
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('jerseyExample', 2)" class="form-check-input" type="radio"
+                               name="jerseyExample">
+                        <code>GET /2</code>
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('jerseyExample', 3)" class="form-check-input" type="radio"
+                               name="jerseyExample">
+                        <code>GET /rest/user/3</code>
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('jerseyExample', 4)" class="form-check-input" type="radio"
+                               name="jerseyExample">
+                        <code>GET /user/4</code>
+                    </label>
+                </div>
+            </div>
+            <div class="lab-task-completed">
+                <hr>
+                <p>Right.
+            </div>
+            <div class="mt-3 lab-task-error alert alert-danger">
+                Incorrect, try again.
+            </div>
+        </div>
+
+        <div class="lab-task-group alert alert-warning" id="jerseyPathParam">
+            <h4 class="alert-heading">What is the correct path annotation</h4>
+            <p>The resource should match POST requests to e.g. URI <code>/rest/foo/4</code></p>
+            <pre><code class="language-java">
+                @Path("rest/foo")
+                public class FooResource {
+
+                    @Path(  /* 1. What should go here? */ )
+                    @Consumes("application/json")
+                    @POST
+                    public void updateFoo(@PathParam( /* 2. and here */ ) int fooId, Foo foo) {
+                        throw new WebApplicationException("Not implemented yet", 500);
+                    }
+                }
+            </code></pre>
+            <div class="lab-task-form">
+                <p>HTTP version is omitted from the headers.</p>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('jerseyPathParam', 1)" class="form-check-input" type="radio"
+                               name="jerseyPathParam">
+                        <ol>
+                            <li><code>"{fooId}"</code></li>
+                            <li><code>"fooId"</code></li>
+                        </ol>
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('jerseyPathParam', 2)" class="form-check-input" type="radio"
+                               name="jerseyPathParam">
+                        <ol>
+                            <li>Nothing, remove the annotation</li>
+                            <li><code>"fooId"</code></li>
+                        </ol>
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input onclick="baseLab.complete('jerseyPathParam', 3)" class="form-check-input" type="radio"
+                               name="jerseyPathParam">
+                        <ol>
+                            <li><code>"fooId"</code></li>
+                            <li><code>"{fooId}"</code></li>
+                        </ol>
+                    </label>
+                </div>
+            </div>
+            <div class="lab-task-completed">
+                <hr>
+                <p>Right.
+            </div>
+            <div class="mt-3 lab-task-error alert alert-danger">
+                Incorrect, try again.
+            </div>
+        </div>
+
+        <section class="lab-section-optional alert alert-info">
+            <details>
+                <summary>Customizing HTTP Responses in Jersey</summary>
+                <p>
+                    If a HTTP response should set a specific HTTP header or return a different status code than
+                    <code>200</code>, then Jersey offers a few alternatives.
+                    First of all, you can return a Response instead of your plain Java object. The Response class has
+                    methods to set headers, status code, and a body. Use it like this:
+                </p>
+                <pre><code>
+                    @POST
+                    @Path("{id}")
+                    @Produces("application/json")
+                    public Response addFoo(@PathParam("id") int id, FooPrototype payload) {
+                        Foo foo = ... ;
+                        return Response.status(201)
+                                .header("Location", "localhost:8080/rest/foo/13")
+                                .entity(foo)
+                                .build();
+                    }
+                </code></pre>
+                <p>
+                    This example return the HTTP status code <code>201 Created</code> and returns an URI with the
+                    address of the newly created object. The return type of the method is changed from Foo to
+                    Response, otherwise the annotations do not need to change. This example is nice and uses the most
+                    specific HTTP correct status code. However, returning <code>200 OK</code> and not using Response
+                    would be totally fine for your project as well.
+                </p>
+                <p>
+                    On a side note, the code above is an example of the
+                    <a href="https://en.wikipedia.org/wiki/Builder_pattern" target="_blank">builder pattern</a>,
+                    used to build complex objects. It is quite commonly used by libraries in Java.
+                </p>
+                <p>
+                    Another reason for changing HTTP status codes is for error handling. Throwing an arbitrary exception
+                    from a Jersey resource will be intercepted by an <code>ExceptionMapper</code> and turned into a
+                    proper HTTP response. In BASE, this is the responsibility of
+                    <code>server/src/main/java/se/lth/base/server/rest/providers/JsonExceptionMapper.java</code>. It has
+                    special handling for <code>WebApplicationException</code> and
+                    <code>DataAccessException</code> (thrown by the database code). The WebApplicationException is built
+                    into JAX-RS and can be used to set a specific error code. You can see this in action by doing a
+                    request to <a href="http://localhost:8080/rest/nothing" target="_blank">/rest/nothing</a>, Jersey
+                    will find to find a match for this resource and throw a WebApplicationException with code
+                    <code>404</code>.
+                    Your code can also throw <code>WebApplicationException</code>. An example of this follows, consider
+                    an implementation of the <code>deleteFoo</code> method:
+                </p>
+                <pre><code>
+                    if(!database.hasFoo(id)) {
+                        // This will set the HTTP status code of the response to 404 Not Found.
+                        throw new WebApplicationException("Foo not found", 404);
+                    }
+                </code></pre>
+            </details>
+        </section>
+
+        <section class="lab-section-optional alert alert-info">
+            <details>
+                <summary>Authentication and Authorization in BASE</summary>
+                <p>
+                    <em>Authentication</em> is the process of proving identity, that is login to the system.
+                    <em>Authorization</em> is the function of specifying access rights to resources.
+                    Only the REST API under the <code>/rest</code> is protected by authorization, the static content
+                    in the <code>webassets</code> folder is not sensitive information.
+                </p>
+                <p>
+                    In BASE, authentication is done through a <code>POST</code> request with username and password to
+                    the URI <code>/rest/user/login</code>. If the username and password matches what is stored in the
+                    database the server will set a cookie to a randomly generated big number (a so called
+                    <em>token</em>). This value will be stored in the database and in the client (browser or android).
+                    The server instructs the client to store the cookie through a HTTP header parameter like this:
+                    <code>USER_TOKEN=bc9a4966-cec1-46bc-b0ad-8fa093a64960;Domain=localhost;Path=/rest</code>.
+                    The client will then pass this token around to every request it does to BASE going forward.
+                </p>
+                <p>
+                    In the front end the login is done by the login script:
+                    <a target="_blank" href="http://localhost:8080/login/login.js">/login/login.js</a>. The script is
+                    loaded by the file:
+                    <a target="_blank" href="http://localhost:8080/login/login.html">/login/login.html</a>.
+                    Additionally, when a user first arrives to the root index page, the code performs a request to get
+                    the current user. If that request fails, the frontend redirects to the login HTML page.
+                </p>
+                <p>
+                    As the server receives requests with the token, it will match the token with what it has stored in
+                    the database and see which user it matches. The advantage of this approach is that the client does
+                    not have to send the username and password to the server for every request, it is sufficient to send
+                    the cookie. Thus, the client does not need to <em>store</em> the actual password, leading to a more
+                    secure solution. It should be noted that the solution is still vulnerable to man-in-the-middle
+                    attacks unless the network is encrypted through HTTPS.
+                </p>
+                <p>
+                    User authentication of already logged in users is handled by the class
+                    <code>base/src/main/java/se/leth/base/server/rest/providers/AuthenticationFilter.java</code>. It
+                    intercepts all requests entering the REST API, performs a database lookup of the cookie value and
+                    sets the user and session information for the rest of the request cycle. A User and Session Java
+                    object is added to the ContainerRequestContext, which can be injected through the
+                    <code>@Context</code> annotation when needed.
+                </p>
+                <p>
+                    Authorization is included in the JAX-RS standard, through the <code>@RolesAllowed</code> annotation.
+                    All resources in BASE are annotated with either <code>@RolesAllowed("USER")</code> or
+                    <code>@RolesAllowed("ADMIN")</code>. The implementation uses the SecurityContext interface (the
+                    Session class in BASE implements this interface). It has the method <code>boolean
+                    isUserInRole(String role){...}</code>, which is called with the string specified by the
+                    <code>@RolesAllowed</code> annotation.
+                </p>
+                <p>
+                    BASE uses the RoleAllowedDynamicFeature from Jersey for authorization implementation.
+                </p>
+            </details>
+        </section>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="JerseyTest"></a>
+
+            <h3 class="mt-4">Jersey Unit Tests</h3>
+            <p>
+                Since Jersey resources are plain Java objects, they could be created directly and tested using normal
+                method invocations. This would not test that the Jersey annotations (<code>@Path</code>,
+                <code>@GET</code>, etc.) are correct. To do testing of these, Jersey has a unit testing module,
+                consisting of a light weight server and a REST client. See
+                <code>server/src/test/java/se/lth/base/server/FooResourceTest.java</code>
+                for how unit testing is implemented for the FooResource class. In short, extend from the
+                <code>BaseResourceTest.java</code> to setup a temporary in-memory server and database for each unit
+                test. This class in turn extends from <code>JerseyTest.java</code>, it exposes the
+                <a href="https://jersey.github.io/documentation/latest/client.html" target="_blank">
+                    Jersey client API starting with
+                </a> the method <code>target</code>.
+            </p>
+            <div>
+                Here is an excerpt from the class, that tests that a request for users foo when there are none should
+                return an empty list (in contrast to crashing).
+                <pre><code class="language-java">
+                    public class FooResourceTest extends BaseResourceTest {
+                        @Test
+                        public void getNoFooData() {
+                            List&lt;Foo&gt; list = target("foo").request().get(new GenericType&lt;List&lt;Foo&gt;&gt;() {});
+                            assertTrue(list.isEmpty());
+                        }
+                    }
+                </code></pre>
+            </div>
+
+        </section>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="Lifecycle"></a>
+            <h3>A Request Lifecycle</h3>
+            <p>
+                By now we have enough information to understand the complete lifecycle of a request that enters the
+                server. Here we give the complete back end picture.
+                When the web front end performs a request to the server, the request goes through a standardized
+                process. First, Jetty routes the request to the correct handler (static files or Jersey), then the
+                handler generates a HTTP response that the web front end receives. When Jersey services a request it
+                has additional routing to specific resources, such as FooResource. Below is an example of a request
+                to fetch user with id 2 foo data, that is to
+                <a href="http://localhost:8080/rest/foo/user/2"
+                   target="_blank">http://localhost:8080/rest/foo/user/2</a>.
+            </p>
+            <p>
+                The request in the example is defined by this Jersey resource and method.
+            </p>
+            <pre><code class="language-java">
+                @Path("foo")
+                public class FooResource {
+                    private final FooDataAccess fooDao = new FooDataAccess(Config.instance().getDatabaseDriver());
+                    @GET
+                    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+                    @RolesAllowed(Role.Names.ADMIN)
+                    @Path("user/{userId}")
+                    public List&lt;Foo&gt; getUsersFoos(@PathParam("userId") int userId) {
+                        return fooDao.getUsersFoo(userId);
+                    }
+                }
+            </code></pre>
+            <p>
+                In the example below, blue boxes are classes defined in BASE, and red boxes are Jetty and Jersey
+                library code.
+            </p>
+            <div class="row no-gutters">
+                <div class="col-4 d-flex flex-column">
+                    <div class="mt-3">
+                        <div class="row no-gutters">
+                            <div class="col">
+                                <b class="p-3">Request</b>
+                            </div>
+                            <div class="col-7">
+                                <img class="img-fluid" src="arrow.svg">
+                            </div>
+                        </div>
+                        <pre><code class="m-3 mr-5 language-http">
+                        GET /rest/foo/user/2 HTTP/1.1
+                    </code></pre>
+                    </div>
+                    <div class="mt-auto">
+                    <pre><code class="m-3 mr-5 language-http">
+                        HTTP/1.1 200 OK
+                    </code></pre>
+                        <pre><code class="m-3 mr-5 language-json">
+                            [
+                                {
+                                    "id":2,
+                                    "userId":2,
+                                    "payload":"foo",
+                                    "created":123012310,
+                                    "total":3
+                                }
+                            ]
+                        </code></pre>
+                        <div class="row no-gutters">
+                            <div class="col">
+                                <b class="p-3">Response</b>
+                            </div>
+                            <div class="col-7">
+                                <img class="img-fluid" src="arrow.svg" style="transform: rotate(180deg)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="border p-2 col-8" style="background-color: hsl(0, 59%, 88%)">
+                    <h4>Jetty (configured by BaseServer.java)</h4>
+                    <ol>
+                        <li>
+                            Jetty receives the request and routes <code>/rest</code> to Jersey, as defined in
+                            <code>BaseServer.java</code>.
+                        </li>
+                    </ol>
+                    <div class="border p-2 m-3" style="background-color: hsl(0, 59%, 94%)">
+                        <h4>Jersey (configured by BaseServer.java)</h4>
+                        <ol start="2">
+                            <li>
+                                Jersey finds the request filter that performs authentication.
+                            </li>
+                        </ol>
+                        <div class="border p-2 m-3" style="background-color: hsl(195, 59%, 88%)">
+                            <h4>AuthenticationFilter.java</h4>
+                            <ol start="3">
+                                <li>
+                                    The filter is executed, see the optional section in <a href="#REST">REST</a> for
+                                    more information.
+                                </li>
+                            </ol>
+                        </div>
+                        <ol start="4">
+                            <li>
+                                Jersey handles the request and routes <code>/foo</code> to FooResource.java. The
+                                correct method is found by matching the <code>/user/2</code> path and <code>GET</code>-verb.
+                            </li>
+                            <li>
+                                Jersey performs authorization, in this case the user must be logged in with the role
+                                ADMIN. As mentioned, the technicalities of authorization is described in a previous
+                                optional section.
+                            </li>
+                            <li>
+                                Jersey creates an object of the <code>FooResource.java</code> class and calls the
+                                method <code>getUsersFoo</code> with the path-parameter <code>2</code>.
+                            </li>
+                        </ol>
+                        <div class="border p-2 m-3" style="background-color: hsl(195, 59%, 88%)">
+                            <h4>FooResource.java</h4>
+                            <ol start="5">
+                                <li>
+                                    Method <code>getUsersFoo(2): List&lt;Foo&gt;</code> calls the data access layer,
+                                    using the users id: 2. For now, this method only passes data around for the data
+                                    access layer. If needed, the method might perform input sanitation, handling
+                                    optional parameters, or setting different HTTP status codes.
+                                </li>
+                            </ol>
+                            <div class="border p-2 m-3" style="background-color: hsl(195, 59%, 96%)">
+                                <h4>FooDataAccess.java</h4>
+                                <ol start="8">
+                                    <li>Method <code>getUsersFoo(2): List&lt;Foo&gt;</code> calls H2 database
+                                        with an SQL statement:
+                                    </li>
+                                </ol>
+                                <pre><code class="language-sql">
+                                SELECT * FROM foo
+                                WHERE user_id = ?
+                            </code></pre>
+                                <ol start="9">
+                                    <li>
+                                        The database returns a ResultSet which is converted to a plain Java object using
+                                        the FooMapper: <code>List&lt;Foo&gt;</code>.
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                        <ol start="10">
+                            <li>
+                                Jersey looks for a provider that can serialize JSON, which will be the
+                                <code>JsonProvider.java</code> class.
+                            </li>
+                        </ol>
+                        <div class="border p-2 m-3" style="background-color: hsl(195, 59%, 88%)">
+                            <h4>JsonProvider.java</h4>
+                            <ol start="11">
+                                <li>
+                                    JSON is serialized through a single method call to the GSON library. The result from
+                                    GSON is written to an output stream that is written to the client.
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lab-task-group alert alert-warning" id="lifecycleState">
+                <h4 class="alert-heading">
+                    Is it possible to have state in a Java class that is a Jersey resource?
+                </h4>
+                <p>
+                    What is meant by state is a Java field with data that is kept between the requests. The state does
+                    not need to be persisted.
+                </p>
+                <div class="lab-task-form">
+                    <p></p>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('lifecycleState', 1)" class="form-check-input" type="radio"
+                                   name="lifecycleState">
+                            Yes, but the state will be duplicated for each user.
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('lifecycleState', 2)" class="form-check-input" type="radio"
+                                   name="lifecycleState">
+                            Yes, but the field must be declared static and should be handled in a thread-safe manner.
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('lifecycleState', 3)" class="form-check-input" type="radio"
+                                   name="lifecycleState">
+                            No, since Jersey creates resource objects it is not possible.
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('lifecycleState', 3)" class="form-check-input" type="radio"
+                                   name="lifecycleState">
+                            No, since it violates the REST principles.
+                        </label>
+                    </div>
+                </div>
+                <div class="lab-task-completed">
+                    <hr>
+                    <p>
+                        Right. Because the resource object is created for each request it must be declared static to
+                        keep the data. All the other options are false. The application should only be stateless in
+                        regards to client state stored on the server (such as which page the user is on).
+                    </p>
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Incorrect, try again.
+                </div>
+            </div>
+
+        </section>
     </section>
 
     <!--  ***********************************************************************************************
@@ -172,8 +1620,312 @@
           *********************************************************************************************** -->
     <section class="lab-section">
         <a class="anchor" name="E2E"></a>
-        <h1>Completing the End to End Task</h1>
+        <h1>Continuing the End to End Task</h1>
+        <p>
+            We will now continue the last task in the previous lab, the one that added total to foo. If you completed
+            this on another computer you will need to re-implement the changes of the
+            <a href="/labs/lab1.html#E2E">previous lab</a>.
+        </p>
+        <p>
+            The task will be to add <q>increment</q> and <q>decrement</q> buttons next to each total cell in the table.
+            When these buttons are pressed there should be a call to the REST server to update the field. If the total
+            reaches 0, the row should be removed.
+        </p>
+
+        <div class="alert alert-primary">
+            <h4 class="alert-heading">Hint!</h4>
+            <p>All the tasks marked with <code>TODO:</code> are expected to be solved with <b>one</b> line.</p>
+        </div>
+
+        <!--<section class="lab-sub-section">
+            <h3>General Troubleshooting</h3>
+            <a class="sub-anchor" name="Troubleshooting"></a>
+        </section>-->
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="BackEndChanges"></a>
+            <h3>Back End Changes</h3>
+
+            <div class="alert alert-info">
+                <h4 class="alert-heading">Updating database schema</h4>
+                <p>
+                    The first step is to add a new column to foo.
+                </p>
+                <ol>
+                    <li>Open the schema.sql file.</li>
+                    <li>Add the column total to the foo table's CREATE TABLE statement.</li>
+                </ol>
+                <pre><code class="language-sql">
+                    total INT NOT NULL DEFAULT 1
+                </code></pre>
+                <ol start="3">
+                    <li>Add the following constraint to ensure data integrity of the database. Add the constraint at the
+                        same location that KEYS are defined. It will make sure total is always at least 1 (otherwise the
+                        row should be deleted).
+                    </li>
+                </ol>
+                <pre><code class="language-sql">
+                    CHECK (total > 0)
+                </code></pre>
+                <ol start="4">
+                    <li>Run the jUnit test and make sure that they pass!</li>
+                    <li>
+                        First, make sure the server is closed for this step (to release the database lock). Then,
+                        run the CreateSchema.java file to re-install the database.
+                    </li>
+                </ol>
+
+            </div>
+
+            <div class="alert alert-info">
+                <h4 class="alert-heading">Adding total to the Java object</h4>
+                <ol>
+                    <li>Open Foo.java</li>
+                    <li>Add constructor parameter <code>int total</code> that stores total in field.</li>
+                    <li>Add method <code>getTotal()</code> to Foo.</li>
+                    <li>Update the Mapper in FooDataAccess.java to also handle <q>total</q>.</li>
+                    <li>Update the <code>addFoo</code> method, add a <q>1</q> to the constructor call of Foo.</li>
+                    <li>Run the jUnit test and make sure that they pass!</li>
+                </ol>
+            </div>
+
+            <div class="alert alert-info">
+                <h4 class="alert-heading">Adding update and delete methods to the data layer</h4>
+
+                <ol>
+                    <li>Open FooDataAccess.java</li>
+                    <li>Implement <code>deleteFoo</code> and copy <code>updateTotal</code> from below:</li>
+                </ol>
+                <pre><code class="language-java">
+                    public boolean deleteFoo(int fooId) {
+                        // TODO: Please implement this one
+                        return false;
+                    }
+
+                    public int updateTotal(int fooId, int totalDelta) {
+                        execute("UPDATE foo SET total = total + ? WHERE foo_id = ?", totalDelta, fooId);
+                        DataAccess&lt;Integer&gt; totalDao = new DataAccess<>(getDriverUrl(), resultSet -> resultSet.getInt("total"));
+                        return totalDao.queryFirst("SELECT total FROM foo");
+                    }
+                </code></pre>
+                <ol start="3">
+                    <li>Open FooDataAccessTest.java</li>
+                    <li>Add the jUnit tests below and implement the basic test for deleteFoo.</li>
+                </ol>
+                <pre><code class="language-java">
+                    @Test
+                    public void deleteFoo() {
+                        Foo foo = fooDao.addFoo(TEST.getId(), "data");
+                        // TODO: Please finish this implementation
+                        // it should call the deleteFoo method and check its returned value
+                    }
+
+                    @Test
+                    public void dontDeleteOthersFoo() {
+                        Foo foo = fooDao.addFoo(ADMIN.getId(), "data");
+                        assertFalse(fooDao.deleteFoo(foo.getId(), TEST.getId()));
+                    }
+
+                    @Test
+                    public void deleteMissingFoo() {
+                        assertFalse(fooDao.deleteFoo(1, 1));
+                    }
+
+                    @Test
+                    public void updateFooTotal() {
+                        Foo foo = fooDao.addFoo(TEST.getId(), "data");
+                        fooDao.updateTotal(foo.getId(), TEST.getId(), 1);
+                        fooDao.updateTotal(foo.getId(), TEST.getId(), 1);
+                        fooDao.updateTotal(foo.getId(), TEST.getId(), -1);
+                        assertEquals(2, fooDao.getUsersFoo(TEST.getId()).get(0).getTotal());
+                    }
+
+                    @Test(expected = DataAccessException.class)
+                    public void updateMissingFoo() {
+                        fooDao.updateTotal(1, 1, 1);
+                    }
+
+                    @Test(expected = DataAccessException.class)
+                    public void dontUpdateOthersFoo() {
+                        Foo foo = fooDao.addFoo(ADMIN.getId(), "admin");
+                        fooDao.updateTotal(foo.getId(), TEST.getId(), 1);
+                    }
+
+                    @Test(expected = DataAccessException.class)
+                    public void updateToZero() {
+                        Foo foo = fooDao.addFoo(ADMIN.getId(), "will go to zero");
+                        fooDao.updateTotal(foo.getId(), ADMIN.getId(), -1);
+                    }
+                </code></pre>
+                <ol start="4">
+                    <li>Run the tests again and enjoy watching them pass!</li>
+                </ol>
+            </div>
+
+            <div class="alert alert-info">
+                <h4 class="alert-heading">Adding POST and DELETE methods to the REST API</h4>
+                <ol>
+                    <li>Open FooResource.java</li>
+                    <li>Implement the following methods:</li>
+                </ol>
+                <pre><code class="language-java">
+                    @POST
+                    @RolesAllowed(Role.Names.USER)
+                    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+                    @Path("{fooId}/total")
+                    public Foo updateFoo(@PathParam("fooId") int fooId, @QueryParam("delta") int totalDelta) {
+                        int newTotal = fooDao.updateTotal(fooId, user.getId(), totalDelta);
+                        return new Foo(fooId, user.getId(), null, null, newTotal);
+                    }
+
+                    // Implement this method and add correct annotations
+                    // It should match HTTP calls like this:
+                    // DELETE /rest/foo/4 HTTP/1.1
+                    @DELETE
+                    // TODO: please add path annotation
+                    public void deleteFoo( /* TODO: please add path-parameter annotation */) {
+                        // TODO: please call the correct method in fooDao
+                    }
+                </code></pre>
+                <ol start="3">
+                    <li>Open FooResourceTest.java</li>
+                    <li>Implement jUnit tests according to this specification:</li>
+                </ol>
+                <pre><code class="language-java">
+                    @Test
+                    public void updateFoo() {
+                        Foo foo = target("foo")
+                                .request()
+                                .post(Entity.json(Collections.singletonMap("payload", "new foo")), Foo.class);
+                        int updated = target("foo")
+                                .path(Integer.toString(foo.getId()))
+                                .path("total")
+                                .request()
+                                .post(Entity.json(1), Integer.class);
+                        assertEquals(2, updated);
+                    }
+
+                    @Test
+                    public void deleteFoo() {
+                        Foo foo = target("foo")
+                                .request()
+                                .post(Entity.json(Collections.singletonMap("payload", "new foo")), Foo.class);
+                        target("foo")
+                                .path(Integer.toString(foo.getId()))
+                                .request()
+                                .delete();
+                        List&lt;Foo&gt; foos = target("foo").request().get(FOO_LIST);
+
+                        // TODO: please finish the implementation with an assertion on foos
+                    }
+                </code></pre>
+                <ol start="5">
+                    <li>Run the tests again and enjoy watching them pass!</li>
+                    <li>Restart the server when done.</li>
+                </ol>
+            </div>
+
+            <div class="alert alert-warning lab-task-group" id="e2eBackEnd">
+                <h4 class="alert-heading">Validate your implementation</h4>
+                <div class="lab-task-form">
+                    <button class="btn btn-primary" onclick="e2eBackEndValidate()">Validate</button>
+                </div>
+                <div class="lab-task-completed">
+                    <hr>
+                    <p>
+                        Right, well done!
+                    </p>
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Incorrect, try again.
+                </div>
+            </div>
+        </section>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="FrontEndChanges"></a>
+            <h3>Front End Changes</h3>
+
+            <div class="alert alert-info">
+                <h4 class="alert-heading">Add buttons</h4>
+                <div>
+                    These buttons <span class="btn-group m-3">
+                    <button class="btn btn-primary btn-sm">-</button>
+                    <button class="btn btn-primary" disabled>42</button>
+                    <button class="btn btn-primary btn-sm">+</button>
+                </span> can be added with the following HTML code:
+                </div>
+                <pre class="p-3"><code class="language-html">
+                    &lt;div class="btn-group"&gt;
+                        &lt;button class="btn btn-primary btn-sm"&gt;-&lt;/button&gt;
+                        &lt;button class="btn btn-primary" disabled&gt;42&lt;/button&gt;
+                        &lt;button class="btn btn-primary btn-sm"&gt;+&lt;/button&gt;
+                    &lt;/div&gt;
+                </code></pre>
+                <ol>
+                    <li>Open foo.html</li>
+                    <li>Add the buttons to the <code>&lt;td&gt;</code>-tag of the <q>total</q> column.</li>
+                    <li>Open foo.js</li>
+                    <li>
+                        Replace the previous assignment to <code>tds[2]</code> with something that sets the textContent
+                        of the middle button.
+                    </li>
+                </ol>
+                <pre><code class="language-javascript">
+                    var buttons = tds[2].querySelectorAll('button');
+                    // TODO: do something with buttons[1]
+                </code></pre>
+                <ol start="5">
+                    <li>Add this to the end of the <code>renderPart</code> function on the view object</li>
+                </ol>
+                <pre><code class="language-javascript">
+                    // Get the previously added table row
+                    var trElement = document.querySelector('#foo-template')
+                            .parentElement
+                            .querySelector('tr:last-of-type');
+                    // Get the three buttons that are defined
+                    var buttons = trElement.querySelectorAll('button');
+
+                    // This function is called with the response from the server
+                    var updateFoo = function(newTotal) {
+                        foo.total = newTotal;
+                        view.update(trElement, foo);
+                    };
+
+                    // Decrement button onclick function
+                    buttons[0].onclick = function(event) {
+                        if (foo.total == 1) {
+                            base.rest.deleteFoo(foo.id).then(function() {
+                                trElement.parentElement.removeChild(trElement);
+                            });
+                        } else {
+                            base.rest.updateFoo(foo.id, -1).then(updateFoo);
+                        }
+                    };
+                    // Increment button onclick function
+                    buttons[2].onclick = function() {
+                        // TODO: complete this (look at the decrement button).
+                    };
+                </code></pre>
+                <ol start="6">
+                    <li>Restart the server and make sure that the buttons are working.</li>
+                </ol>
+            </div>
+            <p>That's it for the end to end task.</p>
+        </section>
+
+        <div class="alert alert-info mt-5">
+            <h4 class="alert-heading">Present to your TA</h4>
+            Show that <b>all tasks in this lab</b> are completed and that the <b>jUnit tests pass</b>. Also be prepared
+            to show that the increment and decrement buttons are working as intended in
+            <a href="/#/foo" target="_blank">foo</a>. Don't forget to ask any remaining questions.
+        </div>
+
     </section>
+
+    <div class="lab-section">
+        <b>P.s.</b> total errors during validation were <span id="score"></span>.
+    </div>
 </div>
 </body>
 </html>

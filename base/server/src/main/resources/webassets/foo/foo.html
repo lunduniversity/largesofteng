@@ -1,0 +1,41 @@
+<!--
+  -- This is a partial HTML file, meaning that it will be loaded dynamically and added to another HTML file.
+  -- Author: Rasmus Ros, rasmus.ros@cs.lth.se
+  -->
+<h1 class="d-sm-block d-none">Foo</h1>
+<p><em>Foo</em> is an example of a table display. This example will be expanded upon during the labs.</p>
+<div>
+    <form id="foo-form">
+        <div class="form-group">
+            <label for="foo-input">Add payload </label>
+            <input id="foo-input" class="form-control" type="text" placeholder="Enter here" required>
+        </div>
+        <button class="form-control btn btn-primary" type="submit">Submit</button>
+    </form>
+</div>
+<div class="mt-5">
+    <table class="table" style="background: white">
+        <thead>
+        <tr>
+            <th scope="col">Payload</th>
+            <th>Date</th>
+            <th>Count</th>
+        </tr>
+        </thead>
+        <tbody>
+        <template id="foo-template">
+            <tr>
+                <td></td>
+                <td></td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-primary btn-sm">-</button>
+                        <button class="btn btn-primary" disabled></button>
+                        <button class="btn btn-primary btn-sm">+</button>
+                    </div>
+                </td>
+            </tr>
+        </template>
+        </tbody>
+    </table>
+</div>

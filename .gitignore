@@ -1,4 +1,3 @@
 *.iml
-server/.idea
-.idea
-server/target
+*.idea
+base/server/target

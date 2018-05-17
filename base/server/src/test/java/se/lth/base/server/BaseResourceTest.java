@@ -1,6 +1,5 @@
 package se.lth.base.server;
 
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.After;
@@ -18,23 +17,28 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.util.Collections;
 
-import static se.lth.base.server.database.BaseDataAccessTest.IN_MEM_DRIVER_URL;
 
 public class BaseResourceTest extends JerseyTest {
 
-    public static final User ADMIN = new User(1, Role.ADMIN, "Admin");
-    public static final Credentials ADMIN_CREDENTIALS = new Credentials("Admin", "password", Role.ADMIN);
-    public static final User TEST = new User(2, Role.USER, "Test");
-    public static final Credentials TEST_CREDENTIALS = new Credentials("Test", "password", Role.USER);
+    protected static final User ADMIN = new User(1, Role.ADMIN, "Admin");
+    protected static final Credentials ADMIN_CREDENTIALS = new Credentials("Admin", "password", Role.ADMIN);
+    protected static final User TEST = new User(2, Role.USER, "Test");
+    protected static final Credentials TEST_CREDENTIALS = new Credentials("Test", "password", Role.USER);
+
+    private static final String IN_MEM_DRIVER_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
+
+    static {
+        Config.instance().setDatabaseDriver(IN_MEM_DRIVER_URL);
+    }
 
     private Session authedSession = null;
 
     protected void login(Credentials credentials) {
-        authedSession = new UserDataAccess(IN_MEM_DRIVER_URL).authenticate(credentials);
+        authedSession = new UserDataAccess(Config.instance().getDatabaseDriver()).authenticate(credentials);
     }
 
     protected void logout() {
-        new UserDataAccess(IN_MEM_DRIVER_URL).removeSession(authedSession.getSessionId());
+        new UserDataAccess(Config.instance().getDatabaseDriver()).removeSession(authedSession.getSessionId());
         authedSession = null;
     }
 
@@ -45,26 +49,18 @@ public class BaseResourceTest extends JerseyTest {
 
     @Before
     public void createSchema() {
-        new CreateSchema(IN_MEM_DRIVER_URL).createSchema();
+        new CreateSchema(Config.instance().getDatabaseDriver()).createSchema();
     }
 
     @After
     public void destroySchema() {
-        new CreateSchema(IN_MEM_DRIVER_URL).dropAll();
+        new CreateSchema(Config.instance().getDatabaseDriver()).dropAll();
     }
 
     @Override
     protected Application configure() {
-        AbstractBinder bindings = new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind(new UserDataAccess(IN_MEM_DRIVER_URL)).to(UserDataAccess.class);
-                bind(new SimpleDataAccess(IN_MEM_DRIVER_URL)).to(SimpleDataAccess.class);
-            }
-        };
-        return BaseServer.jerseyConfig(bindings);
+        return BaseServer.jerseyConfig();
     }
-
 
     @Provider
     private class CookieAdder implements ClientRequestFilter {

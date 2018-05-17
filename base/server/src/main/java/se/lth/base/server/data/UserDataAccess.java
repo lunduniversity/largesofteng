@@ -4,7 +4,6 @@ import se.lth.base.server.database.DataAccess;
 import se.lth.base.server.database.DataAccessException;
 import se.lth.base.server.database.ErrorType;
 
-import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -130,7 +129,7 @@ public class UserDataAccess extends DataAccess<User> {
                 .query("SELECT salt FROM user WHERE username = ?", credentials.getUsername())
                 .findFirst()
                 .orElseThrow(onError);
-        String hash = credentials.generatePasswordHash(salt);
+        UUID hash = credentials.generatePasswordHash(salt);
         User user = query("SELECT user_id, username, role FROM user " +
                 "JOIN user_role ON user.role_id = user_role.role_id " +
                 "WHERE username = ? AND password_hash = ?", credentials.getUsername(), hash)

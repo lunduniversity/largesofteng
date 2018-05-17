@@ -102,9 +102,10 @@ var baseLab = {
         }
         localStorage.setItem(taskId, true);
         t.classList.add('done');
-        var info = t.querySelector('.lab-task-info');
-        info.classList.remove('alert-warning');
-        info.classList.add('alert-success');
+        t.classList.remove('alert-warning');
+        t.classList.add('alert-success');
+        t.querySelectorAll('.lab-task-form input').forEach(i => {i.disabled = true});
+        t.querySelectorAll('.lab-task-form button').forEach(b => {b.style.display = 'none'});
         baseLab.updateProgress();
         return true;
     },
@@ -113,12 +114,13 @@ var baseLab = {
             .map(function(t) {
                 t.classList.remove('done');
                 t.classList.remove('error');
-                var info = t.querySelector('.lab-task-info');
-                info.classList.add('alert-warning');
-                info.classList.remove('alert-success');
+                t.classList.add('alert-warning');
+                t.classList.remove('alert-success');
+                t.querySelectorAll('.lab-task-form input').forEach(i => {i.disabled = false});
+                t.querySelectorAll('.lab-task-form button').forEach(b => {b.style.display = ''});
                 return t.getAttribute('id');
-            })
-            .forEach(t => localStorage.removeItem(t));
+            });
+        localStorage.clear();
         localStorage.setItem('errors', 0);
         baseLab.updateProgress();
         document.getElementById('current').textContent = 'Next task';

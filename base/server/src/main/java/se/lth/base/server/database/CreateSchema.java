@@ -22,7 +22,7 @@ public class CreateSchema {
     }
 
     public static void main(String[] args) throws Exception {
-        CreateSchema cs = new CreateSchema(Config.DATABASE_DRIVER);
+        CreateSchema cs = new CreateSchema(Config.instance().getDatabaseDriver());
         cs.dropAll();
         cs.createSchema();
     }

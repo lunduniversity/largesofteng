@@ -60,7 +60,7 @@ base.userAdminController = function() {
                 .forEach(activeEl => activeEl.classList.remove('active'));
             clickedEl.classList.add('active');
 
-            document.getElementById('user-data').querySelector('a').href = '/rest/simple/'+user.id;
+            document.getElementById('user-data').querySelector('a').href = '/rest/foo/user/'+user.id;
 
             // Set defaults of form values. This will allow the HTML reset button to work by default HTML behaviour.
             document.getElementById('user-id').defaultValue = user.id;
@@ -91,6 +91,7 @@ base.userAdminController = function() {
                         alert(user.message);
                     } else {
                         var el = document.querySelector('#user-list .active');
+                        el.onclick = () => view.selectUser(user, el);
                         view.update(el, user);
                         view.selectUser(user, el);
                     }

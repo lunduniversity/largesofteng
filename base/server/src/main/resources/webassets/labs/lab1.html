@@ -34,7 +34,6 @@
           Lab Structure
           *********************************************************************************************** -->
     <section class="lab-section">
-        <a class="anchor" name="Structure"></a>
         <h1>Lab Structure</h1>
 
         <ul>
@@ -61,22 +60,19 @@
             </li>
         </ul>
 
-        <div class="lab-task-group" id="firstTask">
-            <div class="lab-task-info alert alert-warning">
-                <h4 class="alert-heading">Your first task</h4>
-                <p>
-                    Any tests that you have to complete will look like this. As such this is your first task.
-                    so that you can see how spacing within an alert works with this kind of content. Note that the
-                    progress is tracked in the info bar at top.
-                </p>
-                <div class="lab-task-form">
-                    <button class="btn btn-primary" onclick="baseLab.complete('firstTask')">Click me to complete
-                    </button>
-                </div>
-                <div class="lab-task-completed">
-                    <hr>
-                    Nice, well done!
-                </div>
+        <div class="lab-task-group alert alert-warning" id="firstTask">
+            <h4 class="alert-heading">Your first task</h4>
+            <p>
+                Any tests that you have to complete will look like this. As such this is your first task.
+                Note that the progress is tracked in the info bar at top.
+            </p>
+            <div class="lab-task-form">
+                <button class="btn btn-primary" onclick="baseLab.complete('firstTask')">Click me to complete
+                </button>
+            </div>
+            <div class="lab-task-completed">
+                <hr>
+                Nice, well done!
             </div>
         </div>
     </section>
@@ -95,20 +91,18 @@
             focus of this course.
         </p>
         <p>
-            The system consists of three components: the web server in java (with a database), an Android client, and a
-            web client. Exactly what goes into the components is flexible, but must be decided by the student groups and
-            the course teacher. Note that the android and web client are not supposed to be identical and can support
-            different use cases. For example, the web client might be for administrators and the web client for normal
-            day to day users. Below is a picture of the components in the system with their main supporting frameworks
-            indicated. The Android client is described in another lab manual found on the course web page and will not
-            be further detailed here. None of the code is shared between the modules and they communicate only through a
-            HTTP REST API on the server (see below for an explanation of these terms).
+            The system consists of multiple components: the web server in java (with a database) and a web client. The
+            system can be easily extended with other clients, since the server and client is independent. Exactly what
+            goes into the components is flexible, but must be decided by the student groups and the course teacher.
+            Below is a picture of the components in the system with their main supporting frameworks indicated. None of
+            the code is shared between the components and they communicate only through HTTP with the server (the next
+            lab will explain HTTP and the database).
         </p>
 
         <figure>
-            <img style="max-height:300px; margin-top: 30px" src="lse.svg" class="img-fluid mx-auto d-block">
+            <img style="max-height: 18rem" src="overview.svg" class="img-fluid mx-auto d-block">
             <figcaption class="mx-auto d-block figure-caption" style="text-align: center">
-                The components in blue are dealt with in this manual, in the order indicated by the numbering.
+                The blue boxes are components in the system, the H2 SQL database is part of the backend.
             </figcaption>
         </figure>
 
@@ -117,7 +111,7 @@
             <h3>Directory Structure</h3>
             <p>
                 The structure of your team groups have a real counterpart in the directory of the BASE system, so that
-                there is no confusion concerning whom are responsible for which part.
+                there is no confusion concerning which team are responsible for which part.
             </p>
             <ol>
                 <li>
@@ -129,7 +123,11 @@
                     <code>base/server/</code> except for the front end directory.
                 </li>
                 <li>
-                    <b>Android</b> is everything located under <code>base/android/</code>.
+                    <b>Other component</b>. Depending on what project is used for the year, the final group will have
+                    their code in another directory. Examples of the final component are an additional Android client,
+                    in which case the directory could be <code>base/android</code>,
+                    or a team developing an algorithm with user behaviour data, in which case the directory could be
+                    in <code>base/server/algorithm</code>.
                 </li>
             </ol>
         </section>
@@ -139,8 +137,7 @@
             <h3>Frameworks</h3>
             <p>
                 The rationale for choosing the frameworks are given below. On a general level, all frameworks chosen
-                here
-                are very popular so that it is easy to find information on Stack Overflow etc.
+                here are very popular so that it is easy to find information on Stack Overflow etc.
             </p>
             <ol>
                 <li>
@@ -172,7 +169,8 @@
                     <a href="http://www.jboss.org/resteasy" target="_blank">RESTEasy</a>, or
                     <a href="https://en.wikipedia.org/wiki/Restlet" target="_blank">Restlet</a>.
                     However, they all implement the same specification
-                    (<a href="https://en.wikipedia.org/wiki/Java_API_for_RESTful_Web_Services" target="_blank">JAX-RS</a>),
+                    (<a href="https://en.wikipedia.org/wiki/Java_API_for_RESTful_Web_Services"
+                        target="_blank">JAX-RS</a>),
                     where Jersey is the reference implementation.
                 </li>
                 <li>
@@ -191,26 +189,24 @@
                 members, so that you can all master different parts of the system.
             </p>
         </section>
-        <div class="lab-task-group" id="systemBrowse">
-            <div class="lab-task-info alert alert-warning">
-                <h4 class="alert-heading">Browse the BASE GUI</h4>
-                <p>
-                    Go to <a href="http://localhost:8080" target="_blank">http://localhost:8080</a> and login using
-                    username <em>Admin</em> and password <em>password</em>. While there, feel free to look at both the
-                    Simple tab and Admin tab. Give the system a spin!
-                </p>
-                <hr>
-                <p><b>Do not sign out</b> when done.</p>
-                <hr>
-                <div class="lab-task-form">
-                    <button class="btn btn-primary" onclick="systemBrowseValidate()">I am done</button>
-                </div>
-                <div class="lab-task-completed">
-                    Excellent.
-                </div>
-                <div class="mt-3 lab-task-error alert alert-danger">
-                    Did you really login? The lab script can not detect your login. Login using the link above.
-                </div>
+        <div class="lab-task-group alert alert-warning" id="systemBrowse">
+            <h4 class="alert-heading">Browse the BASE GUI</h4>
+            <p>
+                Go to <a href="http://localhost:8080" target="_blank">http://localhost:8080</a> and login using
+                username <em>Admin</em> and password <em>password</em>. While there, feel free to look at both the
+                Foo tab and Admin tab. Give the system a spin!
+            </p>
+            <hr>
+            <p><b>Do not sign out</b> when done.</p>
+            <hr>
+            <div class="lab-task-form">
+                <button class="btn btn-primary" onclick="systemBrowseValidate()">I am done</button>
+            </div>
+            <div class="lab-task-completed">
+                Excellent.
+            </div>
+            <div class="mt-3 lab-task-error alert alert-danger">
+                Did you really login? The lab script can not detect your login. Login using the link above.
             </div>
         </div>
     </section>
@@ -322,9 +318,9 @@
 
             <h4>Operators</h4>
             <p>
-                All Java operators have identical JavaScript counterparts (except <code>instanceof</code>).
-                However, there are two equality operators in JavaScript <code>===</code> and <code>==</code>.
-                The first one with (===) works as from Java's == , while the second allow for type conversions.
+                All Java operators have identical JavaScript counterparts. However, there are two equality operators in
+                JavaScript <code>===</code> and <code>==</code>. The first one with (===) works as from Java's == ,
+                while the second allow for type conversions.
             </p>
             <pre><code>
                 [] == "";     // Both are empty arrays.
@@ -333,95 +329,94 @@
                 0 !== false;
             </code></pre>
 
-            <h4>Functional JavaScript</h4>
-            <p>
-                Loops and data manipulation is elegant with the functional API in JavaScript, which is very similar
-                to the Stream API in Java.
-            </p>
-            <pre><code>
-                arr.forEach(function(a) {
-                    console.log(a);
-                });
-            </code></pre>
-            <p>
-                Students familiar with functional programming will recognise the map and reduce. The example below will
-                calculate the lengths of all strings in the array.
-            </p>
-            <pre><code>
-                var arr = ['a', 'b', '', 'db', '1a'];
-                arr.map(s => s.length)
-                   .reduce((accumulator, currentValue) => accumulator + currentValue);
-            </code></pre>
-            <p>
-                This examples illustrates the arrow function expression (like <code>-></code> in Java). It is simply a
-                shorthand form of writing anonymous functions without the <code>function</code> keyword and
-                curly brackets.
-            </p>
+            <section class="lab-section-optional alert alert-info">
+                <details>
+                    <summary>Functional JavaScript</summary>
+                    <p>
+                        Loops and data manipulation is elegant with the functional API in JavaScript, which is very
+                        similar to the Stream API in Java.
+                    </p>
+                    <pre><code>
+                        arr.forEach(function(a) {
+                            console.log(a);
+                        });
+                    </code></pre>
+                    <p>
+                        Students familiar with functional programming will recognise the map and reduce. The example
+                        below will calculate the lengths of all strings in the array.
+                    </p>
+                    <pre><code>
+                        var arr = ['a', 'b', '', 'db', '1a'];
+                        arr.map(s => s.length)
+                           .reduce((accumulator, currentValue) => accumulator + currentValue);
+                    </code></pre>
+                    <p>
+                        This examples illustrates the arrow function expression (like <code>-></code> in Java). It is
+                        simply a shorthand form of writing anonymous functions without the <code>function</code> keyword
+                        and curly brackets.
+                    </p>
+                </details>
+            </section>
 
-            <div class="lab-task-group" id="jsProperty">
-                <div class="lab-task-info alert alert-warning">
-                    <h4 class="alert-heading">JavaScript objects</h4>
-                    <p> Create an object with property <code>'fruit'</code> and value <code>'banana'</code></p>
-                    <form onsubmit="return jsPropertyValidate(event)" class="lab-task-form">
-                        <div class="form-inline">
-                            <code class="m-0">var obj =</code>
-                            <input style="margin: 0px 3px" class="form-control" placeholder="{ example: 'something' }">
-                            <code class="m-0">;</code></div>
-                        <button class="mt-3 btn btn-primary" type="submit">Validate</button>
-                    </form>
-                    <div class="lab-task-completed">
-                        <hr>
-                        <p>
-                            Right. <code>{fruit: 'banana'}</code> or <code>{'fruit': 'banana'}</code>
-                            for when the attribute name contains weird characters like white space or hyphen.
-                        </p>
-                    </div>
-                    <div class="mt-3 lab-task-error alert alert-danger">
-                        Incorrect. You are expected to write something like <code>{property: 'value'}</code>
-                    </div>
+            <div class="lab-task-group alert alert-warning" id="jsProperty">
+                <h4 class="alert-heading">JavaScript objects</h4>
+                <p> Create an object with property <code>'fruit'</code> and value <code>'banana'</code></p>
+                <form onsubmit="return jsPropertyValidate(event)" class="lab-task-form">
+                    <div class="form-inline">
+                        <code class="m-0">var obj =</code>
+                        <input style="margin: 0px 3px" class="form-control" placeholder="{ example: 'something' }"
+                               required>
+                        <code class="m-0">;</code></div>
+                    <button class="mt-3 btn btn-primary" type="submit">Validate</button>
+                </form>
+                <div class="lab-task-completed">
+                    <hr>
+                    <p>
+                        Right. <code>{fruit: 'banana'}</code> or <code>{'fruit': 'banana'}</code> for when the attribute
+                        name contains weird characters like white space or hyphen.
+                    </p>
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Incorrect, try again. You are expected to write something like <code>{property: 'value'}</code>
                 </div>
             </div>
 
-            <div class="lab-task-group" id="jsFunction">
-                <div class="lab-task-info alert alert-warning">
-                    <h4 class="alert-heading">
-                        Which of the following is a correct function declaration in JavaScript?
-                    </h4>
-                    <p>
-                        There are a few different ways to declare functions, however of the ones below only one is
-                        correct.
-                    </p>
-                    <div class="lab-task-form">
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input onclick="baseLab.complete('jsFunction', 1)" class="form-check-input" type="radio"
-                                       name="jsFunction">
-                                <code>var getName = string function(number id) {...}</code>
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input onclick="baseLab.complete('jsFunction', 2)" class="form-check-input" type="radio"
-                                       name="jsFunction">
-                                <code>getName(id) {...}</code>
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input onclick="baseLab.complete('jsFunction', 3)" class="form-check-input" type="radio"
-                                       name="jsFunction">
-                                <code>var getName = function(id) {...}</code>
-                            </label>
-                        </div>
+            <div class="lab-task-group alert alert-warning" id="jsFunction">
+                <h4 class="alert-heading">
+                    Which of the following is a correct function declaration in JavaScript?
+                </h4>
+                <p>
+                    There are a few different ways to declare functions, however of the ones below only one is correct.
+                </p>
+                <div class="lab-task-form">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('jsFunction', 1)" class="form-check-input" type="radio"
+                                   name="jsFunction">
+                            <code>var getName = string function(number id) {...}</code>
+                        </label>
                     </div>
-                    <div class="lab-task-completed">
-                        <hr>
-                        <p>Right. <code>var getName = function(id) {...}</code></p>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('jsFunction', 2)" class="form-check-input" type="radio"
+                                   name="jsFunction">
+                            <code>getName(id) {...}</code>
+                        </label>
                     </div>
-                    <div class="mt-3 lab-task-error alert alert-danger">
-                        Incorrect. JavaScript functions do not have return types and need the <code>function</code>
-                        keyword.
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('jsFunction', 3)" class="form-check-input" type="radio"
+                                   name="jsFunction">
+                            <code>var getName = function(id) {...}</code>
+                        </label>
                     </div>
+                </div>
+                <div class="lab-task-completed">
+                    <hr>
+                    <p>Right. JavaScript functions do not have return types and need the <code>function</code> keyword.
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Incorrect, try again. try again.
                 </div>
             </div>
         </section>
@@ -431,7 +426,7 @@
             <h3>JavaScript Debugging</h3>
             <p>
                 Now is a good time to mention the excellent debugging options in your browser, open it with F12 (in most
-                major browsers) or cmd+shift+k on MacOS.
+                major browsers) or alt+cmd+k on MacOS.
                 Open the console to get an interactive JavaScript interpreter. There is also the option
                 of setting breakpoints and stepping through the code, however the specifics depend on which browser you
                 are using. If the debugger is hard to use, resorting to <code>console.log(str)</code> print outs is
@@ -439,22 +434,23 @@
                 used, which creates a pop-up. Alerts are also used for error handling purposes in BASE.
             </p>
 
-            <div class="lab-task-group" id="jsDebugging">
-                <div class="lab-task-info alert alert-warning">
-                    <h4 class="alert-heading">JavaScript console</h4>
-                    <p>Open the console and see what the result of this code execution is (by copy-paste): </p>
-                    <pre><code>(![]+[])[+!![]]</code></pre>
-                    <form onsubmit="return jsDebuggingValidate(event)" class="lab-task-form">
-                        <div class="form-group">
-                            <input class="form-control" type="text" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Validate</button>
-                    </form>
-                    <div class="lab-task-completed">
-                        <hr>
-                        Right. No wonder that JavaScript has a <q>reputation</q>. This is the work of implicit type
-                        conversion:
-                        <pre><code>
+            <div class="lab-task-group alert alert-warning" id="jsDebugging">
+                <h4 class="alert-heading">JavaScript console</h4>
+                <p>
+                    Open the console and see what the result of the following code execution is (by copy-paste).
+                </p>
+                <pre><code>(![]+[])[+!![]]</code></pre>
+                <form onsubmit="return jsDebuggingValidate(event)" class="lab-task-form">
+                    <div class="form-group">
+                        <input class="form-control" type="text" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Validate</button>
+                </form>
+                <div class="lab-task-completed">
+                    <hr>
+                    Right. No wonder that JavaScript has a <q>reputation</q>. This is the work of implicit type
+                    conversion:
+                    <pre><code>
                         ![] === false;          // [] is converted to true since the object is not undefined
                         false+[] === "false";   // string concatenation between empty string [] and false.toString()
                         // Thus, the first part in ()-parenthesis defines a string,
@@ -463,11 +459,10 @@
                         +!![] === +true === 1;  // conversion to number
                         ("false")[1] === "a";   // array indexing
                     </code></pre>
-                        <a href="http://www.jsfuck.com/" target="_blank">Source.</a>
-                    </div>
-                    <div class="mt-3 lab-task-error alert alert-danger">
-                        Incorrect.
-                    </div>
+                    <a href="http://www.jsfuck.com/" target="_blank">Source.</a>
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Incorrect, try again.
                 </div>
             </div>
         </section>
@@ -477,57 +472,194 @@
             <h3>Classes in JavaScript</h3>
             <p>
                 Developer's coming directly from Java might feel lost without the object oriented way of structuring
-                your application. Though there are proper object oriented programming language extensions, here is a
-                simplified and succinct version is used. In this course, the following way of constructing classes is
-                recommended:
+                your application. Though there are proper object oriented programming language extensions, in this
+                course a simplified and succinct version is used. Below is a car object that we want to change into a
+                class later:
             </p>
             <pre><code>
-            var car = {
-                manufacturer: 'Tesla',
-                model: 'S',
-                getInfo: function() {
-                    return this.manufacturer + " Model " + this.model;
-                }
-             };
-        </code></pre>
+                var car = {
+                    manufacturer: 'Tesla',
+                    model: 'S',
+                    getInfo: function() {
+                        // Direct reference to manufacturer and model is not available, use car. instead.
+                        return car.manufacturer + " Model " + car.model;
+                    }
+                 };
+             </code></pre>
             <p>
-                This defines a singleton object (it has just one instantiation). To have private functions on a
-                singleton we can wrap the declaration in an anonymous function. This anonymous function is immediately
-                called upon declaration. This pattern is called a module-function. In the project this is used a lot,
-                see e.g. <a href="/index.js" target="_blank">index.js</a>.
+                The example above has fixed values for what should be parameters; manufacturer and model. The next
+                example shows how it can be a proper class.
             </p>
             <pre><code>
-            var myModule = (function() {
-                var privateField = {something: 'value'};
-                var privateFunction = function() {return privateField.something;};
-                return {
-                   publicFunction: privateFunction
+                var Car = function(manufacturer, model) {
+                    this.manufacturer = manufacturer,
+                    this.model = model,
+                    this.getInfo = function() {
+                        return this.manufacturer + " Model " + this.model + privateFunction();
+                    };
+                    var privateFunction = function() {
+                        return "™";
+                    };
                 };
-            })();
-        </code></pre>
-            <p>
-                This can be called as <code>myModule.publicFunction() === 'value'</code>.
-                The next snippet will be a proper class that can be instantiated as much as needed.
-            </p>
-            <pre><code>
-            var Car = function(manufacturer, model) {
-                this.manufacturer = manufacturer,
-                this.model = model,
-                this.getInfo = function() {
-                    return this.manufacturer + " Model " + this.model + privateFunction();
-                };
-                var privateFunction = function() {
-                    return "™";
-                };
-            };
-        </code></pre>
+            </code></pre>
             <p>
                 Note that this is just a function. However, calling it like <code>Car('Tesla','S')</code> does nothing
                 since the function does not have a <code>return</code> value. Instead, use the <code>new</code> keyword,
                 exactly like in Java. E.g., <code>new Car('Tesla', 'S').getInfo()</code> returns <code>'Tesla Model
-                S™'</code>; Inheritance is something you will have to live without, unless you figure it out by
-                yourself.
+                S™'</code>. The <code>new</code> keyword creates the object and makes <code>this</code> available and
+                referring to the object being crated.
             </p>
+            <p>
+                Inheritance is something you will have to live without, unless you figure it out by yourself.
+            </p>
+
+            <section class="lab-section-optional alert alert-info">
+                <details>
+                    <summary>Modules</summary>
+                    <p>
+                        Many JavaScript libraries organize their content by modules to avoid namespace collisions.
+                        Modules are also use to hide some implementation details, only some of the functions are
+                        explicitly declared as public.
+                        The namespace in BASE is <code>base</code>. You can type it in the console to see which
+                        properties are available. It is just an ordinary JavaScript object that is dynamically built as
+                        the scripts are loaded. See e.g. <a target="_blank" href="/foo/foo.js">foo.js</a> and
+                        <a target="_blank" href="/admin/user-admin.js>">user-admin.js</a> for scripts that add to the
+                        <code>base</code> module.
+                    </p>
+                    <p>
+                        Modules can also be created in one atomic operation, instead of spread over multiple files like
+                        they are for the <code>base</code> module. Below is one example of that, called the
+                        module pattern:
+                    </p>
+                    <pre><code>
+                        var factory = (function() {
+                            var Car = function(manufacturer, model) {
+                                this.manufacturer = manufacturer;
+                                this.model = model;
+                            };
+                            var manufacturer = 'Tesla';
+                            return {
+                                createCar: function(model) {
+                                    return new Car(manufacturer, model);
+                                },
+                                setManufacturer: function(m) {
+                                    manufacturer = m;
+                                }
+                            };
+                        })();
+                   </code></pre>
+                    <p>
+                        This defines a singleton object (it has just one instantiation). The difference between this and
+                        the very first example in this section is that the module pattern can have private declarations.
+                        It works by defining a function that is immediately called upon declaration. In this way, only
+                        one instance of the object can be obtained. The example is functionally equivalent to this:
+                        <code>var factoryCreator = function() {...}; var factory = factoryCreator();</code>. However,
+                        that can be instantiated multiple times: <code>var factory2 = factoryCreator();</code>; while
+                        the original module could only be instantiated once.
+                    </p>
+                </details>
+            </section>
+        </section>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="Jasmine"></a>
+            <h3>Unit Testing JavaScript with Jasmine</h3>
+            <p>
+                A unit test is a piece of code that tests the implementation of a specific functionality.
+                The tests in BASE are implemented using the Jasmine framework. Follow the tutorial here for more
+                information:
+                <a href="https://jasmine.github.io/tutorials/your_first_suite" target="_blank">Jasmine tutorial</a>
+                Each Jasmine unit test is defined by calling <code>it</code>-function. Assertions are made
+                using the <code>expect</code>-function. Example:
+            </p>
+            <pre><code class="language-javascript">
+                it('should return 5 when myFunction is called', function() {
+                    var testResult = myFunction();
+                    expect(testResult).toBe(5);
+                });
+            </code></pre>
+            <p>
+                There is a HTML file that includes Jasmine that can be opened in BASE. Find it in the webassets
+                directory:
+                <a href="/specs.html" target="_blank">/specs.html</a>. Opening the file in a
+                browser or through the BASE server runs the unit tests.
+            </p>
+
+            <section class="lab-section-optional alert alert-info">
+                <details>
+                    <summary>Asynchronous JavaScript Code</summary>
+                    <p>
+                        Code that interfaces with the BASE server through HTTP is asynchronous. That means that the
+                        code will run at a later time, after the current function has ended. For example, executing the
+                        code below will print out 'completed' and then 'got foos', even
+                        though they are defined in the opposite order.
+                    </p>
+                    <pre><code class="language-javascript">
+                        base.rest.getFoos().then(function(foos) {
+                            console.log('got foos', foos);
+                        });
+                        console.log('completed');
+                    </code></pre>
+                    <p>
+                        As such, the following code will not work well:
+                    </p>
+                    <pre><code class="language-javascript">
+                        var returnedFoos;
+                        base.rest.getFoos().then(function(foos) {
+                            returnedFoos = foos;
+                        });
+                        // Use returnedFoos somehow:
+                        console.log(returnedFoos);
+                    </code></pre>
+                    <p>
+                        As you will see if you run the code in the console, the console print out of
+                        <code>returnedFoos</code> will show that it is undefined. However, if <code>returnedFoos</code>
+                        is referenced afterwards it will now be defined to the <code>foos</code> returned from the
+                        server.
+                    </p>
+                    <p>
+                        The functions in <code>base.rest</code> returns JavaScript
+                        <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/
+                           JavaScript/Reference/Global_Objects/Promise">promises</a>. Promises have a <code>then</code>
+                        function that can be called with another function as a parameter. All functions added with
+                        <code>then</code> will be executed when the HTTP response is received.
+                    </p>
+                    <p>
+                        Unit testing asynchronous functions in JavaScript can be done by adding <code>done</code> to
+                        the function passed to the <code>it</code>-function in Jasmine. Then Jasmine will pass a
+                        function that you can call when you are done with the code. Otherwise Jasmine might terminate
+                        the test before your assertions have completed. The advanced example below tests foo an
+                        implementation
+                    </p>
+                    <pre><code class="language-javascript">
+                        // This function tests that the foo controller loads the
+                        it('should fetch foos on load', function(done) {
+                            // This creates a promise with an empty list that is used as fake data from the server.
+                            // The fake data needs to be of a promise type because the foo controller expects that.
+                            var foosPromise = Promise.resolve([]);
+
+                            // spyOn is used to mock function calls in Jasmine. When the foo controller calls getFoos,
+                            // then Jasmine will intercept the call and prevent a request to the server. Instead
+                            // when the controller calls base.rest.getFoos(), then the foosPromise is returned.
+                            spyOn(base.rest, 'getFoos').and.returnValue(foosPromise);
+
+                            // With the mocking in place we can now call the controller.
+                            // The foo controller will add a then to the foosPromise.
+                            base.fooController().load();
+
+                            // The test can then be implemented by chaining another then to the foosPromise:
+                            foosPromise.then(function() {
+                                // This simply checks that the getFoos have been called
+                                expect(base.rest.getFoos).toHaveBeenCalled();
+
+                                // Jasmine will block the test from completing until done is called, so do that here
+                                // now that the expects are completed.
+                                done();
+                            });
+                        });
+                    </code></pre>
+                </details>
+            </section>
         </section>
     </section>
 
@@ -541,7 +673,7 @@
             HTML is the main structure of a web page. In this section we will go through some of the elements and
             components that will be need in the project.
             If the material here is too short, then see a more beginner friendly
-            <a href="http://htmldog.com/guides/html/begibeginnernner/" target="_blank">tutorial</a>.
+            <a href="http://htmldog.com/guides/html/beginner/" target="_blank">tutorial</a>.
         </p>
         <p>
             HTML is similar to XML, but is usually not valid XML since some tags do not need a closing tag. Let's show
@@ -639,27 +771,25 @@
             </dd>
         </dl>
 
-        <div class="lab-task-group" id="htmlHeader">
-            <div class="lab-task-info alert alert-warning">
-                <h4 class="alert-heading">Which HTML element will produce the largest text?</h4>
-                <div class="lab-task-form">
-                    <form onsubmit="return htmlHeaderValidate(event)">
-                        <div class="form-group">
-                            <label for="htmlHeaderInput">Input an example of the element with any text.</label>
-                            <input class="form-control" id="htmlHeaderInput" type="text">
-                        </div>
-                        <button class="mb-3 btn btn-primary" type="submit">Verify</button>
-                    </form>
-                </div>
-                <div class="lab-task-completed">
-                    <hr>
-                    Right.
-                </div>
-                <div id="htmlHeaderResult" class="mt-3 alert alert-secondary">Result will go here.
-                </div>
-                <div class="lab-task-error alert alert-danger">
-                    Incorrect. Make sure that the result is valid HTML and that you have included some text.
-                </div>
+        <div class="lab-task-group alert alert-warning" id="htmlHeader">
+            <h4 class="alert-heading">Which HTML element will produce the largest text?</h4>
+            <div class="lab-task-form">
+                <form onsubmit="return htmlHeaderValidate(event)">
+                    <div class="form-group">
+                        <label for="htmlHeaderInput">Input an example of the element with any text.</label>
+                        <input class="form-control" id="htmlHeaderInput" type="text">
+                    </div>
+                    <button class="mb-3 btn btn-primary" type="submit">Verify</button>
+                </form>
+            </div>
+            <div class="lab-task-completed">
+                <hr>
+                Right.
+            </div>
+            <div id="htmlHeaderResult" class="mt-3 alert alert-secondary">Result will go here.
+            </div>
+            <div class="lab-task-error alert alert-danger">
+                Incorrect, try again. Make sure that the result is valid HTML and that you have included some text.
             </div>
         </div>
 
@@ -724,48 +854,46 @@
                 the default POST and still keep the useful form validation, follow the format below of the
                 <code>onsubmit</code> declaration.
             </p>
-            <div class="lab-task-group" id="htmlFormTryout">
-                <div class="lab-task-info alert alert-warning">
-                    <h4 class="alert-heading">Try to the submit the form below</h4>
+            <div class="lab-task-group alert alert-warning" id="htmlFormTryout">
+                <h4 class="alert-heading">Try to submit the form below</h4>
 
-                    <pre><code>
-                        &lt;form onsubmit="return (function(event) { event.preventDefault(); /* do stuff */ return false; })(event)"&gt;
-                            &lt!-- It is better to give the function a name than to use anonymous functions, but here you can see
-                                   what the function should look like. -->
-                            &lt;label&gt;
-                                This input must be specified, using the required modifier.
-                                &lt;input type="text" required&gt;
-                            &lt;/label&gt;
-                            &lt;label&gt;
-                                This input should match the RegEx pattern of a number between 1-9 and then any number of numbers.
-                                &lt;input type="text" pattern="[1-9][0-9]*"&gt;
+                <pre><code>
+                    &lt;form onsubmit="return (function(event) { event.preventDefault(); /* do stuff */ return false; })(event)"&gt;
+                        &lt!-- It is better to give the function a name than to use anonymous functions, but here you can see
+                               what the function should look like. -->
+                        &lt;label&gt;
+                            This input must be specified, using the required modifier.
                             &lt;input type="text" required&gt;
-                            &lt;button type="submit"&gt;Submit&lt;/button&gt;
-                        &lt;/form&gt;
-                    </code></pre>
-                    <p>
-                        <b>Try input</b> some valid data and submit the form when done.
-                    </p>
-                    <form class="lab-task-form" onsubmit="return htmlFormTryoutValidate(event)">
-                        <div class="form-group">
-                            <label>
-                                This input must be specified, using the required modifier.
-                                <input class="form-control" type="text" required>
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                This input should match the RegEx pattern of a number between 1-9 and then any number of
-                                numbers.
-                                <input class="form-control" type="text" pattern="[1-9][0-9]*">
-                            </label>
-                        </div>
-                        <button class="btn btn-primary" type="submit">Submit</button>
-                    </form>
-                    <div class="lab-task-completed">
-                        <hr>
-                        Easy.
+                        &lt;/label&gt;
+                        &lt;label&gt;
+                            This input should match the RegEx pattern of a number between 1-9 and then any number of numbers.
+                            &lt;input type="text" pattern="[1-9][0-9]*" required&gt;
+                        &lt;input type="text" required&gt;
+                        &lt;button type="submit"&gt;Submit&lt;/button&gt;
+                    &lt;/form&gt;
+                </code></pre>
+                <p>
+                    <b>Try input</b> some valid data and submit the form when done.
+                </p>
+                <form onsubmit="return htmlFormTryoutValidate(event)">
+                    <div class="form-group">
+                        <label>
+                            This input must be specified, using the required modifier.
+                            <input class="form-control" type="text" required>
+                        </label>
                     </div>
+                    <div class="form-group">
+                        <label>
+                            This input should match the RegEx pattern of a number between 1-9 and then any number of
+                            numbers.
+                            <input class="form-control" type="text" pattern="[1-9][0-9]*" required>
+                        </label>
+                    </div>
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </form>
+                <div class="lab-task-completed">
+                    <hr>
+                    Easy.
                 </div>
             </div>
         </section>
@@ -970,57 +1098,50 @@
                 <code>box-sizing: content-box</code> to <code>box-sizing: border-box</code> for you!
             </div>
 
-            <div class="lab-task-group" id="cssSpace">
-                <div class="lab-task-info alert alert-warning">
-                    <h4 class="alert-heading">Which statement is correct about spacing between HTML elements?</h4>
-                    <div class="lab-task-form">
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input onclick="baseLab.complete('cssSpace', 1)" class="form-check-input"
-                                       name="cssSpace"
-                                       type="radio">
-                                <ul>
-                                    <li>margin is space between elements</li>
-                                    <li>padding is space between content and border</li>
-                                    <li>border is space padding and margin</li>
-                                </ul>
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input onclick="baseLab.complete('cssSpace', 2)" class="form-check-input"
-                                       name="cssSpace" type="radio">
-                                <ul>
-                                    <li>margin is space between elements</li>
-                                    <li>padding is space between content and border</li>
-                                    <li>border has no space</li>
-                                </ul>
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input onclick="baseLab.complete('cssSpace', 3)" class="form-check-input"
-                                       name="cssSpace" type="radio">
-                                <ul>
-                                    <li>margin is space between content and border</li>
-                                    <li>padding is space between elements</li>
-                                    <li>border has no space</li>
-                                </ul>
-                            </label>
-                        </div>
+            <div class="lab-task-group alert alert-warning" id="cssSpace">
+                <h4 class="alert-heading">Which statement is correct about spacing between HTML elements?</h4>
+                <div class="lab-task-form">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('cssSpace', 1)" class="form-check-input"
+                                   name="cssSpace"
+                                   type="radio">
+                            <ul>
+                                <li>margin is space between elements</li>
+                                <li>padding is space between content and border</li>
+                                <li>border is space padding and margin</li>
+                            </ul>
+                        </label>
                     </div>
-                    <div class="bm-0 lab-task-completed">
-                        <ul>
-                            <li>margin is space between elements</li>
-                            <li>padding is space between content and border</li>
-                            <li>border is space between content and padding</li>
-                        </ul>
-                        <hr>
-                        Right.
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('cssSpace', 2)" class="form-check-input"
+                                   name="cssSpace" type="radio">
+                            <ul>
+                                <li>margin is space between elements</li>
+                                <li>padding is space between content and border</li>
+                                <li>border has no space</li>
+                            </ul>
+                        </label>
                     </div>
-                    <div class="lab-task-error alert alert-danger">
-                        Incorrect.
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('cssSpace', 3)" class="form-check-input"
+                                   name="cssSpace" type="radio">
+                            <ul>
+                                <li>margin is space between content and border</li>
+                                <li>padding is space between elements</li>
+                                <li>border has no space</li>
+                            </ul>
+                        </label>
                     </div>
+                </div>
+                <div class="bm-0 lab-task-completed">
+                    <hr>
+                    Right.
+                </div>
+                <div class="lab-task-error alert alert-danger">
+                    Incorrect, try again.
                 </div>
             </div>
         </section>
@@ -1053,7 +1174,7 @@
             </p>
         </section>
 
-        <section class="CSSSelector">
+        <section class="lab-sub-section">
             <a class="sub-anchor" name="CSSSelector"></a>
             <h3>Selectors</h3>
             <p>
@@ -1061,86 +1182,102 @@
                 major forms: <code>element</code>, <code>.class</code>, and <code>#id</code>. The first matches the name
                 of an element, the second matches on an elements declared classes, and finally the third matches to a
                 unique identifier. These selectors can be combined in a chain to match parents and then their children
-                in the tree of HTML elements, which is best explained by an example.
+                in the tree of HTML elements. To combine multiple CSS selectors, simply append them with space, like so:
+                <code>#example-div span</code>. That will match for a div that has <code>id="example-div"</code> and
+                then select all its child elements of type <code>span</code>.
+                An element and a class selector can also be directly combined without span: <code>span.bolded</code>,
+                it will match elements with a specific class or classes. Below is an example of all of this in practice.
             </p>
 
             <pre><code class="language-markup">
-            &lt;style&gt;
-                .example-div {
-                    background-color: #d15e5e;
-                    color: white;
-                    font-weight: normal;
-                }
-                .example-div span.bolded {
-                    font-weight: bold;
-                }
-            &lt;/style&gt;
+                &lt;style&gt;
+                    #example-div {
+                        background-color: #f2f8a2;
+                        font-weight: normal;
+                        text-decoration: underline;
+                    }
+                    #example-div span.bolded {
+                        font-weight: bold;
+                    }
+                &lt;/style&gt;
 
-            &lt;div class="example-div"&gt;
-                Top level
-                &lt;span class="bolded"&gt;Some text.&lt;/span&gt;
-                &lt;span&gt;No class here.&lt;/span&gt;
-                &lt;p class="bolded"&gt;Text in p.&lt;/p&gt;
-            &lt;/div&gt;
-        </code></pre>
+                &lt;div id="example-div"&gt;
+                    Top level
+                    &lt;span class="bolded"&gt;Some text.&lt;/span&gt;
+                    &lt;span&gt;No class here.&lt;/span&gt;
+                    &lt;p class="bolded"&gt;Text in p.&lt;/p&gt;
+                &lt;/div&gt;
+            </code></pre>
 
             <p>This produces the following:</p>
 
-            <div style="background-color: #d15e5e; color:white">
+            <div style="background-color: #f2f8a2; text-decoration:underline">
                 Top level
                 <span style="font-weight: bold">Some text.</span>
                 <span>No class here.</span>
                 <p class="bolded">Text in p.</p>
             </div>
-            <div class="lab-task-group" id="cssSelect">
-                <div class="lab-task-info alert alert-warning">
-                    <h4 class="alert-heading">Which of the following uses a class selector?</h4>
-                    <p>The selector should grab <code class="language-markup">&lt;span
-                        class="name"&gt;&lt;/span&gt;</code>
-                    </p>
-                    <div class="lab-task-form">
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input onclick="baseLab.complete('cssSelect', 1)" class="form-check-input"
-                                       name="cssSelect" type="radio">
-                                <code>span name</code>
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input onclick="baseLab.complete('cssSelect', 2)" class="form-check-input"
-                                       name="cssSelect" type="radio">
-                                <code>#name</code>
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <input onclick="baseLab.complete('cssSelect', 3)" class="form-check-input"
-                                       name="cssSelect" type="radio">
-                                <code>span.name</code>
-                            </label>
-                        </div>
+
+            <p>
+                Two things of note in this example. Firstly, the <code>&lt;p&gt;</code> tag is not bolded, since it is
+                the wrong element type. The selector <code>span.bolded</code> matches only on <code>&lt;span&gt;</code>
+                elements with the class bolded.
+                Secondly, styling can be overriden. <code>font-weight</code> is set to both
+                normal and bold, yet it is displayed as bold in the span with class bolded. CSS applies the style
+                which is most specific. In this case the second selector is more specific than the first,
+                since it has more selectors. See
+                <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity">here</a> for more
+                information about the specificity rules.
+            </p>
+
+            <div class="lab-task-group alert alert-warning" id="cssSelect">
+                <h4 class="alert-heading">Which of the following uses a class selector?</h4>
+                <p>The selector should grab <code class="language-markup">&lt;span class="name"&gt;&lt;/span&gt;</code>
+                </p>
+                <div class="lab-task-form">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('cssSelect', 1)" class="form-check-input"
+                                   name="cssSelect" type="radio">
+                            <code>span name</code>
+                        </label>
                     </div>
-                    <div class="bm-0 lab-task-completed">
-                        Right. <code>.name</code> or <code>span.name</code> works. <code>#name</code> is for the id
-                        attribute and <code>span name</code> would grab something like:
-                        <code class="language-markup">
-                            &lt;span&gt;
-                            &lt;name&gt;&lt;/name&gt;
-                            &lt;/span&gt;
-                        </code>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('cssSelect', 2)" class="form-check-input"
+                                   name="cssSelect" type="radio">
+                            <code>#name</code>
+                        </label>
                     </div>
-                    <div class="mt-3 lab-task-error alert alert-danger">
-                        Incorrect, try again.
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input onclick="baseLab.complete('cssSelect', 3)" class="form-check-input"
+                                   name="cssSelect" type="radio">
+                            <code>span.name</code>
+                        </label>
                     </div>
+                </div>
+                <div class="bm-0 lab-task-completed">
+                    <hr>
+                    Right. <code>#name</code> is for the id attribute and <code>span name</code> would grab something
+                    like:
+                    <code class="language-markup">
+                        &lt;span&gt;
+                        &lt;name&gt;&lt;/name&gt;
+                        &lt;/span&gt;
+                    </code>
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Incorrect, try again. try again.
                 </div>
             </div>
 
             <p class="language-javascript mt-5">
                 Selectors can also be used programmatically using the <a href="#DOM">DOM</a> API: <br>
-                <code>var element = document.querySelector('sel')</code> or <br>
+                <code>var element = document.querySelector('sel')</code> (returns DOMElement) or <br>
                 <code>var elements = document.querySelectorAll('sel')</code>. <br>
-                These functions are defined on all HTML elements (not just document).
+                These functions are defined on all HTML elements (not just on the global document element).
+                See below for an example that uses the <code>querySelectorAll</code> on another element.:
             </p>
             <pre><code class="language-javascript">
                 var someDiv = document.querySelector('#someDiv');
@@ -1149,10 +1286,9 @@
             </code></pre>
 
 
-            <div class="lab-task-group" id="cssSelector">
-                <div class="lab-task-info alert alert-warning">
-                    <h4 class="alert-heading">Write a selector that selects both spans in myDiv </h4>
-                    <pre><code class="language-markup">
+            <div class="lab-task-group alert alert-warning" id="cssSelector">
+                <h4 class="alert-heading">Write a selector that selects both spans in myDiv </h4>
+                <pre><code class="language-markup">
                     &lt;div id="myDiv"&gt;
                         &lt;b&gt;Don't select me&lt;/b&gt;
                         &lt;span&gt;
@@ -1163,63 +1299,64 @@
                         &lt;/span&gt;
                     &lt;/div&gt;
                 </code></pre>
-                    <div id="myDiv" style="display: none">
-                        <b>Don't select me</b>
-                        <span>Select me</span>
-                        <span>And me</span>
-                    </div>
-                    <p>
-                        Try debugging in console using
-                        <code class="language-javascript">document.querySelector('sel')</code>.
-                    </p>
-                    <div class="lab-task-form mt-3">
-                        <form onsubmit="return cssSelectorValidate(event)">
-                            <input class="form-control" type="text" placeholder="selector" required>
-                            <button class="mt-3 btn btn-primary" type="submit">Validate</button>
-                        </form>
-                    </div>
-                    <div class="bm-0 lab-task-completed">
-                        <hr>
-                        <code>#myDiv span</code> is the shortest version.
-                        <code>#myDiv :not(:first-child)</code> also works, and many others.
-                        <hr>
-                        Nicely done, that concludes the Basic CSS section.
-                    </div>
-                    <div class="mt-3 lab-task-error alert alert-danger">
-                        Incorrect. Is it a valid selector? Does it also return the <code>&lt;b&gt;</code> tag?
-                    </div>
+                <div id="myDiv" style="display: none">
+                    <b>Don't select me</b>
+                    <span>Select me</span>
+                    <span>And me</span>
+                </div>
+                <p>
+                    Try debugging in the console using
+                    <code class="language-javascript">document.querySelectorAll('sel')</code> for better feedback.
+                </p>
+                <p>
+                    <b>Hint!</b>
+                    You will have to use a hierarchy of two selectors. One to grab the div with the id myDiv, and
+                    another for selecting only the <code>span</code>-tags and not the <code>b</code>-tag.
+                </p>
+                <div class="lab-task-form mt-3">
+                    <form onsubmit="return cssSelectorValidate(event)">
+                        <input class="form-control" type="text" placeholder="selector" required>
+                        <button class="mt-3 btn btn-primary" type="submit">Validate</button>
+                    </form>
+                </div>
+                <div class="bm-0 lab-task-completed">
+                    <hr>
+                    <code>#myDiv span</code> is the shortest version.
+                    <code>#myDiv :not(:first-child)</code> also works, and many others.
+                    <hr>
+                    Nicely done, that concludes the Basic CSS section.
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Incorrect, try again. Is it a valid selector? Does it also return the <code>&lt;b&gt;</code> tag?
                 </div>
             </div>
         </section>
-    </section>
+        <section class="lab-sub-section language-html">
+            <a class="sub-anchor" name="Bootstrap"></a>
+            <h3>Bootstrap</h3>
+            <p>
+                There have been a few references to styling by
+                <a href="http://getbootstrap.com/" target="_blank">Bootstrap</a>
+                so far. This section will only go through the bare minimum and refer to their excellent documentation
+                for
+                the
+                rest.
+            </p>
+            <div class="alert alert-info">
+                <b>Heads up!</b>
+                Check out their documentation here with the right version. <br>
+                <a href="https://getbootstrap.com/docs/4.0/getting-started/contents/" target="_blank">
+                    https://getbootstrap.com/docs/4.0/getting-started/contents/
+                </a>
+            </div>
 
-    <!--  ***********************************************************************************************
-          Bootstrap Basics
-          *********************************************************************************************** -->
-    <section class="lab-section language-html">
-        <a class="anchor" name="Bootstrap"></a>
-        <h1>Bootstrap (CSS)</h1>
-        <p>
-            There have been a few references to styling by
-            <a href="http://getbootstrap.com/" target="_blank">Bootstrap</a>
-            so far. This section will only go through the bare minimum and refer to their excellent documentation for
-            the
-            rest.
-        </p>
-        <div class="alert alert-info">
-            <b>Heads up!</b>
-            Check out their documentation here with the right version. <br>
-            <a href="https://getbootstrap.com/docs/4.0/getting-started/contents/" target="_blank">
-                https://getbootstrap.com/docs/4.0/getting-started/contents/
-            </a>
-        </div>
-
-        <p>
-            Bootstrap has a grid system that can be used to organize content on the web site. Below is an example of
-            even width columns. Check out their documentation for more options on columns. They also have lots of helper
-            utility classes, such as the <code>border</code> class used below.
-        </p>
-        <pre><code>
+            <p>
+                Bootstrap has a grid system that can be used to organize content on the web site. Below is an example of
+                even width columns. Check out their documentation for more options on columns. They also have lots of
+                helper
+                utility classes, such as the <code>border</code> class used below.
+            </p>
+            <pre><code>
             &lt;div class="row"&gt;
                 &lt;div class="col border"&gt;
                     Text 1
@@ -1230,24 +1367,26 @@
             &lt;/div&gt;
         </code></pre>
 
-        <p>The result of the above:</p>
-        <div class="row">
-            <div class="col border">
-                Text 1
+            <p>The result of the above:</p>
+            <div class="row">
+                <div class="col border">
+                    Text 1
+                </div>
+                <div class="col border">
+                    Text 2
+                </div>
             </div>
-            <div class="col border">
-                Text 2
-            </div>
-        </div>
 
-        <div class="lab-task-group" id="bootstrapForms">
-            <div class="lab-task-info alert alert-warning">
+            <div class="lab-task-group alert alert-warning" id="bootstrapForms">
                 <h4 class="alert-heading">Bootstrap forms</h4>
                 <p>
                     All forms in this this document have been styled using bootstrap.
                     Go back to the <a href="#Forms">HTML Forms example</a> and see how to format buttons using
-                    Bootstrap. Did you know that you can right click on any HTML element and select <q>Inspect</q> or
-                    <q>Inspect Element</q>, that can be useful right now.
+                    Bootstrap.
+                    <br>
+                    <b>Hint!</b>
+                    Did you know that you can right click on any HTML element and select <q>Inspect</q> or <q>Inspect
+                    Element</q>, that can be useful right now.
                 </p>
                 <div class="lab-task-form">
                     <div class="form-check">
@@ -1276,42 +1415,51 @@
                     </div>
                 </div>
                 <div class="bm-0 lab-task-completed">
-                    <p>
                     <hr>
-                    Right.<br>
-                    <code>&lt;button class="btn btn-primary"&gt;</code> produces a blue button. Bootstrap has
-                    thematic colors defined. See
-                    <a target="_blank" href="https://getbootstrap.com/docs/4.0/utilities/colors/">here</a>
-                    options, such as <code>btn-secondary</code> or <code>btn-success</code>. These colors are
-                    analogous to a few other elements.
+                    <p>
+                        Right.
                     </p>
-                    <button class="btn btn-primary">Button</button>
+                    <hr>
+                    <p>
+                        Bootstrap has thematic colors defined. See
+                        <a target="_blank" href="https://getbootstrap.com/docs/4.0/utilities/colors/">here</a> for more
+                        options, such as <code>btn-secondary</code> or <code>btn-success</code>. These colors are
+                        analogous to a few other elements, such as the <code>alert</code> used for the lab tasks.
+                    </p>
+                    <button class="btn btn-primary">btn-primary</button>
+                    <button class="btn btn-secondary">btn-secondary</button>
+                    <button class="btn btn-success">btn-success</button>
+                    <button class="btn btn-danger">btn-danger</button>
                 </div>
                 <div class="mt-3 lab-task-error alert alert-danger">
-                    Incorrect, try again.
+                    Incorrect, try again. try again.
                 </div>
+                <hr>
+                <span>
+                For your information, here is an example of an unstyled button, without using Bootstrap:
+                <button>Plain button</button>
+            </span>
             </div>
-        </div>
+        </section>
     </section>
 
     <!--  ***********************************************************************************************
-         Modifying Front End
+         BASE Front End
          *********************************************************************************************** -->
     <section class="lab-section">
         <a class="anchor" name="Front-End"></a>
-        <h1>Modifying Front End in BASE</h1>
+        <h1>Front End in BASE</h1>
         <p>
-            It is time to do modifications to the frontend of the actual <a href="#BASE">BASE system</a>. We are going
-            to add a simple extension to the Simple tab, in addition to the data field, there will be a count of the
-            number of data. This could represent the number of items in a shopping basket etc.
+            It is time to dive deeper in the frontend of the actual <a href="#BASE">BASE system</a>.
         </p>
         <p>
             When a user goes to <a href="/" target="_blank">localhost:8080</a> the server serves the
             <a href="/index.html">index.html</a> and <a target="_blank" href="/index.js">index.js</a> files. They
-            contain the contents for the navigation header and the code for replacing the tab with either 'Simple' or
+            contain the contents for the navigation header and the code for replacing the tab with either 'Foo' or
             'User Admin' stuff. In the script there is an object containing the routing information for said tabs. If
             additional tabs are needed in your project, then it is sufficient to modify the <code>routingTable</code>
-            object and to add a script tag in <code>index.html</code>.
+            object and to add a script tag in <code>index.html</code>. If the tab should be accessible from the
+            navigational header, then add an <code>a</code>-tag to the <code>nav</code> in <code>index.html</code>.
         </p>
         <p>
             BASE is built using the
@@ -1332,35 +1480,137 @@
            target="_blank">Source.</a>
 
         <p class="mt-3">
-            When the user clicks on the 'Simple' link in the navigation header the script in <code>index.js</code>
-            loads the <a target="_blank" href="/simple/simple.html">simple.html</a> and adds it to the web page. It
-            then calls the load function of the controller <code>base.simpleController</code>, defined in
-            <a target="_blank" href="/simple/simple.js">simple.js</a>.
+            When the user clicks on the 'Foo' link in the navigation header the script in <code>index.js</code>
+            loads the <a target="_blank" href="/foo/foo.html">foo.html</a> and adds it to the web page.
+            This is done through the <code>DOM</code> as such:
+        </p>
+        <pre><code class="language-javascript">
+            var fooHTML = ...; // The html is fetched from the server through a HTTP call
+            document.getElementById('main-tab').innerHTML = fooHTML;
+        </code></pre>
+        <p>
+            It then calls the load function of the controller <code>base.fooController</code>, defined in
+            <a target="_blank" href="/foo/foo.js">foo.js</a>.
         </p>
 
-        <div class="lab-task-group" id="e2eServer">
-            <div class="lab-task-info alert alert-warning">
-                <h4 class="alert-heading">Server Side Stub</h4>
-                <p>
-                    In order for the server to return data in the format we want the first task will be to modify the
-                    <code>Simple.java</code> file. It is located in
-                    <code>server/src/main/java/se/lth/base/server/data/Simple.java</code>.
-                </p>
-                <p>
-                    Add a field without modifying the constructor, like this:
-                </p>
-                <pre><code class="language-java">
-                    private final int count = 3; // Feel free to chose another number, but the name must be count
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="BASENewTab"></a>
+            <h3>Implementing a New Tab in BASE</h3>
+            <p>
+                As a first foray into BASE proper we will now add a new tab to the BASE system.
+            </p>
+
+            <div class="lab-task-group alert alert-warning" id="e2eTabHtml">
+                <h4 class="alert-heading">Add the Hello World script and HTML file</h4>
+                <ol>
+                    <li>Add the directory <code>hello</code> to the webassets directory.</li>
+                    <li>Add the empty files <code>hello.html</code> and <code>hello.js</code></li>
+                    <li>Add a single <code>h1</code>-tag to <code>hello.html</code> with the text: Hello BASE World!
+                        (or something else)
+                    </li>
+                    <li>Open <code>hello.js</code> and define the controller as such:</li>
+                </ol>
+                <pre><code class="language-javascript">
+                    var base = base || {};
+                    base.helloController = function() {
+                        var controller = {};
+                        //TODO: the controller object needs a load function
+                        return controller;
+                    };
                 </code></pre>
-                <p>
-                    Restart the server when done.
-                </p>
                 <div class="lab-task-form">
                     <hr>
                     <p>
+                        Restart the server and use the button below to test the implementation.
+                    </p>
+                    <button class="btn btn-primary" onclick="e2eTabHtmlValidate()">Click me when done</button>
+                </div>
+                <div class="lab-task-completed">
+                    <hr>
+                    Nice, well done!
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Incorrect, try again.
+                </div>
+            </div>
+
+            <div class="lab-task-group alert alert-warning" id="e2eTabRoute">
+                <h4 class="alert-heading">Add routing to mainController</h4>
+                <p>Follow the steps below.</p>
+                <ol>
+                    <li>Open <code>index.html</code> in the webassets directory.</li>
+                    <li>Add a new <code>a</code>-tag in the <code>nav</code>-element as such:</li>
+                </ol>
+                <pre><code class="language-html">
+                    &lt;li class="nav-item"&gt;
+                        &lt;a class="nav-link" href="#/hello"&gt;Hello world&lt;/a&gt;
+                    &lt;/li&gt;
+                </code></pre>
+                <ol start="3">
+                    <li>Open <code>index.js</code> in the webassets directory.</li>
+                    <li>Find the object <code>routingTable</code> and add a new object as such:</li>
+                </ol>
+                <pre><code class="language-javascript">
+                    hello: {
+                        partial: 'hello/hello.html',
+                        controller: base.helloController
+                    }
+                </code></pre>
+                <ol start="5">
+                    <li>Add the <code>hello.js</code> script to <code>index.html</code> as done below:</li>
+                </ol>
+                <pre><code class="language-html">
+                    &lt;script src="hello/hello.js"&gt;&lt;/script&gt;
+                </code></pre>
+                <div class="lab-task-form">
+                    <hr>
+                    <p>
+                        Restart the server and use the button below to test the implementation.
+                        Make sure everything looks ok in both the tab and the nav as well.
+                    </p>
+                    <button class="btn btn-primary" onclick="e2eTabRouteValidate()">Click me when done</button>
+                </div>
+                <div class="lab-task-completed">
+                    <hr>
+                    Nice, well done!
+                </div>
+                <div class="mt-3 lab-task-error alert alert-danger">
+                    Incorrect, try again.
+                </div>
+            </div>
+        </section>
+
+        <section class="lab-sub-section">
+            <a class="sub-anchor" name="E2E"></a>
+            <h3>End to End Changes in BASE</h3>
+            <p>
+                We are now going to add a simple extension to the Foo tab, in addition to the data field, there will be
+                a total of the number of data. This could represent the number of items in a shopping basket etc.
+            </p>
+            <div class="lab-task-group alert alert-warning" id="e2eServer">
+                <h4 class="alert-heading">Server side stub</h4>
+                <p>
+                    In order for the server to return data in the format we want the first task will be to modify the
+                    <code>Foo.java</code> file. The contents in the file will affect the data that is received from the
+                    server.
+                </p>
+                <ol>
+                    <li>Open the file Foo.java. It is located in
+                        <code>server/src/main/java/se/lth/base/server/data/Foo.java</code>.
+                    </li>
+                    <li>Add a field without modifying the constructor, like this:</li>
+                </ol>
+                <pre><code class="language-java">
+                    private final int total = 3; // Feel free to chose another number, but the name must be total
+                    //This will add the field to the output of the server as a constant.
+                </code></pre>
+                <div class="lab-task-form">
+                    <hr>
+                    <p>
+                        Restart the server when done.
                         The button below will test the implementation. You can test it yourself by opening
-                        <a href="http://localhost:8080/rest/simple"
-                           target="_blank">http://localhost:8080/rest/simple</a>.
+                        <a href="http://localhost:8080/rest/foo"
+                           target="_blank">http://localhost:8080/rest/foo</a>.
                     </p>
                     <button class="btn btn-primary" onclick="e2eServerValidate()">Click me when done</button>
                 </div>
@@ -1369,61 +1619,25 @@
                     Nice, well done!
                 </div>
                 <div class="mt-3 lab-task-error alert alert-danger">
-                    Incorrect.
+                    Incorrect, try again.
                 </div>
             </div>
-        </div>
 
-        <h3 class="mt-5">Unit Testing with Jasmine</h3>
-        <p>
-            A unit test is a piece of code that tests the implementation of a specific functionality.
-            There is a pre-written unit test for this functionality that is temporarily disabled. Find it in
-            the file
-            <a href="/spec/simple-spec.js" target="_blank">server/src/main/resources/webassets/spec/simple-spec.js</a>.
-            To enable it simply remove the <code>x</code> from the <code>xit</code> function call.
-        </p>
-        <pre><code class="language-javascript">
-            xit('should have count in table', function(done) {
-                // code already implemented
-            }
-        </code></pre>
-        <p>
-            Run the tests by opening the file
-            <a href="/specs.html" target="_blank">server/src/main/resources/webassets/specs.html</a>. One of the test
-            cases will be marked as failed in red. The task at hand is to implement functionality that passes the unit
-            test.
-        </p>
-
-        The tests are implemented using the
-        <a href="https://jasmine.github.io/tutorials/your_first_suite" target="_blank">Jasmine</a>
-        framework. Each unit test is defined with the <code>it</code>-function. Assertions are made using the
-        <code>expect</code>-function. Example:
-        </p>
-        <pre><code class="language-javascript">
-            it('should return 5 when myFunction is called', function() {
-                var testResult = myFunction();
-                expect(testResult).toBe(5);
-            });
-        </code></pre>
-
-        <div class="lab-task-group" id="e2eTable">
-            <div class="lab-task-info alert alert-warning">
-                <h4 class="alert-heading">Modify the Simple View</h4>
-                <p>
-                    Go to the file <a target="_blank" href="/simple/simple.html">simple.html</a> (use view source)
-                    located under <code>server/src/main/resources/webasets/simple/simple.html</code>. Add a column
-                    to the table header with the text content <q>Count</q> (without quotes). Also, add another <code>
-                    &lt;td&gt;</code> under the <code>&lt;template&gt;</code>. The purpose of this will become clear
-                    in the next task.
-                </p>
-                <p>
-                    Restart the server when done.
-                </p>
+            <div class="lab-task-group alert alert-warning" id="e2eTable">
+                <h4 class="alert-heading">Modify the foo view</h4>
+                <ol>
+                    <li>Open the file foo/foo.html located in the webassets directory.</li>
+                    <li>Add a column to the table header with the text content <q>Count</q> (without quotes).</li>
+                    <li>Add another <code>&lt;td&gt;</code> under the <code>&lt;template&gt;</code>. The purpose of this
+                        will become clearer in the next task.
+                    </li>
+                </ol>
                 <div class="lab-task-form">
                     <hr>
                     <p>
+                        Restart the server when done.
                         The button below will test the implementation (using a JavaScript CSS selector on
-                        <code>simple.js</code>).
+                        <code>foo.html</code>).
                     </p>
                     <button class="btn btn-primary" onclick="e2eTableValidate()">Click me when done</button>
                 </div>
@@ -1432,28 +1646,53 @@
                     Nice, well done!
                 </div>
                 <div class="mt-3 lab-task-error alert alert-danger">
-                    Incorrect.
+                    Incorrect, try again.
                 </div>
             </div>
-        </div>
 
-        <div class="lab-task-group" id="e2eDynamic">
-            <div class="lab-task-info alert alert-warning">
-                <h4 class="alert-heading">Modify the Simple View</h4>
+
+            <div class="lab-task-group alert alert-warning" id="e2eDynamic">
+                <h4 class="alert-heading">Modify the foo controller</h4>
                 <p>
-                    Go to the file <a target="_blank" href="/simple/simple.js">simple.js</a>
-                    located under <code>server/src/main/resources/webasets/simple/simple.js</code>.
-                    Find the function that updates a table row, under the <code>view</code> class.
-                    Add something for the next <code>&lt;td&gt;</code>.
-                    The code uses the <code>&lt;template&gt;</code>-HTML tag through the DOM API.
+                    There is a pre-written unit test for the functionality in the total task which is temporarily
+                    disabled.
                 </p>
-                <p>
-                    Restart the server when done.
-                </p>
+                <ol>
+                    <li>Open /spec/foo-spec.js in the webassets folder.</li>
+                    <li>
+                        To enable the unit test simply remove the <code>x</code> from the <code>xit</code> function
+                        call.
+                    </li>
+                </ol>
+                <pre><code class="language-javascript">
+                    xit('should have total in table', function(done) {
+                        // code already implemented
+                    }
+                </code></pre>
+                <ol start="3">
+                    <li>
+                        Run the tests by opening the file
+                        <a href="/specs.html" target="_blank">server/src/main/resources/webassets/specs.html</a>. One of
+                        the test cases will be marked as failed in red. The next task at hand is to implement
+                        functionality that passes the unit test.
+                    </li>
+                    <li>
+                        Open the file foo/foo.js under the webassets directory.
+                    </li>
+                    <li>
+                        Find the function that updates a table row, in the <code>view</code> object.
+                    </li>
+                    <li>
+                        Add something for the next <code>&lt;td&gt;</code>.
+                        The code uses the <code>&lt;template&gt;</code>-HTML tag through the DOM API.
+                    </li>
+                </ol>
                 <div class="lab-task-form">
                     <hr>
                     <p>
-                        The button below will not test the implementation, it is just there for your satisfaction.
+                        Restart the server and run the <a href="/specs.html" target="_blank">unit tests</a>
+                        again when done. If everything went well the unit One of tests should all pass now. The button
+                        below will not test the implementation, it is just there for your satisfaction.
                     </p>
                     <button class="btn btn-primary" onclick="baseLab.complete('e2eDynamic')">Click me when done</button>
                 </div>
@@ -1465,7 +1704,7 @@
                     you?).
                 </div>
             </div>
-        </div>
+        </section>
 
         <div class="alert alert-info mt-5">
             <h4 class="alert-heading">Present to your TA</h4>
