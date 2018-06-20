@@ -29,7 +29,7 @@ public class Config {
     }
 
     public int getPort() {
-        return 8080;
+        return port;
     }
 
     public String getDatabaseDriver() {
