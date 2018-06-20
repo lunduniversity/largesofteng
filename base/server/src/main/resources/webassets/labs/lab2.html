@@ -150,7 +150,7 @@
             </ol>
             <pre><code class="language-bash">
                 > cd ~/ROOT_DIR/base/server       # Replace ROOT_DIR with the directory you cloned the repository to
-                > mvn clean package               # This will build your project
+                > mvn clean package               # This will build your project so that the H2 interface can be executed
                 > java -cp target/base-server-jar-with-dependencies.jar org.h2.tools.Console
             </code></pre>
             <ol start="2">
@@ -160,8 +160,8 @@
                 <li>Enter this query into the large text area:</li>
             </ol>
             <pre><code class="language-sql">
-                SELECT salt FROM user
-                WHERE user_id = 2
+                SELECT username FROM user
+                WHERE user_id = 1
             </code></pre>
             <ol start="6">
                 <li>Click the <q>Run</q> button to execute the query.</li>
@@ -171,7 +171,7 @@
                 <div class="form-check">
                     <form onsubmit="return h2GuiValidate(event)" class="lab-task-form">
                         <div class="form-group">
-                            <input class="form-control" type="text" placeholder="input long number" required>
+                            <input class="form-control" type="text" placeholder="input query result" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Validate</button>
                     </form>
@@ -182,8 +182,7 @@
             </div>
             <div class="lab-task-completed">
                 <hr>
-                <p>Right. Curious about what a password
-                    <a target="_blank" href="https://en.wikipedia.org/wiki/Salt_(cryptography)">salt</a> is?
+                <p>Right.
                 <hr>
             </div>
             <ol class="mt-3" start="8">
@@ -238,19 +237,6 @@
                     The asterix can be replaced by an enumeration of columns, like so:
                     <pre><code>SELECT payload, user_id FROM foo</code></pre>
                 </dd>
-                <dt class="col-sm-3"><code>JOIN clause</code></dt>
-                <dd class="col-sm-9">
-                    To select data from multiple tables the <code>JOIN</code> clause can be added to a
-                    <code>SELECT</code>.
-                    The example below selects all columns from foo and adds the username from the user table. In case a
-                    column exists in both tables that are joined the name is qualified with the table name.
-                    <pre><code>
-                        SELECT foo.*, user.username FROM foo
-                        JOIN user ON user.user_id = foo.user_id
-                    </code></pre>
-                    The <code>ON</code> keyword specifies a condition that is matched between the tables. Multiple
-                    tables can be joined as well by adding more join clauses.
-                </dd>
                 <dt class="col-sm-3"><code>WHERE clause</code></dt>
                 <dd class="col-sm-9">
                     Add optional additional qualifiers to <code>SELECT</code>, <code>UPDATE</code>, and
@@ -262,8 +248,14 @@
                     </code></pre>
                     Other operators can also be used, such as &lt;, &gt;, and &lt;&gt; (not equals). Additionally,
                     multiple operators can be combined with <code>OR</code> and <code>AND</code>.
-                    If both <code>WHERE</code> and <code>JOIN</code> is used, the <code>WHERE</code> clause must be
-                    placed last.
+                    <p>
+                        This can also be used to modify a SELECT query to fetch results from multiple tables. For
+                        example:
+                    </p>
+                    <pre><code>
+                        SELECT foo.*, user.username FROM foo, user
+                        WHERE user.user_id = 2 AND foo.user_id = user.user_id
+                    </code></pre>
                 </dd>
                 <dt class="col-sm-3"><code>UPDATE query</code></dt>
                 <dd class="col-sm-9">
@@ -380,9 +372,10 @@
                     What does this query do?
                 </h4>
                 <pre><code class="language-sql">
-                    SELECT user_role.role FROM user
-                    JOIN user_role ON user.role_id = user_role.role_id
-                    WHERE username = 'Admin' AND password_hash = '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59'
+                    SELECT user_role.role FROM user, user_role
+                    WHERE username = 'Admin'
+                        AND password_hash = '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59'
+                        AND user_role.role_id = user.role_id
                 </code>
                 </pre>
 
@@ -412,7 +405,7 @@
                         <label class="form-check-label">
                             <input onclick="baseLab.complete('sqlQuery', 4)" class="form-check-input" type="radio"
                                    name="sqlQuery">
-                            Selects the data from column role in user_role of the matching user.
+                            Returns the user_role.role of the matching username and password.
                         </label>
                     </div>
                 </div>
@@ -437,15 +430,22 @@
             </p>
             <p>
                 Here is an example that executes a query and populates a list with Java objects from the database.
+                This specific statement is used in the actual BASE server to populate the table of foos for a user (with
+                user_id = 2 in this case).
             </p>
             <pre><code class="language-java">
                 String driverUrl = "jdbc:h2:~/base-server/data";
                 List&lt;Foo&gt; foos = new ArrayList<>();
                 try (Connection connection = DriverManager.getConnection(driverUrl, "sa", "");
                     PreparedStatement statement = connection.prepareStatement("SELECT * FROM foo WHERE user_id = ?");) {
-                    // Parameters in JDBC are set through indexing, starting with 1.
-                    statement.setInt(1, 2);
+                    // This question mark is a dynamic parameter to the query: --------------------------------- ^
+                    // The parameter is set as below:
+                    statement.setInt(1, 2); // The first parameter is set to 2
+                    // The final SQL statement will be as such: SELECT * FROM foo WHERE user_id = 2
+
+                    // A ResultSet in JDBC holds the query results
                     try (ResultSet resultSet = statement.executeQuery();) {
+                        // The ResultSet is looped through and converted to plain Java objects below
                         while (resultSet.next()) {
                             int fooId = resultSet.getInt("foo_id");
                             int userId = resultSet.getInt("user_id");
@@ -460,11 +460,17 @@
                 }
             </code></pre>
             <p>
-                To make such queries easier there is a helper class that has much of the boiler plate already defined.
-                Below is the same example using the
-                <code>server/src/main/java/se/lth/base/server/database/DataAccess.java</code> class.
+                To make such queries shorter to write we have a helper class that has much of the boiler plate already
+                defined. Below is the same example using the
+                <code>server/src/main/java/se/lth/base/server/database/DataAccess.java</code> class. We introduce an
+                interface here that is used to do the mapping from <code>ResultSet</code>s to standard Java objects in a
+                re-usable way.
             </p>
-
+            <pre><code class="language-java">
+                public interface Mapper&lt;T&gt; {
+                    T map(ResultSet resultSet) throws SQLException;
+                }
+            </code></pre>
             <pre><code class="language-java">
                 String driverUrl = "jdbc:h2:~/base-server/data";
                 Mapper&lt;Foo&gt; mapper = new Mapper&lt;Foo&gt;() {
@@ -476,9 +482,8 @@
                                 resultSet.getObject("created", Date.class).getTime());
                     }
                 };
-                DataAccess&lt;Foo&gt; fooDao = new DataAccess&lt;&gt;(driverUrl);
-                Stream&lt;Foo&gt; fooStream = fooDao.query("SELECT * FROM foo WHERE user_id = ?", 2);
-                List&lt;Foo&gt; foos = fooStream.collect(Collectors.toList());
+                DataAccess&lt;Foo&gt; fooDao = new DataAccess&lt;&gt;(driverUrl, mapper);
+                List&lt;Foo&gt; foos = fooDao.query("SELECT * FROM foo WHERE user_id = ?", 2);
             </code></pre>
             <p>
                 The major benefit of this is that the same data access object can be re-used for many queries. That is,
@@ -512,21 +517,7 @@
                 <h4 class="alert-heading">
                     What is the purpose of enforcing the Mapper interface?
                 </h4>
-                <p>The interface is defined as such (the Function interface is built into Java):</p>
-                <pre><code class="langauge-java">
-                    public interface Mapper&lt;T&gt; extends Function&lt;ResultSet, T&gt; {
-                        T map(ResultSet resultSet) throws SQLException;
 
-                        @Override
-                        default T apply(ResultSet resultSet) {
-                            try {
-                                return map(resultSet);
-                            } catch (SQLException e) {
-                                throw new DataAccessException(e, ErrorType.MAPPING);
-                            }
-                        }
-                    }
-                </code></pre>
                 <p>
                     An implementing class of the Mapper interface should implement the <code>map: T</code> method. It
                     should return an object for a row in the ResultSet. Why is this a good idea? Check all that apply.
@@ -555,8 +546,8 @@
                     <div class="form-check">
                         <label class="form-check-label">
                             <input value="4" class="form-check-input" type="checkbox" name="sqlBase">
-                            It facilitates default error handling of the checked exception SQLException, by setting
-                            which error type it has.
+                            It facilitates default error handling of the checked exception SQLException. Otherwise each
+                            query would have to have a try/catch block.
                         </label>
                     </div>
                     <button type="submit" class="mt-3 btn btn-primary">Validate</button>
@@ -585,20 +576,24 @@
                 creates the foo table.
             </p>
             <pre><code class="language-sql">
+                -- Example table containing some data per user, you are expected to remove this table in your project.
                 CREATE TABLE foo(
                     -- First the four columns are specified:
 
                     foo_id INT AUTO_INCREMENT,
-                    -- foo_id is the first column with type INT. The AUTO_INCREMENT keyword is H2 specific and indicates
+                    -- foo_id is the first column with type INT. This is used to uniquely identify each foo. In this way, the foo can be
+                    -- deleted or updated by referring only to its foo_id. The AUTO_INCREMENT keyword is H2 specific and indicates
                     -- that the column is supplied with a default value that is incremented for each row. The first row
                     -- will automatically get foo_id = 1, the second one will get foo_id = 2, and so on.
 
                     payload VARCHAR NOT NULL,
-                    -- payload is the second column with type VARCHAR. There is no limit to how long the string can be.
+                    -- payload is the second column with type VARCHAR. This is the data that is typed in the input field
+                    -- on the foo tab in the front end. There is no limit to how long the string can be.
                     -- NOT NULL specifies that the row must have a payload.
 
                     user_id INT NOT NULL,
-                    -- user_id is the third column with type INT.
+                    -- user_id is the third column with type INT. This keeps track of who the user is, so that each user has their own
+                    -- foos only.
 
                     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP() NOT NULL,
                     -- created is the fourth and final column with type TIMESTAMP. This column also has a default value
@@ -611,8 +606,9 @@
                     -- enforces that the values rows all have a unique identifier.
 
                     FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE
-                    -- This informs that the column user_id is a relation to another table's primary key. In this way it is
-                    -- not possible to enter data that is not connected to a user.
+                    -- This informs that the column user_id is a relation to another table's primary key. In combination
+                    -- with the NOT NULL constraint above it is not possible to enter data that is not connected to a user.
+                    -- Note that there can be multiple rows with the same user_id (but the foo_id is unique for each row).
                     -- The ON DELETE CASCADE ensures that when a user is deleted then all their foo data will also be deleted.
                 );
             </code></pre>
@@ -743,7 +739,7 @@
             <code>/user/1</code> should be the same resource as another call to <code>/user/1</code> at another time or
             by another user, unless the resource itself has changed. It should not matter if the client is coming from
             this or that part of the application before performing the request. In practice, many REST APIs (including
-            BASE) make <em>an</em> exception to this principle to handle authorization.
+            BASE) make <em>one</em> exception to this principle to handle authorization.
         </p>
 
         <section class="lab-sub-section">
@@ -766,42 +762,99 @@
                 cannot be found.
             </p>
             <p>
-                Below is an example of a HTTP request/response that is issued when a user submits a new foo in
+                Below is an example of an HTTP request/response that is issued when a user submits a new foo in
                 BASE. You can see many more examples of HTTP request/responses through your web browsers console, in the
                 network tab.
             </p>
-            <p>Request by the web browser:</p>
-            <pre><code class="language-http">
-                 POST http://localhost:8080/rest/foo HTTP/1.1
-                 Host: localhost:8080
-                 Cookie: USER_TOKEN=6e70a6b2-66be-4ac4-9f9e-dba1d1e6386d
-                 Accept: */*
-                 Content-Type: application/json;charset=utf-8
-                 Content-Length: 15
-                 Connection: keep-alive
-            </code></pre>
-            <pre><code class="language-javascript">{"payload":"a"}</code></pre>
-
-            <p>Response by the server:</p>
-            <pre><code class="language-http">
-                HTTP/1.1 201 OK
-                Content-Length: 57
-                Content-Type: application/json;charset=utf-8
-                Date: Fri, 04 May 2018 07:17:48 GMT
-                Server: Jetty(9.4.9.v20180320)
-            </code></pre>
-            <pre><code class="language-javascript">
-                {"id":1,"userId":1,"payload":"a","created":1525418268449}</code></pre>
+            <h4>Example HTTP request/response</h4>
+            <p>
+                The request in this example performs a POST towards the URL http://localhost:8080/rest/foo. It sends
+                along a request body which is a JSON object. As response from BASE the client receives status OK and
+                an updated resource. This is the HTTP request/response that will be performed on the starting page of
+                BASE, when you submit a new foo.
+                Note that the bolded header to the left is not part of the request, it is just an explanation.
+            </p>
+            <h5>Request by client (web browser)</h5>
+            <div class="row">
+                <div class="col-4">
+                    <p style="text-align: right">Mandatory header row</p>
+                </div>
+                <div class="col">
+                    <pre><code class="language-http">
+                        POST http://localhost:8080/rest/foo HTTP/1.1
+                    </code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p style="text-align: right">Header parameters:</p>
+                    <p style="text-align: right"><em>(Containing optional connection status, requested content type
+                        etc.</em>)</p>
+                </div>
+                <div class="col">
+                    <pre><code class="language-http">
+                         Host: localhost:8080
+                         Cookie: USER_TOKEN=6e70a6b2-66be-4ac4-9f9e-dba1d1e6386d
+                         Accept: */*
+                         Content-Type: application/json;charset=utf-8
+                         Content-Length: 15
+                         Connection: keep-alive
+                    </code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p style="text-align: right">Response body (As JSON)</p>
+                </div>
+                <div class="col">
+                    <pre><code class="language-javascript">{"payload":"a"}</code></pre>
+                </div>
+            </div>
+            <h5>Response by the server</h5>
+            <div class="row">
+                <div class="col-4">
+                    <p style="text-align: right">Mandatory header row</p>
+                </div>
+                <div class="col">
+                    <pre><code class="language-http">
+                        HTTP/1.1 201 OK
+                    </code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p style="text-align: right">Additional headers</p>
+                </div>
+                <div class="col">
+                    <pre><code class="language-http">
+                        Content-Length: 57
+                        Content-Type: application/json;charset=utf-8
+                        Date: Fri, 04 May 2018 07:17:48 GMT
+                        Server: Jetty(9.4.9.v20180320)
+                    </code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <p style="text-align: right">Response body (As JSON)</p>
+                </div>
+                <div class="col">
+                    <pre><code class="language-javascript">
+                        {"id":1,"userId":1,"payload":"a","created":1525418268449}
+                    </code></pre>
+                </div>
+            </div>
 
             <p>
                 For more information about HTTP see the
-                <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP" target="_blank">Mozilla HTTP reference</a>.
+                <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP" target="_blank">Mozilla HTTP
+                    reference</a>.
             </p>
 
             <div class="alert alert-info">
-                <b>Note!</b> Your code will not send such HTTP requests/responses directly. Libraries are used to send
-                the correct header and body in the right format. However, you still need to know which verbs/codes to
-                use in the design of your API.
+                <b>Note!</b> Your code will not send such HTTP requests/responses directly. Libraries are used to
+                send the correct header and body in the right format. However, you still need to know which verbs/codes
+                to use in the design of your API.
             </div>
 
             <h4>HTTP Verbs</h4>
@@ -823,8 +876,8 @@
             <p>
                 HTTP status codes follow a pattern, where the first digit indicate the type of status.
                 <code>2XX</code> is ok, <code>3XX</code> indicates further action is needed by the client,
-                <code>4XX</code> indicates the client has made some error, and finally <code>5XX</code> indicates the
-                server has made some error.
+                <code>4XX</code> indicates the client has made some error, and finally <code>5XX</code> indicates
+                the server has made some error.
             </p>
             <dl class="row">
                 <dt class="col-sm-3"><code>200</code> OK and <code>204</code> OK (No Content)</dt>
@@ -833,8 +886,8 @@
                 <dt class="col-sm-3"><code>201</code> Created</dt>
                 <dd class="col-sm-9">Like <code>OK</code>, but used when a new resource is created.</dd>
                 <dt class="col-sm-3"><code>400</code> Bad Request</dt>
-                <dd class="col-sm-9">The client has made an error in the request, such as bad syntax. A catch all for
-                    client bugs.
+                <dd class="col-sm-9">The client has made an error in the request, such as bad syntax. A catch all
+                    for client bugs.
                 </dd>
                 <dt class="col-sm-3"><code>404</code> Not Found</dt>
                 <dd class="col-sm-9">The resource specified by the URI cannot be found.</dd>
@@ -860,7 +913,7 @@
                 JavaScript, with primarily functions removed. JSON is used to
                 <a href="https://en.wikipedia.org/wiki/Serialization" target="_blank">serialize</a>
                 data, so that that it can be sent in a structured form between the client and server.
-                JavaScript support JSON through built-in funtcions. Also, JSON is human readable
+                JavaScript support JSON through built-in functions. Also, JSON is human readable
                 (see <a href="/rest/user" target="_blank">/rest/user</a> for an example).
                 However, in Java we need a supporting library
                 <a href="https://github.com/google/gson" target="_blank">Gson</a>
@@ -980,7 +1033,7 @@
         <a class="anchor" name="JettyJersey"></a>
         <h1>Jetty and Jersey</h1>
         <p>
-            Jetty is a HTTP web server written in Java. Jetty is configured and started in the
+            Jetty is an HTTP web server written in Java. Jetty is configured and started in the
             <code>server/src/main/java/se/lth/base/server/BaseServer.java</code> class. In Jetty, each request goes
             through handlers. Jersey is one such handler, registered under the <code>/rest</code> prefix. Another
             handler is configured to serve all the static content under the webassets folder in
@@ -1009,32 +1062,41 @@
                 method from a super class. In Jersey, the annotations are used to map HTTP requests to Java methods.
             </p>
             <p>
-                To map a HTTP request to a Java method, the path and a HTTP verb is mandatory. The annotation
+                To map an HTTP request to a Java method, the path and an HTTP verb is mandatory. The annotation
                 <code>@Path("value")</code>, can be added to classes and methods. Path on class level is added as a
                 prefix to all method annotations. Each HTTP verb has a corresponding annotation, such as
                 <code>@GET</code>. Classes that have these annotations are called resources (from the resource concept
                 in REST). See this example that is used for foo in BASE:
             </p>
+            <p>
+                In the HTTP specification the data format is referred to as the media type but it is confusingly set
+                through the Content-Type header. As such, in Jersey, the name MediaType is used. The annotations for
+                media type are different depending on if it is output or input. For input, use <code>@Consumes</code>,
+                for output, use <code>@Produces</code>.
+            </p>
             <pre><code>
-                @Path("foo")                     // Tells Jersey to route request to "foo" to this resource
+                @Path("foo")                     // Tells Jersey to route request to "foo" to this resource.
                 public class FooResource {
-                    @GET                            // HTTP verb
-                    @Produces("application/json")   // Sets the Media-Type: application/json header
+                    @GET                            // HTTP verb to match.
+                    @Produces("application/json")   // Sets the "Content-Type: application/json" header,
+                                                    // So that the web browser knows how to interpret the data.
                     public List&lt;Foo&gt; getFoos() {
+                        // The method returns normal Java objects.
+                        return ...;
                     }
                 }
             </code></pre>
             <p>
                 It will match HTTP requests conforming to <code>GET /rest/foo</code>. The prefix <code>/rest</code>
                 is added globally in the BaseServer initialization code. The example returns
-                <code>List&lt;Foo&gt;</code>, which will be converted to a HTTP body by Jersey.
+                <code>List&lt;Foo&gt;</code>, which will be converted to an HTTP body by Jersey.
                 The status code will be <code>200</code>. The serialization of the object to <a href="#JSON">JSON</a> is
                 explained in the previous section.
             </p>
             <p>
                 In the example above only the class itself had the <code>@Path</code> annotation, but it could have been
-                added to the method as well. This is needed for example if there are two different <code>GET</code>
-                in the same class.
+                added to the method as well. This is needed for example if there are two different methods with
+                <code>@GET</code> in the same class.
             </p>
 
             <h3>Path Parameters</h3>
@@ -1063,8 +1125,9 @@
                 is necessary to know which user performs the request, such as getting the users information. This is
                 available in the ContainerRequestContext. To add this to your class add a constructor where the
                 parameter is annotated with the <code>@Context</code> annotation. This pattern is called
-                <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a>. Below is an
-                example:
+                <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a>. For more
+                information on how this is implemented, see the optional section on authentication and authorization in
+                BASE. Below is an example:
             </p>
             <pre><code>
                 public class FooResource {
@@ -1199,7 +1262,9 @@
 
         <div class="lab-task-group alert alert-warning" id="jerseyPathParam">
             <h4 class="alert-heading">What is the correct path annotation</h4>
-            <p>The resource should match POST requests to e.g. URI <code>/rest/foo/4</code></p>
+            <p>The resource should match <code>POST</code> requests to e.g. URI <code>/rest/foo/4</code>.</p>
+            <p>The method accepts JSON data (which is available in the second parameter below as <code>Foo foo</code>).
+            </p>
             <pre><code class="language-java">
                 @Path("rest/foo")
                 public class FooResource {
@@ -1258,7 +1323,7 @@
             <details>
                 <summary>Customizing HTTP Responses in Jersey</summary>
                 <p>
-                    If a HTTP response should set a specific HTTP header or return a different status code than
+                    If an HTTP response should set a specific HTTP header or return a different status code than
                     <code>200</code>, then Jersey offers a few alternatives.
                     First of all, you can return a Response instead of your plain Java object. The Response class has
                     methods to set headers, status code, and a body. Use it like this:
@@ -1324,7 +1389,7 @@
                     the URI <code>/rest/user/login</code>. If the username and password matches what is stored in the
                     database the server will set a cookie to a randomly generated big number (a so called
                     <em>token</em>). This value will be stored in the database and in the client (browser or android).
-                    The server instructs the client to store the cookie through a HTTP header parameter like this:
+                    The server instructs the client to store the cookie through an HTTP header parameter like this:
                     <code>USER_TOKEN=bc9a4966-cec1-46bc-b0ad-8fa093a64960;Domain=localhost;Path=/rest</code>.
                     The client will then pass this token around to every request it does to BASE going forward.
                 </p>
@@ -1407,7 +1472,7 @@
                 server. Here we give the complete back end picture.
                 When the web front end performs a request to the server, the request goes through a standardized
                 process. First, Jetty routes the request to the correct handler (static files or Jersey), then the
-                handler generates a HTTP response that the web front end receives. When Jersey services a request it
+                handler generates an HTTP response that the web front end receives. When Jersey services a request it
                 has additional routing to specific resources, such as FooResource. Below is an example of a request
                 to fetch user with id 2 foo data, that is to
                 <a href="http://localhost:8080/rest/foo/user/2"
@@ -1493,7 +1558,8 @@
                             <ol start="3">
                                 <li>
                                     The filter is executed, see the optional section in <a href="#REST">REST</a> for
-                                    more information.
+                                    more information. In short, authentication concerns figuring out which user performs
+                                    the request (corresponding to a row in the user table).
                                 </li>
                             </ol>
                         </div>
@@ -1505,7 +1571,8 @@
                             <li>
                                 Jersey performs authorization, in this case the user must be logged in with the role
                                 ADMIN. As mentioned, the technicalities of authorization is described in a previous
-                                optional section.
+                                optional section. In short, authorization concerns whether the user has the required
+                                permission for the request.
                             </li>
                             <li>
                                 Jersey creates an object of the <code>FooResource.java</code> class and calls the
@@ -1560,58 +1627,6 @@
                 </div>
             </div>
 
-            <div class="lab-task-group alert alert-warning" id="lifecycleState">
-                <h4 class="alert-heading">
-                    Is it possible to have state in a Java class that is a Jersey resource?
-                </h4>
-                <p>
-                    What is meant by state is a Java field with data that is kept between the requests. The state does
-                    not need to be persisted.
-                </p>
-                <div class="lab-task-form">
-                    <p></p>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input onclick="baseLab.complete('lifecycleState', 1)" class="form-check-input" type="radio"
-                                   name="lifecycleState">
-                            Yes, but the state will be duplicated for each user.
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input onclick="baseLab.complete('lifecycleState', 2)" class="form-check-input" type="radio"
-                                   name="lifecycleState">
-                            Yes, but the field must be declared static and should be handled in a thread-safe manner.
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input onclick="baseLab.complete('lifecycleState', 3)" class="form-check-input" type="radio"
-                                   name="lifecycleState">
-                            No, since Jersey creates resource objects it is not possible.
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input onclick="baseLab.complete('lifecycleState', 3)" class="form-check-input" type="radio"
-                                   name="lifecycleState">
-                            No, since it violates the REST principles.
-                        </label>
-                    </div>
-                </div>
-                <div class="lab-task-completed">
-                    <hr>
-                    <p>
-                        Right. Because the resource object is created for each request it must be declared static to
-                        keep the data. All the other options are false. The application should only be stateless in
-                        regards to client state stored on the server (such as which page the user is on).
-                    </p>
-                </div>
-                <div class="mt-3 lab-task-error alert alert-danger">
-                    Incorrect, try again.
-                </div>
-            </div>
-
         </section>
     </section>
 
@@ -1622,8 +1637,8 @@
         <a class="anchor" name="E2E"></a>
         <h1>Continuing the End to End Task</h1>
         <p>
-            We will now continue the last task in the previous lab, the one that added total to foo. If you completed
-            this on another computer you will need to re-implement the changes of the
+            We will now continue the last task in the previous lab, the one that added the total field to foo. If you
+            completed this on another computer you will need to re-implement the changes of the
             <a href="/labs/lab1.html#E2E">previous lab</a>.
         </p>
         <p>
@@ -1697,15 +1712,28 @@
                     <li>Implement <code>deleteFoo</code> and copy <code>updateTotal</code> from below:</li>
                 </ol>
                 <pre><code class="language-java">
-                    public boolean deleteFoo(int fooId) {
+                    /**
+                     * Delete a users foo row.
+                     *
+                     * @param userId user to match.
+                     * @param fooId primary key of the foo.
+                     * @return true if a row was deleted.
+                     */
+                     public boolean deleteFoo(int userId, int fooId) {
                         // TODO: Please implement this one
                         return false;
                     }
 
-                    public int updateTotal(int fooId, int totalDelta) {
-                        execute("UPDATE foo SET total = total + ? WHERE foo_id = ?", totalDelta, fooId);
-                        DataAccess&lt;Integer&gt; totalDao = new DataAccess<>(getDriverUrl(), resultSet -> resultSet.getInt("total"));
-                        return totalDao.queryFirst("SELECT total FROM foo");
+                    /**
+                     * Update the total column of a foo.
+                     *
+                     * @param userId user to match.
+                     * @param fooId primary key of the foo.
+                     * @param newTotal value to set the column to.
+                     * @return true if a row was updated.
+                     */
+                    public boolean updateTotal(int userId, int fooId, int newTotal) {
+                        return execute("UPDATE foo SET total = ? WHERE user_id = ? AND foo_id = ?", newTotal, userId, fooId) > 0;
                     }
                 </code></pre>
                 <ol start="3">
@@ -1718,43 +1746,47 @@
                         Foo foo = fooDao.addFoo(TEST.getId(), "data");
                         // TODO: Please finish this implementation
                         // it should call the deleteFoo method and check its returned value
+                        // assertTrue(...)
                     }
 
                     @Test
-                    public void dontDeleteOthersFoo() {
-                        Foo foo = fooDao.addFoo(ADMIN.getId(), "data");
-                        assertFalse(fooDao.deleteFoo(foo.getId(), TEST.getId()));
+                    public void itShouldNotBePossibleToDeleteOthersFoo() {
+                        int userId = 1;
+                        Foo foo = fooDao.addFoo(userId, "data");
+                        // Even though we provide the same foo id, the method should fail to delete here since the user id is different
+                        int otherUserId = 2;
+                        assertFalse(fooDao.deleteFoo(foo.getId(), otherUserId));
                     }
 
                     @Test
                     public void deleteMissingFoo() {
-                        assertFalse(fooDao.deleteFoo(1, 1));
+                        // No foo has been added yet, so the foo with id = 1 should not exist
+                        int userId = 1;
+                        int fooId = 1;
+                        assertFalse(fooDao.deleteFoo(userId, fooId));
                     }
 
                     @Test
                     public void updateFooTotal() {
-                        Foo foo = fooDao.addFoo(TEST.getId(), "data");
-                        fooDao.updateTotal(foo.getId(), TEST.getId(), 1);
-                        fooDao.updateTotal(foo.getId(), TEST.getId(), 1);
-                        fooDao.updateTotal(foo.getId(), TEST.getId(), -1);
-                        assertEquals(2, fooDao.getUsersFoo(TEST.getId()).get(0).getTotal());
+                        int userId = 2;
+                        Foo foo = fooDao.addFoo(userId, "data");
+                        fooDao.updateTotal(userId, foo.getId(), 4);
+                        assertEquals(2, fooDao.getUsersFoo(userId).get(0).getTotal());
+                    }
+
+                    @Test
+                    public void itShouldNotBePossibleToUpdateOthersFoo() {
+                        int userId = 1;
+                        int fooId = 1;
+                        int total = 1;
+                        assertFalse(fooDao.updateTotal(userId, fooId, total));
                     }
 
                     @Test(expected = DataAccessException.class)
-                    public void updateMissingFoo() {
-                        fooDao.updateTotal(1, 1, 1);
-                    }
-
-                    @Test(expected = DataAccessException.class)
-                    public void dontUpdateOthersFoo() {
-                        Foo foo = fooDao.addFoo(ADMIN.getId(), "admin");
-                        fooDao.updateTotal(foo.getId(), TEST.getId(), 1);
-                    }
-
-                    @Test(expected = DataAccessException.class)
-                    public void updateToZero() {
-                        Foo foo = fooDao.addFoo(ADMIN.getId(), "will go to zero");
-                        fooDao.updateTotal(foo.getId(), ADMIN.getId(), -1);
+                    public void failUpdateToZero() {
+                        int userId = 1;
+                        Foo foo = fooDao.addFoo(userId, "will go to zero");
+                        fooDao.updateTotal(userId, foo.getId(), 0);
                     }
                 </code></pre>
                 <ol start="4">
@@ -1771,19 +1803,20 @@
                 <pre><code class="language-java">
                     @POST
                     @RolesAllowed(Role.Names.USER)
-                    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-                    @Path("{fooId}/total")
-                    public Foo updateFoo(@PathParam("fooId") int fooId, @QueryParam("delta") int totalDelta) {
-                        int newTotal = fooDao.updateTotal(fooId, user.getId(), totalDelta);
-                        return new Foo(fooId, user.getId(), null, null, newTotal);
+                    @Path("{fooId}/total/{newTotal}")
+                    public void updateFoo(@PathParam("fooId") int fooId, @PathParam("newTotal") int newTotal) {
+                        if (!fooDao.updateTotal(fooId, user.getId(), totalDelta)) {
+                            throw new WebApplicationException(404);
+                        }
                     }
 
                     // Implement this method and add correct annotations
                     // It should match HTTP calls like this:
-                    // DELETE /rest/foo/4 HTTP/1.1
+                    // DELETE /rest/foo/4
                     @DELETE
-                    // TODO: please add path annotation
-                    public void deleteFoo( /* TODO: please add path-parameter annotation */) {
+                    @RolesAllowed(Role.Names.USER)
+                    // TODO: please add @Path annotation
+                    public void deleteFoo( /* TODO: please add @PathParam annotation for the fooId */) {
                         // TODO: please call the correct method in fooDao
                     }
                 </code></pre>
@@ -1858,7 +1891,7 @@
                 <pre class="p-3"><code class="language-html">
                     &lt;div class="btn-group"&gt;
                         &lt;button class="btn btn-primary btn-sm"&gt;-&lt;/button&gt;
-                        &lt;button class="btn btn-primary" disabled&gt;42&lt;/button&gt;
+                        &lt;button class="btn btn-primary" disabled&gt;&lt;/button&gt;
                         &lt;button class="btn btn-primary btn-sm"&gt;+&lt;/button&gt;
                     &lt;/div&gt;
                 </code></pre>
@@ -1879,11 +1912,12 @@
                     <li>Add this to the end of the <code>renderPart</code> function on the view object</li>
                 </ol>
                 <pre><code class="language-javascript">
-                    // Get the previously added table row
+                    // ...
+                    // Get the previously added table row (from before)
                     var trElement = document.querySelector('#foo-template')
                             .parentElement
                             .querySelector('tr:last-of-type');
-                    // Get the three buttons that are defined
+                    // Get the three buttons that are defined in the HTML file
                     var buttons = trElement.querySelectorAll('button');
 
                     // This function is called with the response from the server
@@ -1899,7 +1933,7 @@
                                 trElement.parentElement.removeChild(trElement);
                             });
                         } else {
-                            base.rest.updateFoo(foo.id, -1).then(updateFoo);
+                            base.rest.updateFoo(foo.id, foo.total - 1).then(updateFoo);
                         }
                     };
                     // Increment button onclick function

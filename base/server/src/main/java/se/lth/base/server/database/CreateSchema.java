@@ -28,11 +28,11 @@ public class CreateSchema {
     }
 
     public void dropAll() {
-        new DataAccess<>(driverUrl, Mapper.NONE).execute("DROP ALL OBJECTS");
+        new DataAccess<>(driverUrl, null).execute("DROP ALL OBJECTS");
     }
 
     public void createSchema() {
-        try (Connection conn = new DataAccess<>(driverUrl, Mapper.NONE).getConnection()) {
+        try (Connection conn = new DataAccess<>(driverUrl, null).getConnection()) {
             runScript(conn);
         } catch (SQLException e) {
             throw new DataAccessException(e, ErrorType.UNKNOWN);

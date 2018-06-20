@@ -31,7 +31,7 @@ base.fooController = function() {
             tds[0].textContent = foo.payload;
             var d = foo.createdDate;
             tds[1].textContent = d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
-            // Edit here in lab 1
+            // TODO: Edit here in lab 1
         },
         template: function() {
             return document.getElementById('foo-template');
