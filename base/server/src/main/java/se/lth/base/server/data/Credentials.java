@@ -47,12 +47,16 @@ public class Credentials {
         return this.password.length() >= 8;
     }
 
+    public boolean hasPassword() {
+        return password != null;
+    }
+
     /**
      * Hash password using hashing algorithm intended for this purpose.
      *
      * @return base64 encoded hash result.
      */
-    public UUID generatePasswordHash(long salt) {
+    UUID generatePasswordHash(long salt) {
         try {
             KeySpec spec = new PBEKeySpec(password.toCharArray(),
                     ByteBuffer.allocate(8).putLong(salt).array(),
@@ -68,12 +72,8 @@ public class Credentials {
         }
     }
 
-    public static long generateSalt() {
+    static long generateSalt() {
         return new SecureRandom().nextLong();
-    }
-
-    public boolean hasPassword() {
-        return password != null;
     }
 
     public static void main(String[] args) {
