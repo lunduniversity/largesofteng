@@ -117,12 +117,12 @@ var e2eServerValidate = function() {
             baseLab.complete('e2eServer', false);
         } else if (data.length == 0) {
             baseLab.complete('e2eServer', false);
-            alert('There is no data added to the foo table for the user you have logged in with.' +
+            alert('There is no data added to the foo table for the user you have logged in with. ' +
                 'For this verification to work there needs to be at least one row in the table. '+
-                'Please go to http://localhost:8080 and input some.');
+                'Please go to http://localhost:8080 and input some in the Foo tab.');
         } else if (typeof data[0].total === "undefined") {
             baseLab.complete('e2eServer', false);
-            alert('Count not find total in the response from http://localhost:8080/rest/foo.' +
+            alert('Could not find not total field in the response from http://localhost:8080/rest/foo.' +
                 ' Did you remember to restart the server?');
         } else if (typeof data[0].total !== "number") {
             baseLab.complete('e2eServer', false);
@@ -214,7 +214,7 @@ var e2eTableValidate = function() {
         var ths = d.querySelectorAll('table tr th');
         var thsOk = ths.length == 3;
         if (thsOk) {
-            var headerOk = ths[2].textContent.trim().toUpperCase() == 'COUNT';
+            var headerOk = ths[2].textContent.trim().toUpperCase() == 'TOTAL';
         } else {
             var headerOk = false;
         }
