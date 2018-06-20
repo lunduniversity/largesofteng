@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * FooDataAccess is a place-holder that shows how the base system can be extended with additional functionality.
@@ -41,6 +40,7 @@ public class FooDataAccess extends DataAccess<Foo> {
      *
      * @param userId  user to add payload to.
      * @param payload new payload to append.
+     * @return the created foo object, containing additionally created date and the id of the foo.
      */
     public Foo addFoo(int userId, String payload) {
         long created = System.currentTimeMillis();
@@ -53,16 +53,16 @@ public class FooDataAccess extends DataAccess<Foo> {
      * @return all foo payload for all users.
      */
     public List<Foo> getAllFoo() {
-        return query("SELECT * FROM foo").collect(Collectors.toList());
+        return query("SELECT * FROM foo");
     }
 
     /**
      * Get all foo payload created by a user.
      *
      * @param userId user to filter on.
-     * @return users foo payload.
+     * @return users foo objects.
      */
     public List<Foo> getUsersFoo(int userId) {
-        return query("SELECT * FROM foo WHERE user_id = ?", userId).collect(Collectors.toList());
+        return query("SELECT * FROM foo WHERE user_id = ?", userId);
     }
 }

@@ -3,9 +3,11 @@ package se.lth.base.server.database;
 import org.h2.api.ErrorCode;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -29,10 +31,6 @@ public class DataAccess<T> {
 
     public String getDriverUrl() {
         return driverUrl;
-    }
-
-    public Mapper<T> getMapper() {
-        return mapper;
     }
 
     public Connection getConnection() throws SQLException {
@@ -69,10 +67,14 @@ public class DataAccess<T> {
     }
 
     public T queryFirst(String sql, Object... objects) {
-        return query(sql, objects).findFirst().orElseThrow(() -> new DataAccessException(ErrorType.NOT_FOUND));
+        return queryStream(sql, objects).findFirst().orElseThrow(() -> new DataAccessException(ErrorType.NOT_FOUND));
     }
 
-    public Stream<T> query(String sql, Object... objects) {
+    public List<T> query(String sql, Object... objects) {
+        return queryStream(sql, objects).collect(Collectors.toList());
+    }
+
+    private Stream<T> queryStream(String sql, Object... objects) {
         UncheckedCloseable close = null;
         try {
             Connection connection = getConnection();
@@ -97,7 +99,13 @@ public class DataAccess<T> {
                         throw toException(e, e.getErrorCode());
                     }
                 }
-            }, false).onClose(close).map(mapper);
+            }, false).onClose(close).map(rs -> {
+                try {
+                    return mapper.map(rs);
+                } catch (SQLException e) {
+                    throw new DataAccessException(e, ErrorType.MAPPING);
+                }
+            });
         } catch (SQLException e) {
             if (close != null)
                 try {
