@@ -1837,7 +1837,7 @@
                                 .path(Integer.toString(42))
                                 .request()
                                 .post(Entity.json(null));
-                        &lt;Foo&gt; foos = target("foo").request().get(new GenericType&lt;&lt;Foo&gt;&gt;);
+                        List&lt;Foo&gt; foos = target("foo").request().get(new GenericType&lt;List&lt;Foo&gt;&gt;(){});
                         assertEquals(42, foos.get(0).getTotal());
                     }
 
@@ -1850,7 +1850,7 @@
                                 .path(Integer.toString(foo.getId()))
                                 .request()
                                 .delete();
-                        &lt;Foo&gt; foos = target("foo").request().get(new GenericType&lt;&lt;Foo&gt;&gt;);
+                        List&lt;Foo&gt; foos = target("foo").request().get(new GenericType&lt;List&lt;Foo&gt;&gt;(){});
                                 // TODO: please finish the implementation with an assertion on foos
                     }
                 </code></pre>

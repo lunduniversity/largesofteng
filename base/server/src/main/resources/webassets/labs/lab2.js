@@ -50,6 +50,7 @@ var e2eBackEndValidate = function() {
     var theFoo = -1;
     base.rest.addFoo({payload:'test'})
         .then(function(foo) {
+            if (foo.error) throw "Failed to add foo: " + foo.message;
             theFoo = foo.id;
             return fetch('/rest/foo/'+foo.id+'/total/'+5, {
                     credentials: 'same-origin', method: 'POST'
@@ -57,6 +58,7 @@ var e2eBackEndValidate = function() {
         }).then(function() {
             return fetch('/rest/foo', {credentials: 'same-origin'})
                 .then(response => response.json()).then(function(foos) {
+                    if (foos.error) throw "Failed to fetch foos: " + foos.message;
                     var match = foos.filter(f=> f.id == theFoo)[0];
                     if (match.total !== 5) {
                         throw 'Got wrong total when testing implementation: expected 5 but received ' + f.total;
