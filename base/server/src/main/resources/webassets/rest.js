@@ -116,7 +116,9 @@ base.rest = (function() {
         },
         updateFoo: function(fooId, total) {
             return baseFetch('/rest/foo/'+fooId+'/total/'+total, {method: 'POST'})
-                .then(response => response.json());
+                .then(function() {
+                    return total;
+                });
         }
     };
 })();

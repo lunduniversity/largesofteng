@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         jerseyExample: 3,
         jerseyPathParam: 1,
         e2eBackEnd: true
-    }, 'lab1.html', 'android.pdf');
+    }, 'lab1.html');
 });
 
 var h2GuiValidate = function(submitEvent) {
@@ -47,32 +47,36 @@ var jerseyPathValidate = function(submitEvent) {
 }
 
 var e2eBackEndValidate = function() {
-    base.rest.addFoo({payload:'test'}).then(function(foo) {
-        fetch('/rest/foo/'+foo.id+'/total', {
-                credentials: 'same-origin',
-                headers: {'Content-Type': 'application/json;charset=utf-8'},
-                body: JSON.stringify(1),
-                method: 'POST'})
-        .then(response => response.json()).then(function(total) {
-            if (total.error) {
-                throw total.message;
-            }
-            if (total !== 2) {
-                throw 'Got wrong total when testing implementation: expected 2 but received ' + total;
-            }
-        }).then(function() {
-            fetch('/rest/foo/'+foo.id, {
-                credentials: 'same-origin',
-                method: 'DELETE'
-            }).then(function(response) {
-                if (!response.ok) {
-                    throw 'Failed to call delete on foo';
-                }
-                baseLab.complete('e2eBackEnd', true);
+    var theFoo = -1;
+    base.rest.addFoo({payload:'test'})
+        .then(function(foo) {
+            if (foo.error) throw "Failed to add foo: " + foo.message;
+            theFoo = foo.id;
+            return fetch('/rest/foo/'+foo.id+'/total/'+5, {
+                    credentials: 'same-origin', method: 'POST'
             });
+        }).then(function() {
+            return fetch('/rest/foo', {credentials: 'same-origin'})
+                .then(response => response.json()).then(function(foos) {
+                    if (foos.error) throw "Failed to fetch foos: " + foos.message;
+                    var match = foos.filter(f=> f.id == theFoo)[0];
+                    if (match.total !== 5) {
+                        throw 'Got wrong total when testing implementation: expected 5 but received ' + f.total;
+                    }
+                });
+        }).then(function() {
+             return fetch('/rest/foo/'+theFoo, {
+                        credentials: 'same-origin',
+                        method: 'DELETE'
+                    }).then(function(response) {
+                        if (!response.ok) {
+                            throw 'Failed to delete on foo: ' + total.message;
+                        }
+                        baseLab.complete('e2eBackEnd', true);
+                });
         }).catch(function(error) {
+            console.log(error)
             alert(error);
-            baseLab.complete('e2eBackEnd', false)
+            baseLab.complete('e2eBackEnd', false);
         });
-    });
-}
+};

@@ -1743,7 +1743,8 @@
                 <pre><code class="language-java">
                     @Test
                     public void deleteFoo() {
-                        Foo foo = fooDao.addFoo(TEST.getId(), "data");
+                        int userId = 2;
+                        Foo foo = fooDao.addFoo(userId, "data");
                         // TODO: Please finish this implementation
                         // it should call the deleteFoo method and check its returned value
                         // assertTrue(...)
@@ -1771,7 +1772,7 @@
                         int userId = 2;
                         Foo foo = fooDao.addFoo(userId, "data");
                         fooDao.updateTotal(userId, foo.getId(), 4);
-                        assertEquals(2, fooDao.getUsersFoo(userId).get(0).getTotal());
+                        assertEquals(4, fooDao.getUsersFoo(userId).get(0).getTotal());
                     }
 
                     @Test
@@ -1805,7 +1806,7 @@
                     @RolesAllowed(Role.Names.USER)
                     @Path("{fooId}/total/{newTotal}")
                     public void updateFoo(@PathParam("fooId") int fooId, @PathParam("newTotal") int newTotal) {
-                        if (!fooDao.updateTotal(fooId, user.getId(), totalDelta)) {
+                        if (!fooDao.updateTotal(user.getId(), fooId, newTotal)) {
                             throw new WebApplicationException(404);
                         }
                     }
@@ -1830,12 +1831,14 @@
                         Foo foo = target("foo")
                                 .request()
                                 .post(Entity.json(Collections.singletonMap("payload", "new foo")), Foo.class);
-                        int updated = target("foo")
+                        target("foo")
                                 .path(Integer.toString(foo.getId()))
                                 .path("total")
+                                .path(Integer.toString(42))
                                 .request()
-                                .post(Entity.json(1), Integer.class);
-                        assertEquals(2, updated);
+                                .post(Entity.json(null));
+                        List&lt;Foo&gt; foos = target("foo").request().get(new GenericType&lt;List&lt;Foo&gt;&gt;(){});
+                        assertEquals(42, foos.get(0).getTotal());
                     }
 
                     @Test
@@ -1847,9 +1850,8 @@
                                 .path(Integer.toString(foo.getId()))
                                 .request()
                                 .delete();
-                        List&lt;Foo&gt; foos = target("foo").request().get(FOO_LIST);
-
-                        // TODO: please finish the implementation with an assertion on foos
+                        List&lt;Foo&gt; foos = target("foo").request().get(new GenericType&lt;List&lt;Foo&gt;&gt;(){});
+                                // TODO: please finish the implementation with an assertion on foos
                     }
                 </code></pre>
                 <ol start="5">
