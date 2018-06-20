@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function(event) {
     baseLab.init({
-        h2Gui: "5336889820313124494",
+        h2Gui: "Admin",
         sqlSelect: 2,
         sqlQuery: 4,
         sqlBase: true,
@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
         jerseyPath: '/rest/foo/all',
         jerseyExample: 3,
         jerseyPathParam: 1,
-        lifecycleState: 2,
         e2eBackEnd: true
     }, 'lab1.html', 'android.pdf');
 });

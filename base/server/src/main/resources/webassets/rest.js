@@ -114,11 +114,8 @@ base.rest = (function() {
         deleteFoo: function(fooId) {
             return baseFetch('/rest/foo/'+fooId, {method: 'DELETE'});
         },
-        updateFoo: function(fooId, delta) {
-            return baseFetch('/rest/foo/'+fooId+'/total', {
-                    method: 'POST',
-                    body: JSON.stringify(delta),
-                    headers: jsonHeader})
+        updateFoo: function(fooId, total) {
+            return baseFetch('/rest/foo/'+fooId+'/total/'+total, {method: 'POST'})
                 .then(response => response.json());
         }
     };
