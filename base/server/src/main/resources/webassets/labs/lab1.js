@@ -64,7 +64,7 @@ const jsDebuggingValidate = function(event) {
 
 const htmlDOMDemo = function() {
     const div = document.createElement('div');
-    div.innerHTML = '<b>browser will parse this and create HTML elements</b>';
+    div.innerHTML = '<b>your browser will parse this and create HTML elements</b>';
     const target = document.getElementById('putItHere');
     target.appendChild(div);
 };
