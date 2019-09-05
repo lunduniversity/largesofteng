@@ -213,14 +213,27 @@ const e2eTableValidate = function() {
         d.innerHTML = html;
         const ths = d.querySelectorAll('table tr th');
         const thsOk = ths.length == 3;
+        let headerOk;
         if (thsOk) {
-            const headerOk = ths[2].textContent.trim().toUpperCase() == 'TOTAL';
+            headerOk = ths[2].textContent.trim().toUpperCase() == 'TOTAL';
         } else {
-            const headerOk = false;
+            headerOk = false;
         }
         const tdsOk = d.querySelector('#foo-template').content.querySelectorAll('td').length == 3;
-        baseLab.complete('e2eTable', thsOk && headerOk && tdsOk);
+        let msg = '';
+        if (!headerOk) {
+            msg += 'Table header does not contain total. ';
+        }
+        if (!thsOk) {
+            msg += 'Number <th> elements not correct. ';
+        }
+        if (!tdsOk) {
+            msg += 'Number <th> elements not correct.';
+        }
+        if (msg) throw Error(msg);
+        baseLab.complete('e2eTable', true);
     }).catch(function(error) {
+        alert(error);
         baseLab.complete('e2eTable', false);
     });
 };
