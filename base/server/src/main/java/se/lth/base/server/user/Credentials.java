@@ -1,4 +1,4 @@
-package se.lth.base.server.data;
+package se.lth.base.server.user;
 
 import com.google.gson.annotations.Expose;
 
@@ -20,6 +20,8 @@ import java.util.UUID;
 public class Credentials {
 
     private final String username;
+    // This annotation tells GSON that 'password' can only come from outside, it is never sent back.
+    // It can't be retrieved in plain text from the database anyway. This is just an extra safe precaution.
     @Expose(serialize = false)
     private final String password;
     private final Role role;
@@ -77,6 +79,9 @@ public class Credentials {
     }
 
     public static void main(String[] args) {
+        // This is left as is to show how the system was seeded. You can't login to the user admin interface and create
+        // a new admin user if there are no users, so the first users are created manually and added  to the database
+        // schema.
         long s1 = generateSalt();
         long s2 = generateSalt();
         System.out.println(s1);

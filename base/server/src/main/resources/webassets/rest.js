@@ -37,14 +37,31 @@ base.rest = (function() {
     base.User = User;
     base.Role = Role;
 
-    var baseFetch = function(url, config) {
+    // This method extends the functionality of fetch by adding default error handling.
+    // Using it is entirely optional.
+    const baseFetch = function(url, config) {
+
+         // We create config if it does not already exist
         config = config || {};
+         // Setting 'same-origin' make sure that cookies are sent to the server (which it would not otherwise)
         config.credentials = 'same-origin';
-        var bf = fetch(url, config).catch(function(error) {
-            alert(error);
-            throw error;
-        });
-        return bf;
+
+        return fetch(url, config)
+            .then(function(response) {
+                if (!response.ok) {
+                    return new Promise((resolve) => resolve(response.json()))
+                        .then(function(errorJson) {
+                            const status = errorJson.status;
+                            throw Error(`${errorJson.status} ${errorJson.error}\n${errorJson.message}`);
+                        });
+                } else {
+                    return response;
+                }
+            }).catch(function(error) {
+                //console.print(error);
+                alert(error);
+                throw error;
+            });
     };
 
     var jsonHeader = {

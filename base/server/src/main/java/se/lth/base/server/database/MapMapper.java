@@ -8,6 +8,7 @@ import java.util.Map;
 
 /**
  * This is a convenience class which is useful for debugging SQL queries without having to write a fixed Mapper.
+ * It takes a ResultSet and converts each table row into a Java Map.
  */
 public class MapMapper implements Mapper<Map<String, Object>> {
 

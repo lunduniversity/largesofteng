@@ -1,4 +1,4 @@
-package se.lth.base.server.data;
+package se.lth.base.server.user;
 
 import se.lth.base.server.database.DataAccess;
 import se.lth.base.server.database.DataAccessException;
@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 /**
  * Basic functionality to support standard user operations. Some notable omissions are removing user, time out on
@@ -128,10 +127,9 @@ public class UserDataAccess extends DataAccess<User> {
      * @throws DataAccessException if the username or password does not match.
      */
     public Session authenticate(Credentials credentials) {
-        Supplier<DataAccessException> onError = () ->
-                new DataAccessException("Username or password incorrect", ErrorType.DATA_QUALITY);
         long salt = new DataAccess<>(getDriverUrl(), (rs) -> rs.getLong(1))
-                .queryFirst("SELECT salt FROM user WHERE username = ?", credentials.getUsername());
+                .queryStream("SELECT salt FROM user WHERE username = ?", credentials.getUsername()).findFirst()
+                .orElseThrow(() -> new DataAccessException("Username or password incorrect", ErrorType.DATA_QUALITY));
         UUID hash = credentials.generatePasswordHash(salt);
         User user = queryFirst("SELECT user_id, username, role FROM user, user_role " +
                 "WHERE user_role.role_id = user.role_id " +

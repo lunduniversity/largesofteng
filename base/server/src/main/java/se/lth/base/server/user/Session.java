@@ -1,4 +1,4 @@
-package se.lth.base.server.data;
+package se.lth.base.server.user;
 
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;

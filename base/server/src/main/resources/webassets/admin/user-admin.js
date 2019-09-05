@@ -1,7 +1,8 @@
-var base = base || {};
+'use strict'
+let base = base || {};
 base.userAdminController = function() {
 
-    var model = {
+    const model = {
         users: [],
         roles: [],
         roleNames: []

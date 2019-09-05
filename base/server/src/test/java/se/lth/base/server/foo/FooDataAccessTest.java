@@ -1,9 +1,11 @@
-package se.lth.base.server.data;
+package se.lth.base.server.foo;
 
 import org.junit.Test;
 import se.lth.base.server.Config;
 import se.lth.base.server.database.BaseDataAccessTest;
 import se.lth.base.server.database.DataAccessException;
+import se.lth.base.server.foo.Foo;
+import se.lth.base.server.foo.FooDataAccess;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;

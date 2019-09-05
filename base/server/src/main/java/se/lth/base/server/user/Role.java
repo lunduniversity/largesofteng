@@ -1,4 +1,4 @@
-package se.lth.base.server.data;
+package se.lth.base.server.user;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -18,8 +18,12 @@ public enum Role {
     ADMIN(3);
 
     /**
-     * The reason for this strange is to be able to use @{@link javax.annotation.security.RolesAllowed} which requires a
-     * String, but at the same time we want to have typed Roles.
+     * The reason for this strange pattern is to be able to use @{@link javax.annotation.security.RolesAllowed} which
+     * requires a String, but at the same time we want to have typed Roles. That is, when GSON serializes a ROLE we know
+     * it is one of USER/ADMIN and not something made up.
+     * <p>
+     * The class Names serves as a namespace. In this way we can write Role.Names.USER to get a String constant i
+     * matching user.
      */
     public static class Names {
         public static final String USER = "USER";

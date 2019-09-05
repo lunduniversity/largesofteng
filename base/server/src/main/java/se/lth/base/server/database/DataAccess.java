@@ -37,6 +37,11 @@ public class DataAccess<T> {
         return DriverManager.getConnection(driverUrl, "sa", "");
     }
 
+    /**
+     * This method is used for delete and update statements.
+     *
+     * @return number of rows affected.
+     */
     public int execute(String sql, Object... objects) {
         try (Connection conn = getConnection();
              PreparedStatement statement = conn.prepareStatement(sql);) {
@@ -49,7 +54,11 @@ public class DataAccess<T> {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * This method is used for inserts that return auto generated ids.
+     * <p>
+     * The type of the return value will be decided what is defined in the database, it is casted automatically.
+     */
     public <S> S insert(String sql, Object... objects) {
         try (Connection conn = getConnection();
              PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);) {
@@ -59,22 +68,35 @@ public class DataAccess<T> {
             statement.execute();
             try (ResultSet keys = statement.getGeneratedKeys();) {
                 keys.next();
-                return (S) keys.getObject(1);
+                @SuppressWarnings("unchecked")
+                S key = (S) keys.getObject(1);
+                return key;
             }
         } catch (SQLException e) {
             throw toException(e, e.getErrorCode());
         }
     }
 
+    /**
+     * This method is used for select statements that return values according to the defined mapper, can be used
+     * when there should be one row exactly matching. It does not check if there are more than one though.
+     */
     public T queryFirst(String sql, Object... objects) {
         return queryStream(sql, objects).findFirst().orElseThrow(() -> new DataAccessException(ErrorType.NOT_FOUND));
     }
 
+    /**
+     * This method is used for select statements that return values according to the defined mapper.
+     */
     public List<T> query(String sql, Object... objects) {
         return queryStream(sql, objects).collect(Collectors.toList());
     }
 
-    private Stream<T> queryStream(String sql, Object... objects) {
+    /**
+     * This converts a JDBC result set into a java stream of objects.
+     * It wraps a series of Closeable and makes sure each of them are consumed once the Stream closes.
+     */
+    public Stream<T> queryStream(String sql, Object... objects) {
         UncheckedCloseable close = null;
         try {
             Connection connection = getConnection();
@@ -103,7 +125,7 @@ public class DataAccess<T> {
                 try {
                     return mapper.map(rs);
                 } catch (SQLException e) {
-                    throw new DataAccessException(e, ErrorType.MAPPING);
+                    throw new DataAccessException(e, ErrorType.BAD_MAPPING);
                 }
             });
         } catch (SQLException e) {
@@ -117,6 +139,8 @@ public class DataAccess<T> {
         }
     }
 
+    // The error codes in H2 are specific to H2. Here we convert them to a generic exception defined in BASE.
+    // Thus, we keep the dependencies to H2 low and can replace it if necessary.
     private DataAccessException toException(Exception cause, int h2Code) {
         switch (h2Code) {
             case ErrorCode.REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1:
@@ -145,7 +169,7 @@ public class DataAccess<T> {
 
         default UncheckedCloseable nest(AutoCloseable c) {
             return () -> {
-                try (UncheckedCloseable c1 = this) {
+                try (UncheckedCloseable ignored = this) {
                     c.close();
                 }
             };

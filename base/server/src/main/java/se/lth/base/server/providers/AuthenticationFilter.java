@@ -1,9 +1,9 @@
-package se.lth.base.server.rest.providers;
+package se.lth.base.server.providers;
 
 import se.lth.base.server.Config;
-import se.lth.base.server.data.Session;
-import se.lth.base.server.data.User;
-import se.lth.base.server.data.UserDataAccess;
+import se.lth.base.server.user.Session;
+import se.lth.base.server.user.User;
+import se.lth.base.server.user.UserDataAccess;
 import se.lth.base.server.database.DataAccessException;
 import se.lth.base.server.database.ErrorType;
 
@@ -14,7 +14,6 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -31,7 +30,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     private final UserDataAccess userDataAccess = new UserDataAccess(Config.instance().getDatabaseDriver());
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext) {
         Cookie cookie = requestContext.getCookies().get("USER_TOKEN");
         Session session = new Session(null, User.NONE);
         if (cookie != null) {
