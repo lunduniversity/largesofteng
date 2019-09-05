@@ -1,17 +1,17 @@
 var base = base || {};
 base.rest = (function() {
 
-    var Foo = function(json) {
+    const Foo = function(json) {
         Object.assign(this, json);
         this.createdDate = new Date(this.created);
     };
 
-    var Role = function(role) {
+    const Role = function(role) {
         this.name = role;
         this.label = this.name[0] + this.name.toLowerCase().slice(1);
     };
 
-    var User = function(json) {
+    const User = function(json) {
         Object.assign(this, json);
         this.role = new Role(json.role);
         this.json = json;
@@ -22,15 +22,6 @@ base.rest = (function() {
         this.isNone = function() {
             return this.role.name === 'NONE';
         };
-    };
-
-
-    var objOrError = function(json, cons) {
-        if (json.error) {
-            return json;
-        } else {
-            return new cons(json);
-        }
     };
 
     base.Foo = Foo;
@@ -58,15 +49,12 @@ base.rest = (function() {
                     return response;
                 }
             }).catch(function(error) {
-                //console.print(error);
                 alert(error);
                 throw error;
             });
     };
 
-    var jsonHeader = {
-        'Content-Type': 'application/json;charset=utf-8'
-    };
+    const jsonHeader = {'Content-Type': 'application/json;charset=utf-8'};
 
     return {
         getUser: function() {
@@ -100,7 +88,7 @@ base.rest = (function() {
                     body: JSON.stringify(credentials),
                     headers: jsonHeader})
                 .then(response => response.json())
-                .then(u => objOrError(u, User));
+                .then(u => new User(u));
         },
         putUser: function(id, credentials) {
             return baseFetch('/rest/user/'+id, {
@@ -108,7 +96,7 @@ base.rest = (function() {
                     body: JSON.stringify(credentials),
                     headers: jsonHeader})
                 .then(response => response.json())
-                .then(u => objOrError(u, User));
+                .then(u => new User(u));
         },
         deleteUser: function(username) {
             return baseFetch('/rest/user/'+username, {method: 'DELETE'});

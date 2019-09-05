@@ -1,7 +1,7 @@
 var base = base || {};
 base.mainController = (function() {
 
-    var routingTable = {
+    const routingTable = {
         // first in table is the default
         'foo': {
             partial: 'foo/foo.html',
@@ -13,30 +13,14 @@ base.mainController = (function() {
         }
     };
 
-    var model = {
+    const model = {
         route: ''
     };
 
-    var view = {
-        render: function() {
-            var nav = document.getElementById('main-nav');
-            var activeTabLink = nav.querySelector('li.active');
-            if (activeTabLink) activeTabLink.classList.remove('active');
-            var newActiveTabLink = nav.querySelector('a[href="#/'+model.route+'"]');
-            if (newActiveTabLink) newActiveTabLink.parentElement.classList.add('active');
-        },
-        hideAdminLinks() {
-            document.querySelectorAll('#main-nav li.admin-only').forEach(li => li.style.display = 'none');
-        },
-        renderUsername: function() {
-            document.getElementById('username').textContent = model.user.username;
-        }
-    };
-
-    var controller = {
+    const controller = {
         routingTable: routingTable,
         changeRoute: function() {
-            var newRoute = location.hash.slice(2);
+            const newRoute = location.hash.slice(2);
             if (!controller.routingTable[newRoute]) {
                 location.hash = '/'+Object.keys(controller.routingTable)[0];
                 return;
@@ -48,7 +32,11 @@ base.mainController = (function() {
                     document.getElementById('main-tab').innerHTML = tabHtml;
                     controller.routingTable[newRoute].controller().load();
                 });
-            view.render();
+            const nav = document.getElementById('main-nav');
+            const activeTabLink = nav.querySelector('li.active');
+            if (activeTabLink) activeTabLink.classList.remove('active');
+            const newActiveTabLink = nav.querySelector('a[href="#/'+model.route+'"]');
+            if (newActiveTabLink) newActiveTabLink.parentElement.classList.add('active');
         },
         load: function() {
             document.getElementById('logout').onclick = controller.logout;
@@ -56,11 +44,11 @@ base.mainController = (function() {
             base.mainController.changeRoute();
             base.rest.getUser().then(function(user) {
                 model.user = user;
-                view.renderUsername();
+                document.getElementById('username').textContent = model.user.username;
                 if (user.isNone()) {
                     base.changeLocation('/login/login.html');
                 } else if (!user.isAdmin()) {
-                    view.hideAdminLinks();
+                    document.querySelectorAll('#main-nav li.admin-only').forEach(li => li.style.display = 'none');
                 }
             });
         },

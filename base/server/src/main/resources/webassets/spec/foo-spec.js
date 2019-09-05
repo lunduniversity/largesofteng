@@ -5,14 +5,14 @@
 describe('fooController', function() {
 
     // Some dummy data
-    var foos = [
+    const foos = [
         new base.Foo({id: 1, userId: 1, payload: 's1', created: 0, total: 3}),
         new base.Foo({id: 2, userId: 1, payload: 's2', created: 1, total: 2}),
         new base.Foo({id: 3, userId: 1, payload: 's3', created: 2, total: 1})
     ];
 
-    var node;
-    var foo;
+    let node;
+    let foo;
 
     // Creates the controller by loading the foo.html and put it in the node variable
     beforeEach(function(done) {
@@ -28,7 +28,7 @@ describe('fooController', function() {
     });
 
     it('should fetch foos on load', function(done) {
-        var foosPromise = Promise.resolve(foos.slice(0));
+        const foosPromise = Promise.resolve(foos.slice(0));
         spyOn(base.rest, 'getFoos').and.returnValue(foosPromise);
         controller.load();
         foosPromise.then(function() {
@@ -37,38 +37,38 @@ describe('fooController', function() {
     });
 
     it('should populate table on load', function(done) {
-        var foosPromise = Promise.resolve(foos.slice(0));
+        const foosPromise = Promise.resolve(foos.slice(0));
         spyOn(base.rest, 'getFoos').and.returnValue(foosPromise);
         controller.load();
         foosPromise.then(function() {
             // it should have populated the table with three rows
-            var rows = node.querySelectorAll('tbody tr');
+            const rows = node.querySelectorAll('tbody tr');
             expect(rows.length).toBe(foos.length);
         }).finally(done);
     });
 
     // Change here for lab 1
     xit('should have total in table', function(done) {
-        var foosPromise = Promise.resolve([foos[0]]);
+        const foosPromise = Promise.resolve([foos[0]]);
         spyOn(base.rest, 'getFoos').and.returnValue(foosPromise);
         controller.load();
         foosPromise.then(function() {
-            var tr = node.querySelector('tbody tr');
-            var tds = tr.querySelectorAll('td');
+            const tr = node.querySelector('tbody tr');
+            const tds = tr.querySelectorAll('td');
             expect(tds.length).toBe(3);
             expect(tds[0].textContent).toBe(foos[0].payload);
-            var d = foos[0].createdDate;
+            const d = foos[0].createdDate;
             expect(tds[1].textContent).toBe(d.toLocaleDateString() + ' ' + d.toLocaleTimeString());
             expect(tds[2].textContent).toBe(''+foos[0].total);
         }).finally(done);
      });
 
     describe('submit specs', function() {
-        var mockFoo = new base.Foo({id: 4, userId: 1, payload: 'new data', created: 3});
-        var fooPromise;
+        const mockFoo = new base.Foo({id: 4, userId: 1, payload: 'new data', created: 3});
+        let fooPromise;
 
         beforeEach(function(done) {
-            var foosPromise = Promise.resolve([]);
+            const foosPromise = Promise.resolve([]);
             fooPromise = Promise.resolve(mockFoo);
             spyOn(base.rest, 'getFoos').and.returnValue(foosPromise);
             spyOn(base.rest, 'addFoo').and.returnValue(fooPromise);
@@ -98,7 +98,7 @@ describe('fooController', function() {
         });
 
         it('should add row after submit', function(done) {
-            var input = node.querySelector('input');
+            const input = node.querySelector('input');
             input.value = mockFoo.payload;
             controller.submitFoo(input);
             fooPromise.then(function() {
@@ -108,7 +108,7 @@ describe('fooController', function() {
         });
 
         it('should clear input after submit', function(done) {
-            var input = node.querySelector('input');
+            const input = node.querySelector('input');
             input.value = mockFoo.payload;
             controller.submitFoo(input);
             fooPromise.then(function() {

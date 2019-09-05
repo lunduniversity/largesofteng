@@ -8,9 +8,9 @@ var base = base || {};
 base.fooController = function() {
 
     // List of all foo data, will be useful to have when update functionality is added.
-    var model = [];
+    let model = [];
 
-    var view = {
+    const view = {
         // Creates HTML for each foo in model
         render: function() {
             model.forEach(d => view.renderPart(d));
@@ -20,16 +20,16 @@ base.fooController = function() {
             // Gets a reference to the template.
             // A template element is a special element used only to add dynamic content multiple times.
             // See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template
-            var t = view.template();
+            const t = view.template();
             view.update(t.content.querySelector('tr'), foo);
-            var clone = document.importNode(t.content, true);
+            const clone = document.importNode(t.content, true);
             t.parentElement.appendChild(clone);
         },
         // Update a single table row to display a foo
         update: function(trElement, foo) {
-            var tds = trElement.children;
+            const tds = trElement.children;
             tds[0].textContent = foo.payload;
-            var d = foo.createdDate;
+            const d = foo.createdDate;
             tds[1].textContent = d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
             // TODO: Edit here in lab 1
         },
@@ -38,7 +38,7 @@ base.fooController = function() {
         }
     };
 
-    var controller = {
+    const controller = {
         load: function() {
             // Adds callback to the form.
             document.getElementById('foo-form').onsubmit = function(event) {
@@ -56,7 +56,7 @@ base.fooController = function() {
         // Add a new foo to the table, based on the text content in the input field.
         submitFoo: function() {
             // Fetch an object reference to the input element with id 'foo-input' using the DOM API.
-            var input = document.getElementById('foo-input');
+            const input = document.getElementById('foo-input');
             // Call the REST API, see file rest.js for definitions.
             base.rest.addFoo({payload: input.value})
                 .then(function(foo) {

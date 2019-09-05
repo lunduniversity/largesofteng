@@ -1,4 +1,4 @@
-var answerSheet = {
+const answerSheet = {
     // Feel free to look at this, at least you learn JavaScript :)
     systemBrowse: true,
 
@@ -25,9 +25,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
     baseLab.init(answerSheet, null, 'lab2.html');
 });
 
-var testJavaScript = function(param1, param2) {alert(param1 + param2);}
+const testJavaScript = function(param1, param2) {alert(param1 + param2);}
 
-var systemBrowseValidate = function() {
+const systemBrowseValidate = function() {
     base.rest.getUser()
         .catch(error => baseLab.complete('systemBrowse', false))
         .then(function(user) {
@@ -35,11 +35,11 @@ var systemBrowseValidate = function() {
         });
 };
 
-var jsPropertyValidate = function(submitEvent) {
+const jsPropertyValidate = function(submitEvent) {
     submitEvent.preventDefault();
-    var input = document.querySelector('#jsProperty input').value;
+    const input = document.querySelector('#jsProperty input').value;
     try {
-        var ok = eval('(' + input + ')').fruit;
+        const ok = eval('(' + input + ')').fruit;
         baseLab.complete('jsProperty', ok);
         return false;
     } catch(error) {
@@ -49,9 +49,9 @@ var jsPropertyValidate = function(submitEvent) {
     }
 };
 
-var jsDebuggingValidate = function(event) {
+const jsDebuggingValidate = function(event) {
     event.preventDefault();
-    var input = document.querySelector('#jsDebugging input');
+    const input = document.querySelector('#jsDebugging input');
     try {
         baseLab.complete('jsDebugging', input.value.replace(/['"]+/g, ''));
     } catch (error) {
@@ -62,23 +62,23 @@ var jsDebuggingValidate = function(event) {
     return false;
 };
 
-var htmlDOMDemo = function() {
-    var div = document.createElement('div');
+const htmlDOMDemo = function() {
+    const div = document.createElement('div');
     div.innerHTML = '<b>browser will parse this and create HTML elements</b>';
-    var target = document.getElementById('putItHere');
+    const target = document.getElementById('putItHere');
     target.appendChild(div);
 };
 
-var htmlHeaderValidate = function(submitEvent) {
+const htmlHeaderValidate = function(submitEvent) {
     submitEvent.preventDefault();
-    var d = document.getElementById('htmlHeaderResult');
-    var r = document.getElementById('htmlHeaderInput');
+    const d = document.getElementById('htmlHeaderResult');
+    const r = document.getElementById('htmlHeaderInput');
     d.innerHTML = r.value;
     if (d.innerHTML.toLowerCase() != r.value.trim().toLowerCase()) {
         baseLab.complete('htmlHeader', false);
         return false;
     }
-    var h1 = d.querySelector('h1');
+    const h1 = d.querySelector('h1');
     if (!h1) {
         baseLab.complete('htmlHeader', false);
     } else if (h1.textContent && h1.textContent.length > 0) {
@@ -87,7 +87,7 @@ var htmlHeaderValidate = function(submitEvent) {
     return false;
 };
 
-var htmlFormTryoutValidate = function(submitEvent) {
+const htmlFormTryoutValidate = function(submitEvent) {
     submitEvent.preventDefault();
     if (localStorage.getItem('htmlFormTryout') !== 'true') {
         baseLab.complete('htmlFormTryout');
@@ -95,9 +95,9 @@ var htmlFormTryoutValidate = function(submitEvent) {
     return false;
 }
 
-var cssSelectorValidate = function(submitEvent) {
+const cssSelectorValidate = function(submitEvent) {
     submitEvent.preventDefault();
-    var sel = document.querySelector('#cssSelector input').value;
+    const sel = document.querySelector('#cssSelector input').value;
     try {
         baseLab.complete('cssSelector', Array.from(document.querySelectorAll(sel))
             .map(s => s.textContent)
@@ -110,7 +110,7 @@ var cssSelectorValidate = function(submitEvent) {
     return false;
 };
 
-var e2eServerValidate = function() {
+const e2eServerValidate = function() {
     base.rest.getFoos().then(function(data) {
         if (data.error) {
             alert('Received error from server: ' + data.message);
@@ -135,22 +135,22 @@ var e2eServerValidate = function() {
     });
 };
 
-var e2eTabHtmlValidate = function() {
-    var p1 = fetch('/hello/hello.html').then(function(response) {
+const e2eTabHtmlValidate = function() {
+    const p1 = fetch('/hello/hello.html').then(function(response) {
         if (response.ok) {
             return response.text();
         } else {
             throw 'Could not find the HTML file /hello/hello.html';
         }
     }).then(function(html) {
-        var d = document.createElement('div');
+        const d = document.createElement('div');
         d.innerHTML = html;
-        var h = d.querySelector('h1');
+        const h = d.querySelector('h1');
         if (!h || h.textContent === '') {
             throw 'Could not find a h1 tag with text';
         }
     });
-    var p2 = fetch('/hello/hello.js').then(function(response) {
+    const p2 = fetch('/hello/hello.js').then(function(response) {
         if (response.ok) {
             return response.text();
         } else {
@@ -175,9 +175,9 @@ var e2eTabHtmlValidate = function() {
     });
 };
 
-var e2eTabRouteValidate = function() {
-    var p1 = fetch('/index.html').then(response => response.text()).then(function(html) {
-        var d = document.createElement('div');
+const e2eTabRouteValidate = function() {
+    const p1 = fetch('/index.html').then(response => response.text()).then(function(html) {
+        const d = document.createElement('div');
         d.innerHTML = html;
         if (Array.from(d.querySelectorAll('a.nav-link'))
                 .map(a => a.href)
@@ -190,9 +190,9 @@ var e2eTabRouteValidate = function() {
             throw 'Could not find a script tag with src hello/hello.js';
         }
     });
-    var p2 = fetch('/index.js').then(response => response.text()).then(function(js) {
+    const p2 = fetch('/index.js').then(response => response.text()).then(function(js) {
         eval(js);
-        var hello = base.mainController.routingTable.hello;
+        const hello = base.mainController.routingTable.hello;
         if (!hello || hello.partial !== 'hello/hello.html') {
             throw 'Routing information in index.js is not correct.';
         }
@@ -207,18 +207,18 @@ var e2eTabRouteValidate = function() {
     });
 };
 
-var e2eTableValidate = function() {
+const e2eTableValidate = function() {
     fetch('/foo/foo.html').then(response => response.text()).then(function(html) {
-        var d = document.createElement('div');
+        const d = document.createElement('div');
         d.innerHTML = html;
-        var ths = d.querySelectorAll('table tr th');
-        var thsOk = ths.length == 3;
+        const ths = d.querySelectorAll('table tr th');
+        const thsOk = ths.length == 3;
         if (thsOk) {
-            var headerOk = ths[2].textContent.trim().toUpperCase() == 'TOTAL';
+            const headerOk = ths[2].textContent.trim().toUpperCase() == 'TOTAL';
         } else {
-            var headerOk = false;
+            const headerOk = false;
         }
-        var tdsOk = d.querySelector('#foo-template').content.querySelectorAll('td').length == 3;
+        const tdsOk = d.querySelector('#foo-template').content.querySelectorAll('td').length == 3;
         baseLab.complete('e2eTable', thsOk && headerOk && tdsOk);
     }).catch(function(error) {
         baseLab.complete('e2eTable', false);
