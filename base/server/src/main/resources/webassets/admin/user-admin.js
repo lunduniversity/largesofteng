@@ -10,19 +10,19 @@ base.userAdminController = function() {
     };
 
     // Every user has one of these
-    const UserSubController = function(_user) {
+    const UserViewModel = function(_user) {
 
         this.user = _user;
-        const userController = this;
+        const viewModel = this;
 
         this.renderListElement = function() {
             const t = document.getElementById('user-template');
             let button = t.content.querySelector('button');
-            button.textContent = userController.user.username;
+            button.textContent = viewModel.user.username;
             const clone = document.importNode(t.content, true);
             button = clone.querySelector('button');
-            button.onclick = userController.select;
-            userController.listElement = button;
+            button.onclick = viewModel.select;
+            viewModel.listElement = button;
             t.parentElement.appendChild(clone);
         };
 
@@ -37,11 +37,11 @@ base.userAdminController = function() {
         };
 
         this.select = function() {
-            model.selectedUser = userController;
+            model.selectedUser = viewModel;
 
             // Set appropriate user-view class to either add or edit.
             const userView = document.getElementById('user-view');
-            if (userController.user.username === '') {
+            if (viewModel.user.username === '') {
                 userView.classList.remove('edit');
                 userView.classList.add('add');
                 controller.editPassword(true);
@@ -55,15 +55,15 @@ base.userAdminController = function() {
             document.getElementById('user-list')
                 .querySelectorAll('.active')
                 .forEach(activeEl => activeEl.classList.remove('active'));
-            userController.listElement.classList.add('active');
+            viewModel.listElement.classList.add('active');
 
-            document.getElementById('user-data').querySelector('a').href = '/rest/foo/user/'+userController.user.id;
+            document.getElementById('user-data').querySelector('a').href = '/rest/foo/user/'+viewModel.user.id;
 
             // Set defaults of form values. This will allow the HTML reset button to work by default HTML behaviour.
-            document.getElementById('user-id').defaultValue = userController.user.id;
-            document.getElementById('set-username').defaultValue = userController.user.username;
+            document.getElementById('user-id').defaultValue = viewModel.user.id;
+            document.getElementById('set-username').defaultValue = viewModel.user.username;
             document.getElementById('set-password').defaultValue = '';
-            const roleIx = model.roleNames.indexOf(userController.user.role.name);
+            const roleIx = model.roleNames.indexOf(viewModel.user.role.name);
             const options = document.getElementById('set-role').querySelectorAll('option');
             options.forEach(o => o.defaultSelected = false);
             options[roleIx].defaultSelected = true;
@@ -86,14 +86,14 @@ base.userAdminController = function() {
             if (id !== '') {
                 // old user
                 base.rest.putUser(id, credentials).then(function(user) {
-                    userController.user = user;
-                    userController.listElement.textContent = user.username;
+                    viewModel.user = user;
+                    viewModel.listElement.textContent = user.username;
                     // This will fix the new reset state
-                    userController.select();
+                    viewModel.select();
                 });
             } else {
                 base.rest.addUser(credentials).then(function(user) {
-                    const addedUserController = new UserSubController(user);
+                    const addedUserController = new UserViewModel(user);
                     addedUserController.renderListElement();
                     model.users.push(addedUserController);
                     addedUserController.select();
@@ -121,7 +121,7 @@ base.userAdminController = function() {
             document.getElementById('reset-user').onclick = controller.resetEdit;
             document.getElementById('delete-user').onclick = () => model.selectedUser.remove();
             document.getElementById('new-user').onclick = function(event) {
-                const contr = new UserSubController({username: '', role: model.roles[0], id: ''});
+                const contr = new UserViewModel({username: '', role: model.roles[0], id: ''});
                 contr.listElement = event.target;
                 contr.select();
             };
@@ -129,7 +129,7 @@ base.userAdminController = function() {
             // Promise.all joins two promises so they can fetch in parallell but pause until both are done.
             Promise.all([base.rest.getUsers(), base.rest.getRoles()])
             .then(function(values) {
-                model.users = values[0].map((user, i) => new UserSubController(user, i));
+                model.users = values[0].map((user, i) => new UserViewModel(user, i));
                 model.roles = values[1];
                 model.roleNames = model.roles.map(role => role.name);
 
