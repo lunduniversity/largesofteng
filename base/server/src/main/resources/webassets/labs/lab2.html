@@ -34,12 +34,13 @@
         <p>
             The code in BASE is organized in a
             <a href="https://en.wikipedia.org/wiki/Multitier_architecture" target="_blank">three tier architecture</a>.
-            The top tier is the user interface, either the Android client or the web front end. The middle tier is the
+            The top tier is the user interface, the web front end (or e.g. an Android client). The middle tier is the
             REST API definitions, implemented by Jersey in Java, the final tier is the Java code interfacing the H2
-            database. The bottom two layers are represented as two packages in the server code,
-            <code>se.lth.base.server.data</code> and <code>se.lth.se.base.server.rest</code> respectively. The purpose
-            of separating code in this way is that it is easier to perform unit testing of them and that they can be
-            easily replaced or worked on separately. The principle is called
+            database. The bottom two layers are represented in different classes even though they conceptually belong
+            together. FooDataAccess.java and FooResource.java are split into separate classes even though they deal with
+            similar things.
+            The purpose of separating code in this way is that it is easier to perform unit testing of them and that
+            they can be easily replaced or worked on separately. The principle is called
             <a href="https://en.wikipedia.org/wiki/Loose_coupling" target="_blank">loose coupling</a>.
         </p>
         <p>
@@ -145,16 +146,26 @@
 
         <div class="lab-task-group alert alert-warning" id="h2Gui">
             <h4 class="alert-heading">Try out the H2 graphical interface</h4>
+            <div class="alert alert-info">
+                <b>Note on Maven!</b>
+                For this task you need to execute a specific command in Maven. It is the build tool used by Base to
+                download the library dependencies, and for building a fat jar (jar with all dependencies, like a self
+                contained file). It can be installed on any machine, but is already installed on the lab computers. In
+                addition, it comes bundled in Eclipse and Intellij. If you are on a windows machine and failed to
+                install Maven, you can execute the package goal in Maven through Eclipse instead to create the fat-jar.
+            </div>
             <ol>
-                <li>Open a console terminal (in Linux or MacOS) and execute these commands:</li>
+                <li>Make sure the BASE server is closed to release the lock on the database.</li>
+                <li>Open a console terminal, in Linux or MacOS (the commands for Windows are slightly different), and
+                    execute these commands:</li>
             </ol>
             <pre><code class="language-bash">
                 > cd ~/ROOT_DIR/base/server       # Replace ROOT_DIR with the directory you cloned the repository to
                 > mvn clean package               # This will build your project so that the H2 interface can be executed
                 > java -cp target/base-server-jar-with-dependencies.jar org.h2.tools.Console
             </code></pre>
-            <ol start="2">
-                <li>Make sure the BASE server is closed to release the lock on the database.</li>
+            <ol start="3">
+                <li>The console will now be open in your browser.</li>
                 <li>Enter <code>jdbc:h2:~/base-server/data</code> into the <code>JDBC URL</code> input.</li>
                 <li>Click the <q>Connect</q> button.</li>
                 <li>Enter this query into the large text area:</li>
@@ -236,6 +247,15 @@
                     <pre><code>SELECT * FROM foo</code></pre>
                     The asterix can be replaced by an enumeration of columns, like so:
                     <pre><code>SELECT payload, user_id FROM foo</code></pre>
+                    It is possible to select data from multiple tables in one query. The simplest form of this is
+                    through what is known as implicit join.
+                    <pre><code>SELECT * FROM foo, user</code></pre>
+                    In that case, all the returned rows will have the corresponding data from the user table added to
+                    it. Since all foo's have a user, but all users might not have foo, the query does not return all
+                    users, but it does return all foo's. You can filter which columns to return when using an implicit
+                    join like so:
+                    <pre><code>SELECT foo.*, user.user_name FROM foo, user</code></pre>
+                    The example returns everything from the foo table but only user_name from the foo table.
                 </dd>
                 <dt class="col-sm-3"><code>WHERE clause</code></dt>
                 <dd class="col-sm-9">
@@ -731,10 +751,11 @@
             <b>Resources</b> are types of data that are manipulated through the API calls. For example,
             <em>users</em> and <em>foo</em>. Each resource is identified through a unique identifier.
             Both users and foos have integer ids: <a target="_blank" href="/rest/user/1">/rest/user/1</a> fetches the
-            user with id 1.
+            user with id 1. As with method names in Java, it does not matter what they are named, just ensure that you
+            follow some consistent style to avoid confusion. <code>/rest/user/id/1</code> would also be fine.
         </p>
         <p>
-            As evident from the name, client state should not be maintained on the server between requests.
+            As evident from the REST name, client state should not be maintained on the server between requests.
             The result of an API call should be the same regardless of which client context it has. That is,
             <code>/user/1</code> should be the same resource as another call to <code>/user/1</code> at another time or
             by another user, unless the resource itself has changed. It should not matter if the client is coming from
@@ -1388,7 +1409,7 @@
                     In BASE, authentication is done through a <code>POST</code> request with username and password to
                     the URI <code>/rest/user/login</code>. If the username and password matches what is stored in the
                     database the server will set a cookie to a randomly generated big number (a so called
-                    <em>token</em>). This value will be stored in the database and in the client (browser or android).
+                    <em>token</em>). This value will be stored in the database and in the client.
                     The server instructs the client to store the cookie through an HTTP header parameter like this:
                     <code>USER_TOKEN=bc9a4966-cec1-46bc-b0ad-8fa093a64960;Domain=localhost;Path=/rest</code>.
                     The client will then pass this token around to every request it does to BASE going forward.
@@ -1862,6 +1883,7 @@
 
             <div class="alert alert-warning lab-task-group" id="e2eBackEnd">
                 <h4 class="alert-heading">Validate your implementation</h4>
+                <div>You need to be logged in to <a href="http://localhost:8080/" target="_blank">base</a> validate.</div>
                 <div class="lab-task-form">
                     <button class="btn btn-primary" onclick="e2eBackEndValidate()">Validate</button>
                 </div>
@@ -1911,37 +1933,35 @@
                     // TODO: do something with buttons[1]
                 </code></pre>
                 <ol start="5">
-                    <li>Add this to the end of the <code>renderPart</code> function on the view object</li>
+                    <li>Add this to the end of the <code>render</code> function on the FooViewModel here:
+                        <code>// TODO: Add stuff from lab 2, end-2-end task here</code>
+                    </li>
                 </ol>
                 <pre><code class="language-javascript">
-                    // ...
-                    // Get the previously added table row (from before)
-                    var trElement = document.querySelector('#foo-template')
-                            .parentElement
-                            .querySelector('tr:last-of-type');
-                    // Get the three buttons that are defined in the HTML file
-                    var buttons = trElement.querySelectorAll('button');
+                     this.fooRow = clone.querySelector('tr');
 
-                    // This function is called with the response from the server
-                    var updateFoo = function(newTotal) {
-                        foo.total = newTotal;
-                        view.update(trElement, foo);
-                    };
+                     const buttons = clone.querySelectorAll('button');
 
-                    // Decrement button onclick function
-                    buttons[0].onclick = function(event) {
-                        if (foo.total == 1) {
-                            base.rest.deleteFoo(foo.id).then(function() {
-                                trElement.parentElement.removeChild(trElement);
-                            });
-                        } else {
-                            base.rest.updateFoo(foo.id, foo.total - 1).then(updateFoo);
-                        }
-                    };
-                    // Increment button onclick function
-                    buttons[2].onclick = function() {
+                     // This function is called with the response from the server
+                     var updateFoo = function(newTotal) {
+                         viewModel.foo.total = newTotal;
+                         viewModel.update(viewModel.fooRow);
+                     };
+
+                     // Decrement button onclick function
+                     buttons[0].onclick = function(event) {
+                         if (viewModel.foo.total == 1) {
+                             base.rest.deleteFoo(viewModel.foo.id).then(function() {
+                                 viewModel.fooRow.parentElement.removeChild(viewModel.fooRow);
+                             });
+                         } else {
+                             base.rest.updateFoo(viewModel.foo.id, viewModel.foo.total - 1).then(updateFoo);
+                         }
+                     };
+                     // Increment button onclick function
+                     buttons[2].onclick = function() {
                         // TODO: complete this (look at the decrement button).
-                    };
+                     };
                 </code></pre>
                 <ol start="6">
                     <li>Restart the server and make sure that the buttons are working.</li>

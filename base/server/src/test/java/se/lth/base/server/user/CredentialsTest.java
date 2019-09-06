@@ -1,6 +1,8 @@
-package se.lth.base.server.data;
+package se.lth.base.server.user;
 
 import org.junit.Test;
+import se.lth.base.server.user.Credentials;
+import se.lth.base.server.user.Role;
 
 import java.util.UUID;
 

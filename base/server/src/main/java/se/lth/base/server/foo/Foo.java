@@ -1,4 +1,4 @@
-package se.lth.base.server.data;
+package se.lth.base.server.foo;
 
 /**
  * Data class for the starting functionality.

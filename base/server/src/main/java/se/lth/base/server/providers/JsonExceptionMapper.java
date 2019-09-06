@@ -1,4 +1,4 @@
-package se.lth.base.server.rest.providers;
+package se.lth.base.server.providers;
 
 import org.eclipse.jetty.util.log.StdErrLog;
 import se.lth.base.server.BaseServer;

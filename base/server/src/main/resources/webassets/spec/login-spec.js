@@ -58,20 +58,5 @@ describe('loginController', function() {
                 expect(base.changeLocation).toHaveBeenCalledWith('/');
             }).finally(done);
         });
-
-        it('should show error on failed login', function(done) {
-            document.getElementById('username').value = 'test';
-            document.getElementById('password').value = 'password3';
-            var errorPromise = Promise.resolve({message: 'mock error'});
-            var loginPromise = Promise.resolve({
-                ok: false,
-                json: () => errorPromise});
-            spyOn(base.rest, 'login').and.returnValue(loginPromise);
-            spyOn(base.loginController.view, 'showFailure');
-            base.loginController.loginUser()
-            Promise.all([loginPromise, errorPromise]).then(function() {
-                expect(base.loginController.view.showFailure).toHaveBeenCalledWith('mock error');
-            }).finally(done);
-        })
     });
 });

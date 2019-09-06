@@ -1,9 +1,9 @@
-package se.lth.base.server.rest;
+package se.lth.base.server.foo;
 
 import org.junit.Before;
 import org.junit.Test;
 import se.lth.base.server.BaseResourceTest;
-import se.lth.base.server.data.Foo;
+import se.lth.base.server.foo.Foo;
 
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.client.Entity;

@@ -1,5 +1,6 @@
-package se.lth.base.server.data;
+package se.lth.base.server.foo;
 
+import se.lth.base.server.user.UserDataAccess;
 import se.lth.base.server.database.DataAccess;
 import se.lth.base.server.database.Mapper;
 

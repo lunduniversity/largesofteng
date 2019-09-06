@@ -2,8 +2,9 @@ package se.lth.base.server;
 
 /**
  * Contains configuration for server settings.
- * In a "real" application this would be a more sophisticated solution, with support for reading/writing parameters
- * and error checking. The constructor approach is also not very nice when there are 10+ parameters.
+ * In a "real" application this would be a more sophisticated solution, the config parameters should come from a file
+ * or something that is actually possible to configure without recompiling the application.
+ * There should also be support for error checking.
  *
  * @author Rasmus Ros, rasmus.ros@cs.lth.se
  */

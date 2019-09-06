@@ -1,9 +1,10 @@
-package se.lth.base.server.data;
+package se.lth.base.server.user;
 
 import org.junit.Test;
 import se.lth.base.server.Config;
 import se.lth.base.server.database.BaseDataAccessTest;
 import se.lth.base.server.database.DataAccessException;
+import se.lth.base.server.user.*;
 
 import java.util.List;
 import java.util.UUID;

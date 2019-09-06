@@ -3,9 +3,9 @@ package se.lth.base.server.database;
 import org.junit.After;
 import org.junit.Before;
 import se.lth.base.server.Config;
-import se.lth.base.server.data.Credentials;
-import se.lth.base.server.data.Role;
-import se.lth.base.server.data.User;
+import se.lth.base.server.user.Credentials;
+import se.lth.base.server.user.Role;
+import se.lth.base.server.user.User;
 
 import java.sql.SQLException;
 

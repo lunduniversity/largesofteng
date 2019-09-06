@@ -1,7 +1,7 @@
-package se.lth.base.server.rest;
+package se.lth.base.server.user;
 
 import se.lth.base.server.Config;
-import se.lth.base.server.data.*;
+import se.lth.base.server.user.*;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -11,7 +11,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -45,8 +44,7 @@ public class UserResource {
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response login(Credentials credentials,
-                          @QueryParam("remember") @DefaultValue("false") boolean rememberMe)
-            throws URISyntaxException {
+                          @QueryParam("remember") @DefaultValue("false") boolean rememberMe) {
         Session newSession = userDao.authenticate(credentials);
         int maxAge = rememberMe ? (int) TimeUnit.DAYS.toSeconds(7) : NewCookie.DEFAULT_MAX_AGE;
         return Response.noContent().cookie(newCookie(newSession.getSessionId().toString(), maxAge, null)).build();
@@ -62,7 +60,7 @@ public class UserResource {
                 maxAge,                                         // max-age
                 expiry,                                         // expiry
                 false,                                          // secure
-                true);                                          // http-onle
+                true);                                          // http-only
 
     }
 

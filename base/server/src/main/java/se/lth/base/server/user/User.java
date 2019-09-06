@@ -1,4 +1,4 @@
-package se.lth.base.server.data;
+package se.lth.base.server.user;
 
 import java.security.Principal;
 

@@ -4,10 +4,10 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.After;
 import org.junit.Before;
-import se.lth.base.server.data.*;
 import se.lth.base.server.database.CreateSchema;
-import se.lth.base.server.rest.UserResource;
-import se.lth.base.server.rest.providers.JsonProvider;
+import se.lth.base.server.user.UserResource;
+import se.lth.base.server.providers.JsonProvider;
+import se.lth.base.server.user.*;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;

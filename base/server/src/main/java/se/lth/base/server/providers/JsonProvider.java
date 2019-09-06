@@ -1,4 +1,4 @@
-package se.lth.base.server.rest.providers;
+package se.lth.base.server.providers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,6 +14,7 @@ import javax.ws.rs.ext.Provider;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 
 /**
  * This class converts all objects in the REST API to/from JSON using Gson.
@@ -36,7 +37,7 @@ public class JsonProvider implements MessageBodyReader<Object>, MessageBodyWrite
     public Object readFrom(Class<Object> aClass, Type type, Annotation[] annotations, MediaType mediaType,
                            MultivaluedMap<String, String> multivaluedMap, InputStream entityStream)
             throws IOException, WebApplicationException {
-        try (InputStreamReader streamReader = new InputStreamReader(entityStream, "UTF-8");) {
+        try (InputStreamReader streamReader = new InputStreamReader(entityStream, StandardCharsets.UTF_8);) {
             return GSON.fromJson(streamReader, type);
         }
     }
@@ -50,7 +51,7 @@ public class JsonProvider implements MessageBodyReader<Object>, MessageBodyWrite
     public void writeTo(Object o, Class<?> aClass, Type type, Annotation[] annotations, MediaType mediaType,
                         MultivaluedMap<String, Object> multivaluedMap, OutputStream entityStream)
             throws IOException, WebApplicationException {
-        try (OutputStreamWriter writer = new OutputStreamWriter(entityStream, "UTF-8");) {
+        try (OutputStreamWriter writer = new OutputStreamWriter(entityStream, StandardCharsets.UTF_8);) {
             GSON.toJson(o, writer);
         }
     }

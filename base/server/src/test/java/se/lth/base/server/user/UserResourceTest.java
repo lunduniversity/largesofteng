@@ -1,10 +1,11 @@
-package se.lth.base.server.rest;
+package se.lth.base.server.user;
 
 import org.junit.Test;
 import se.lth.base.server.BaseResourceTest;
-import se.lth.base.server.data.Credentials;
-import se.lth.base.server.data.Role;
-import se.lth.base.server.data.User;
+import se.lth.base.server.user.Credentials;
+import se.lth.base.server.user.Role;
+import se.lth.base.server.user.User;
+import se.lth.base.server.user.UserResource;
 
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotFoundException;

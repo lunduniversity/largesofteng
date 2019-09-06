@@ -4,18 +4,18 @@
  */
 describe('mainController', function() {
 
-    var none = new base.User({username: '-', role: 'NONE'});
-    var test = new base.User({username: 'Test', role: 'USER'});
-    var admin = new base.User({username: 'Admin', role: 'ADMIN'});
+    const none = new base.User({username: '-', role: 'NONE'});
+    const test = new base.User({username: 'Test', role: 'USER'});
+    const admin = new base.User({username: 'Admin', role: 'ADMIN'});
 
-    var r1 = jasmine.createSpyObj('r1', ['load']);
-    var r2 = jasmine.createSpyObj('r2', ['load']);
-    var fakeRoute = {
+    const r1 = jasmine.createSpyObj('r1', ['load']);
+    const r2 = jasmine.createSpyObj('r2', ['load']);
+    const fakeRoute = {
         'r1': {partial: 'r1.html', controller: function() {return r1;}},
         'r2': {partial: 'r2.html', controller: function() {return r2;}}
     };
 
-    var node;
+    let node;
     // Creates the controller by loading the index.html and put it in the node variable
     beforeEach(function(done) {
         specHelper.fetchHtml('index.html', document.body).then(function(n) {
@@ -33,7 +33,7 @@ describe('mainController', function() {
     });
 
     it('should set route to default if none is specified', function(done) {
-        var userPromise = Promise.resolve(test);
+        const userPromise = Promise.resolve(test);
         spyOn(base.rest, 'getUser').and.returnValue(userPromise);
         base.mainController.load();
         userPromise.then(function() {
@@ -42,7 +42,7 @@ describe('mainController', function() {
     });
 
     it('should redirect bad route to default', function(done) {
-        var userPromise = Promise.resolve(test);
+        const userPromise = Promise.resolve(test);
         spyOn(base.rest, 'getUser').and.returnValue(userPromise);
         window.location.hash = '/missing';
         base.mainController.load();
@@ -52,8 +52,8 @@ describe('mainController', function() {
     });
 
     it('should load controller of r1', function(done) {
-        var userPromise = Promise.resolve(admin);
-        var fetchPromise = Promise.resolve({text: () => 'html'});
+        const userPromise = Promise.resolve(admin);
+        const fetchPromise = Promise.resolve({text: () => 'html'});
         spyOn(base.rest, 'getUser').and.returnValue(userPromise);
         spyOn(window, 'fetch').and.returnValue(fetchPromise);
 
@@ -66,8 +66,8 @@ describe('mainController', function() {
     });
 
     it('should fetch partial of r2', function(done) {
-        var userPromise = Promise.resolve(admin);
-        var fetchPromise = Promise.resolve({text: () => 'html'});
+        const userPromise = Promise.resolve(admin);
+        const fetchPromise = Promise.resolve({text: () => 'html'});
         spyOn(base.rest, 'getUser').and.returnValue(userPromise);
         spyOn(window, 'fetch').and.returnValue(fetchPromise);
 
@@ -81,7 +81,7 @@ describe('mainController', function() {
     });
 
     it('should render username', function(done) {
-        var userPromise = Promise.resolve(test);
+        const userPromise = Promise.resolve(test);
         spyOn(base.mainController, 'changeRoute');
         spyOn(base.rest, 'getUser').and.returnValue(userPromise);
         base.mainController.load();
@@ -91,7 +91,7 @@ describe('mainController', function() {
     });
 
     it('should redirect to login if user is none', function(done) {
-        var userPromise = Promise.resolve(none);
+        const userPromise = Promise.resolve(none);
         spyOn(base.rest, 'getUser').and.returnValue(userPromise);
         spyOn(base, 'changeLocation');
         spyOn(base.mainController, 'changeRoute');
@@ -102,13 +102,13 @@ describe('mainController', function() {
     });
 
     it('should redirect to login after logout', function(done) {
-        var userPromise = Promise.resolve(admin);
+        const userPromise = Promise.resolve(admin);
         spyOn(base.rest, 'getUser').and.returnValue(userPromise);
         spyOn(base, 'changeLocation');
         spyOn(base.mainController, 'changeRoute');
         base.mainController.load();
         userPromise.then(function() {
-            var logoutPromise = Promise.resolve({});
+            const logoutPromise = Promise.resolve({});
             spyOn(base.rest, 'logout').and.returnValue(logoutPromise);
             document.getElementById('logout').click();
             logoutPromise.then(function() {
@@ -118,7 +118,7 @@ describe('mainController', function() {
     });
 
     it('should mark an element active in nav', function(done) {
-        var userPromise = Promise.resolve(admin);
+        const userPromise = Promise.resolve(admin);
         spyOn(base.mainController, 'changeRoute');
         spyOn(base.rest, 'getUser').and.returnValue(userPromise);
         base.mainController.load();
@@ -128,12 +128,12 @@ describe('mainController', function() {
     });
 
     it('should hide admin tabs from user', function(done) {
-        var userPromise = Promise.resolve(test);
+        const userPromise = Promise.resolve(test);
         spyOn(base.mainController, 'changeRoute');
         spyOn(base.rest, 'getUser').and.returnValue(userPromise);
         base.mainController.load();
         userPromise.then(function() {
-            var list = document.querySelectorAll('#main-nav .admin-only');
+            const list = document.querySelectorAll('#main-nav .admin-only');
             list.forEach(function(ao) {
                 expect(ao.style.display).toBe('none');
             })
@@ -141,12 +141,12 @@ describe('mainController', function() {
     });
 
     it('should show admin tabs to admin', function(done) {
-        var userPromise = Promise.resolve(admin);
+        const userPromise = Promise.resolve(admin);
         spyOn(base.mainController, 'changeRoute');
         spyOn(base.rest, 'getUser').and.returnValue(userPromise);
         base.mainController.load();
         userPromise.then(function() {
-            var list = document.querySelectorAll('#main-nav .admin-only');
+            const list = document.querySelectorAll('#main-nav .admin-only');
             list.forEach(function(ao) {
                 expect(ao.style.display).not.toBe('none');
             })
