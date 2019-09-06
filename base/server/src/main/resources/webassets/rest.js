@@ -30,10 +30,10 @@ base.rest = (function() {
         };
     };
 
-    // Expose the classes to base module.
-    //base.Foo = Foo;
-    //base.User = User;
-    //base.Role = Role;
+    // Expose the classes to base module, they are primarily used by the tests.
+    base.Foo = Foo;
+    base.User = User;
+    base.Role = Role;
 
     // This method extends the functionality of fetch by adding default error handling.
     // Using it is entirely optional.
