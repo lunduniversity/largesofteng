@@ -38,7 +38,7 @@ const sqlSchemaValidate = function(submitEvent) {
 
 const jerseyPathValidate = function(submitEvent) {
     submitEvent.preventDefault();
-    const value = document.querySelector('#jerseyPath input').value;
+    let value = document.querySelector('#jerseyPath input').value;
     value = value.replace(/^\//, '').replace(/\/$/, '');
     const parser = document.createElement('a');
     parser.href = '/'+value;
@@ -47,21 +47,24 @@ const jerseyPathValidate = function(submitEvent) {
 }
 
 const e2eBackEndValidate = function() {
-    const theFoo = -1;
+    let theFoo = -1;
     base.rest.addFoo({payload:'test'})
         .then(function(foo) {
             if (foo.error) throw "Failed to add foo: " + foo.message;
             theFoo = foo.id;
             return fetch('/rest/foo/'+foo.id+'/total/'+5, {
                     credentials: 'same-origin', method: 'POST'
-            });
+            })
+        }).then(function(result) {
+            if (!result.ok) throw "Failed to POST new foo: " + result.status;
+            else return result;
         }).then(function() {
             return fetch('/rest/foo', {credentials: 'same-origin'})
                 .then(response => response.json()).then(function(foos) {
                     if (foos.error) throw "Failed to fetch foos: " + foos.message;
                     const match = foos.filter(f=> f.id == theFoo)[0];
                     if (match.total !== 5) {
-                        throw 'Got wrong total when testing implementation: expected 5 but received ' + f.total;
+                        throw 'Got wrong total when testing implementation: expected 5 but received ' + match.total;
                     }
                 });
         }).then(function() {
