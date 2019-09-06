@@ -3,6 +3,7 @@ base.changeLocation = function(url) {
     window.location.replace(url);
 };
 base.loginController = (function() {
+    'use strict'
     const controller = {
         load: function() {
             document.getElementById('login-form').onsubmit = function(event) {

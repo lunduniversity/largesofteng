@@ -1,5 +1,6 @@
 var base = base || {};
 base.mainController = (function() {
+    'use strict'
 
     const routingTable = {
         // first in table is the default
