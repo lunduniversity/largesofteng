@@ -21,10 +21,7 @@ base.fooController = function() {
         this.render = function(template) {
             this.update(template.content.querySelector('tr'));
             const clone = document.importNode(template.content, true);
-            this.fooRow = clone.querySelector('tr');
-
             // TODO: Add stuff from lab 2 end-2-end task here
-
             template.parentElement.appendChild(clone);
         };
         // Update a single table row to display a foo
@@ -33,9 +30,7 @@ base.fooController = function() {
             tds[0].textContent = viewModel.foo.payload;
             const d = viewModel.foo.createdDate;
             tds[1].textContent = d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
-
             // TODO: Add stuff from lab 1 here
-
         };
     };
 
