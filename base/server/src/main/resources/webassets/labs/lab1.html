@@ -206,7 +206,7 @@
                 Excellent.
             </div>
             <div class="mt-3 lab-task-error alert alert-danger">
-                Did you really login? The lab script can not detect your login. Login using the link above.
+                Did you really login? The lab script could not detect your login. Login using the link above.
             </div>
         </div>
     </section>
@@ -226,20 +226,36 @@
         </p>
         <p>
             Anyway, since JavaScript is a functionally oriented language let's start of by defining a function.
-            This assigns a function to a variable, denoted by the <code>var</code>-keyword. In fact, <code>var</code> is
-            used for all assignments, regardless of type. The function have two parameters without any specific type, it
+            This assigns a function to a variable, denoted by the <code>const</code>-keyword. In fact, <code>const</code>
+            is used for assignments regardless of type. The function have two parameters without any specific type, it
             works on strings, numbers, or any other object. Since the function is a normal variable, it can be passed
             around as a normal object to other functions. The function can be called as expected, use the button below
             to see what <code>alert</code> does. Functions can return values with the <code>return</code>-keyword, like
             in Java.
         </p>
         <pre><code class="language-javascript">
-            var testJavaScript = function(param1, param2) {
+            const testJavaScript = function(param1, param2) {
                 alert(param1 + param2);
             }
         </code></pre>
 
         <button class="mb-3 btn btn-secondary" onclick="testJavaScript('1', 0)">testJavaScript('1', 0)</button>
+
+        <p>
+            There are three ways of defining variables in JavaScript: <code>const</code>, <code>let</code>, and
+            <code>var</code>. The ones that are recommnded in 99% of occations is the first two, they behave in ways
+            that should be familiar from Java. <code>const</code> is the same as declaring a variable to be final in
+            Java, that is it does not allow reassignment. <code>let</code> is used when reassignment is needed, in
+            general <code>const</code> can be used for functions and in most cases, and <code>let</code> is used for
+            the iteration in <code>for</code> loops, etc.
+        </p>
+        <p>
+            <code>const</code> and <code>let</code> are new additions to JavaScript, they fix much of what was broken
+            with <code>var</code>.
+            <a href="https://stackoverflow.com/questions/762011/whats-the-difference-between-using-let-and-var">
+                Stackoverflow QA on the differences
+            </a> Avoid it in this project, with one exception as will be seen when defining modules.
+        </p>
 
         <section class="lab-sub-section">
             <a class="sub-anchor" name="JSTypes"></a>
@@ -279,7 +295,7 @@
 
             <h4>Arrays</h4>
             <p> Arrays are created as such: </p>
-            <pre><code>var arr = [0,3,-1];</code></pre>
+            <pre><code>const arr = [0,3,-1];</code></pre>
             <p>Add elements to the end of an array like so:
                 <code>arr.push(4)</code>, check their length with <code>arr.length</code>, select a subset of the array
                 with
@@ -289,21 +305,21 @@
             <h4>Loops</h4>
             <p>Iterate using for loops like this:</p>
             <pre><code>
-                for (var i = 0; i < arr.length; i++) {
+                for (let i = 0; i < arr.length; i++) {
                     console.log(arr[i]);
                 }
             </code></pre>
             <p>And while loops:</p>
             <pre><code>
-                var val = 0;
+                let val = 0;
                 while (val < 0.1) {
-                    val = Math.random();
+                    let = Math.random();
                 }
             </code></pre>
 
             <h4>Objects</h4>
             <p>Objects are created as such:</p>
-            <pre><code>var obj = {'myArray': arr, 'myNumber': 1};</code></pre>
+            <pre><code>const obj = {'myArray': arr, 'myNumber': 1};</code></pre>
             <p>
                 This will create a new object called <code>obj</code> with two properties, 'myArray' and 'myNumber'.
                 The values of these properties will be a reference to the object <code>arr</code> and the number
@@ -346,7 +362,7 @@
                         below will calculate the lengths of all strings in the array.
                     </p>
                     <pre><code>
-                        var arr = ['a', 'b', '', 'db', '1a'];
+                        const arr = ['a', 'b', '', 'db', '1a'];
                         arr.map(s => s.length)
                            .reduce((accumulator, currentValue) => accumulator + currentValue);
                     </code></pre>
@@ -363,7 +379,7 @@
                 <p> Create an object with property <code>'fruit'</code> and value <code>'banana'</code></p>
                 <form onsubmit="return jsPropertyValidate(event)" class="lab-task-form">
                     <div class="form-inline">
-                        <code class="m-0">var obj =</code>
+                        <code class="m-0">const obj =</code>
                         <input style="margin: 0px 3px" class="form-control" placeholder="{ example: 'something' }"
                                required>
                         <code class="m-0">;</code></div>
@@ -393,7 +409,7 @@
                         <label class="form-check-label">
                             <input onclick="baseLab.complete('jsFunction', 1)" class="form-check-input" type="radio"
                                    name="jsFunction">
-                            <code>var getName = string function(number id) {...}</code>
+                            <code>const getName = string function(number id) {...}</code>
                         </label>
                     </div>
                     <div class="form-check">
@@ -407,7 +423,7 @@
                         <label class="form-check-label">
                             <input onclick="baseLab.complete('jsFunction', 3)" class="form-check-input" type="radio"
                                    name="jsFunction">
-                            <code>var getName = function(id) {...}</code>
+                            <code>const getName = function(id) {...}</code>
                         </label>
                     </div>
                 </div>
@@ -477,7 +493,7 @@
                 class later:
             </p>
             <pre><code>
-                var car = {
+                const car = {
                     manufacturer: 'Tesla',
                     model: 'S',
                     getInfo: function() {
@@ -491,13 +507,13 @@
                 example shows how it can be a proper class.
             </p>
             <pre><code>
-                var Car = function(manufacturer, model) {
-                    this.manufacturer = manufacturer,
-                    this.model = model,
+                const Car = function(manufacturer, model) {
+                    this.manufacturer = manufacturer;
+                    this.model = model;
                     this.getInfo = function() {
                         return this.manufacturer + " Model " + this.model + privateFunction();
                     };
-                    var privateFunction = function() {
+                    const privateFunction = function() {
                         return "™";
                     };
                 };
@@ -532,12 +548,12 @@
                         module pattern:
                     </p>
                     <pre><code>
-                        var factory = (function() {
-                            var Car = function(manufacturer, model) {
+                        const factory = (function() {
+                            const Car = function(manufacturer, model) {
                                 this.manufacturer = manufacturer;
                                 this.model = model;
                             };
-                            var manufacturer = 'Tesla';
+                            const manufacturer = 'Tesla';
                             return {
                                 createCar: function(model) {
                                     return new Car(manufacturer, model);
@@ -557,6 +573,20 @@
                         that can be instantiated multiple times: <code>var factory2 = factoryCreator();</code>; while
                         the original module could only be instantiated once.
                     </p>
+                    <p>
+                        As mentioned, the module in BASE, is split across multiple files. In unit tests only one of
+                        them might be loaded. As such, each file declares the module if it is not already declared.
+                        This requires the use of the <code>var</code> declaration. It allows a variable to be declared
+                        multiple times. <code>let</code> allows multiple assignments, not multiple declarations.
+                    </p>
+                    <pre><code>
+                        var base = base || {};
+                        base.rest = (function() {
+                            // Declare rest functions
+                            const myFunctions = { /* ...  */};
+                            return myFunctions;
+                        })();
+                    </code></pre>
                 </details>
             </section>
         </section>
@@ -574,7 +604,7 @@
             </p>
             <pre><code class="language-javascript">
                 it('should return 5 when myFunction is called', function() {
-                    var testResult = myFunction();
+                    const testResult = myFunction();
                     expect(testResult).toBe(5);
                 });
             </code></pre>
@@ -604,7 +634,7 @@
                         As such, the following code will not work well:
                     </p>
                     <pre><code class="language-javascript">
-                        var returnedFoos;
+                        let returnedFoos;
                         base.rest.getFoos().then(function(foos) {
                             returnedFoos = foos;
                         });
@@ -636,7 +666,7 @@
                         it('should fetch foos on load', function(done) {
                             // This creates a promise with an empty list that is used as fake data from the server.
                             // The fake data needs to be of a promise type because the foo controller expects that.
-                            var foosPromise = Promise.resolve([]);
+                            const foosPromise = Promise.resolve([]);
 
                             // spyOn is used to mock function calls in Jasmine. When the foo controller calls getFoos,
                             // then Jasmine will intercept the call and prevent a request to the server. Instead
@@ -810,9 +840,9 @@
                 elements:
             </p>
             <pre><code>
-                var div = document.createElement('div');
+                const div = document.createElement('div');
                 div.innerHTML = '&lt;b&gt;your browser will parse this and create HTML elements&lt;/b&gt;';
-                var target = document.getElementById('putItHere');
+                cosnt target = document.getElementById('putItHere');
                 target.appendChild(div);
             </code></pre>
             <button onclick="htmlDOMDemo()" class="mb-3 btn btn-secondary">> Run</button>
@@ -1274,15 +1304,15 @@
 
             <p class="language-javascript mt-5">
                 Selectors can also be used programmatically using the <a href="#DOM">DOM</a> API: <br>
-                <code>var element = document.querySelector('sel')</code> (returns DOMElement) or <br>
-                <code>var elements = document.querySelectorAll('sel')</code>. <br>
+                <code>const element = document.querySelector('sel')</code> (returns DOMElement) or <br>
+                <code>const elements = document.querySelectorAll('sel')</code>. <br>
                 These functions are defined on all HTML elements (not just on the global document element).
                 See below for an example that uses the <code>querySelectorAll</code> on another element.:
             </p>
             <pre><code class="language-javascript">
-                var someDiv = document.querySelector('#someDiv');
+                const someDiv = document.querySelector('#someDiv');
                 someDiv.textContent = 'set text' // Do something with someDiv
-                var someDiv.querySelectorAll('span');
+                const someDiv.querySelectorAll('span');
             </code></pre>
 
 
@@ -1470,7 +1500,7 @@
             and other state changes. Each tab in BASE has a model/view/controller.
         </p>
         <pre><code class="language-javascript">
-            var M = {}, V = {}, C = {};
+            const M = {}, V = {}, C = {};
             M.data = "hello world";
             V.render = function (M) { alert(M.data); }
             C.handleOnload = function () { V.render(M); }
@@ -1485,7 +1515,7 @@
             This is done through the <code>DOM</code> as such:
         </p>
         <pre><code class="language-javascript">
-            var fooHTML = ...; // The html is fetched from the server through a HTTP call
+            const fooHTML = ...; // The html is fetched from the server through a HTTP call
             document.getElementById('main-tab').innerHTML = fooHTML;
         </code></pre>
         <p>
@@ -1513,7 +1543,7 @@
                 <pre><code class="language-javascript">
                     var base = base || {};
                     base.helloController = function() {
-                        var controller = {};
+                        const controller = {};
                         //TODO: the controller object needs a load function
                         return controller;
                     };

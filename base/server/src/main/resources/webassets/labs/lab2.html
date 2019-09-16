@@ -947,10 +947,10 @@
                 Here is a demonstration of the the JavaScript built-in support for JSON.
             </p>
             <pre><code class="language-javascript">
-                var obj = {'a': 1, 'list': [1,2,3]};
-                var serialized = JSON.stringify(obj);
+                const obj = {'a': 1, 'list': [1,2,3]};
+                const serialized = JSON.stringify(obj);
                 console.log(serialized);
-                var deserializedObj = JSON.parse(serialized);
+                const deserializedObj = JSON.parse(serialized);
             </code></pre>
             <p>
                 The result of evaluating this in a JavaScript console is not very exciting, essentially a string
@@ -1929,7 +1929,7 @@
                     </li>
                 </ol>
                 <pre><code class="language-javascript">
-                    var buttons = tds[2].querySelectorAll('button');
+                    const buttons = tds[2].querySelectorAll('button');
                     // TODO: do something with buttons[1]
                 </code></pre>
                 <ol start="5">
@@ -1943,7 +1943,7 @@
                      const buttons = clone.querySelectorAll('button');
 
                      // This function is called with the response from the server
-                     var updateFoo = function(newTotal) {
+                     const updateFoo = function(newTotal) {
                          viewModel.foo.total = newTotal;
                          viewModel.update(viewModel.fooRow);
                      };
