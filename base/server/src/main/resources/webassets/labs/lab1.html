@@ -24,7 +24,7 @@
         appear daunting, however, you need only a holistic understanding of the concepts within. By now you should have
         been assigned a specific team and role within your larger group, so pay extra attention to the lab parts that
         concern the technology in that team. As for the rest, what is touched upon in this manual will suffice. It is
-        not a problem if some of the details in this document that do not concern your group escapes your understanding.
+        not a problem if some of the details in this document that do not concern your group escape your understanding.
         The progression of this lab is as follows:
         Overview of the BASE system, JavaScript, HTML, CSS, Bootstrap, and finally you will implement some new
         functionality.
@@ -51,10 +51,10 @@
             </li>
             <li>
                 This document is built using the same technology as you will use in your project, with the same
-                guidelines. Feel free to steal any parts you like here in your project.
+                guidelines. Feel free to steal any parts you like here for your own project.
             </li>
             <li>
-                In this document there will be several tasks that you must complete to pass the lab, in addition you
+                In this document there will be several tasks that you must complete to pass the lab. In addition, you
                 should be able to answer a few questions from the teaching assistant. An example of a task is shown
                 directly below.
             </li>
@@ -63,8 +63,8 @@
         <div class="lab-task-group alert alert-warning" id="firstTask">
             <h4 class="alert-heading">Your first task</h4>
             <p>
-                Any tests that you have to complete will look like this. As such this is your first task.
-                Note that the progress is tracked in the info bar at top.
+                Any tests that you have to complete will appear like this. As such, this is your first task.
+                Note that the progress is tracked in the info bar at the top.
             </p>
             <div class="lab-task-form">
                 <button class="btn btn-primary" onclick="baseLab.complete('firstTask')">Click me to complete
@@ -86,13 +86,13 @@
         <p>
             You have been provided with a base system for your project, creatively called BASE system. It is a code
             skeleton where you can finish the implementation according to your needs. The base system was created to be
-            as realistic as possible, it looks and feels like a professional system, with all the bells and whistles
-            that is expected. In addition, the security and performance is within reason, although it is not at all a
-            focus of this course.
+            as realistic as possible. It looks and feels like a professional system, with all the bells and whistles
+            that would be expected. In addition, the security and performance have been reasonably addressed, although
+            it is important to note that they are not the at all the focus of this course.
         </p>
         <p>
-            The system consists of multiple components: the web server in java (with a database) and a web client. The
-            system can be easily extended with other clients, since the server and client is independent. Exactly what
+            The system consists of multiple components: the web server in Java (with a database) and a web client. The
+            system can be easily extended with other clients, since the server and client are independent. Exactly what
             goes into the components is flexible, but must be decided by the student groups and the course teacher.
             Below is a picture of the components in the system with their main supporting frameworks indicated. None of
             the code is shared between the components and they communicate only through HTTP with the server (the next
@@ -110,8 +110,8 @@
             <a class="sub-anchor" name="DirStructure"></a>
             <h3>Directory Structure</h3>
             <p>
-                The structure of your team groups have a real counterpart in the directory of the BASE system, so that
-                there is no confusion concerning which team are responsible for which part.
+                The structure of your team groups has a real counterpart in the directory of the BASE system, so that
+                there is no confusion concerning which team is responsible for which part.
             </p>
             <ol>
                 <li>
@@ -148,9 +148,9 @@
                     <a href="https://angularjs.org/" target="_blank">AngularJS</a>,
                     <a href="https://reactjs.org/" target="_blank">React</a>,
                     or <a href="https://jquery.com/" target="_blank">jQuery</a>.
-                    Instead we rely only on vanilla JavaScript, this prospect is not as horrible as it would be five
-                    years ago, with the introduction of wide spread support for ECMAScript 6 and HTML 5. However, to
-                    avoid the situation where students spend too much time
+                    Instead we rely only on vanilla JavaScript. Note that this prospect is not as horrible as it would 
+                    have been in back in the 2010s - with the introduction of widespread support for ECMAScript 6 and HTML 5. 
+                    However, to ensure students don't spend too much time
                     <a href="https://en.wikipedia.org/wiki/Gold_plating_(software_engineering)" target="_blank">
                         gold plating</a> the user interface
                     <a href="https://getbootstrap.com/" target="_blank">Bootstrap</a> was included. With Bootstrap, it
@@ -159,7 +159,7 @@
                     of default Bootstrap settings.
                 </li>
                 <li>
-                    <b>Java backend with Jetty and Jersey</b>. This is a standard and common set up and we believe it
+                    <b>Java backend with Jetty and Jersey</b>. This is a standard and common setup and we believe it
                     will be a low threshold for students already familiar with Java. Jetty is a servlet container and
                     HTTP server. There are many alternatives to Jetty, such as Tomcat or Glassfish. Any of them can be
                     used but Jetty has the advantage of being fully configurable by code. Jersey is an abstraction layer
@@ -178,14 +178,14 @@
                     relational data in the project.
                     <a href="http://www.h2database.com/" target="_blank">H2</a> is an embedded database, meaning that it
                     does not need to be installed. It can also operate in an in-memory mode, so that it can be easily
-                    used for unit tests. For this reason it is often used as an alternative database to unit test other
+                    used for unit tests. For this reason, it is often used as an alternative database to unit test other
                     databases, such as <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a>.
                 </li>
             </ol>
             <p>
-                This is many components to learn in a short time, but students are not expected to learn <em>all</em>
+                There are several components to learn in a short time, but students are not expected to learn <em>all</em>
                 parts of the system in detail. In fact, the system has been designed so that it should not be possible.
-                Instead you have to rely on an efficient process and delegation of responsibility between to all team
+                Instead you have to rely on an efficient process and delegation of responsibility between all team
                 members, so that you can all master different parts of the system.
             </p>
         </section>
@@ -225,11 +225,11 @@
             <a href="http://htmldog.com/guides/javascript/" target="_blank">htmldog</a>.
         </p>
         <p>
-            Anyway, since JavaScript is a functionally oriented language let's start of by defining a function.
+            Anyway, since JavaScript is a functionally-oriented language let's begin by defining a function.
             This assigns a function to a variable, denoted by the <code>const</code>-keyword. In fact, <code>const</code>
             is used for assignments regardless of type. The function have two parameters without any specific type, it
-            works on strings, numbers, or any other object. Since the function is a normal variable, it can be passed
-            around as a normal object to other functions. The function can be called as expected, use the button below
+            works on strings, numbers, or any other objects. Since the function is a normal variable, it can be passed
+            around as a normal object to other functions. The function can be called as expected. Use the button below
             to see what <code>alert</code> does. Functions can return values with the <code>return</code>-keyword, like
             in Java.
         </p>
@@ -243,9 +243,9 @@
 
         <p>
             There are three ways of defining variables in JavaScript: <code>const</code>, <code>let</code>, and
-            <code>var</code>. The ones that are recommnded in 99% of occations is the first two, they behave in ways
+            <code>var</code>. The ones that are recommended in 99% of occasions are the first two, they behave in ways
             that should be familiar from Java. <code>const</code> is the same as declaring a variable to be final in
-            Java, that is it does not allow reassignment. <code>let</code> is used when reassignment is needed, in
+            Java, that is, it does not allow reassignment. <code>let</code> is used when reassignment is needed, in
             general <code>const</code> can be used for functions and in most cases, and <code>let</code> is used for
             the iteration in <code>for</code> loops, etc.
         </p>
@@ -254,7 +254,7 @@
             with <code>var</code>.
             <a href="https://stackoverflow.com/questions/762011/whats-the-difference-between-using-let-and-var">
                 Stackoverflow QA on the differences
-            </a> Avoid it in this project, with one exception as will be seen when defining modules.
+            </a> Avoid <code>var</code> in this project, with one exception as will be seen when defining modules.
         </p>
 
         <section class="lab-sub-section">
@@ -336,7 +336,7 @@
             <p>
                 All Java operators have identical JavaScript counterparts. However, there are two equality operators in
                 JavaScript <code>===</code> and <code>==</code>. The first one with (===) works as from Java's == ,
-                while the second allow for type conversions.
+                while the second allows for type conversions.
             </p>
             <pre><code>
                 [] == "";     // Both are empty arrays.
@@ -445,8 +445,8 @@
                 major browsers) or alt+cmd+k on MacOS.
                 Open the console to get an interactive JavaScript interpreter. There is also the option
                 of setting breakpoints and stepping through the code, however the specifics depend on which browser you
-                are using. If the debugger is hard to use, resorting to <code>console.log(str)</code> print outs is
-                fine. The print outs can be viewed with the console window open. Also, <code>alert(str)</code> can be
+                are using. If the debugger is hard to use, resorting to <code>console.log(str)</code> printouts is
+                fine. The printouts can be viewed with the console window open. Also, <code>alert(str)</code> can be
                 used, which creates a pop-up. Alerts are also used for error handling purposes in BASE.
             </p>
 
@@ -487,8 +487,8 @@
             <a class="sub-anchor" name="JSClasses"></a>
             <h3>Classes in JavaScript</h3>
             <p>
-                Developer's coming directly from Java might feel lost without the object oriented way of structuring
-                your application. Though there are proper object oriented programming language extensions, in this
+                Developers coming directly from Java might feel lost without the object-oriented way of structuring
+                your application. Though there are proper object-oriented programming language extensions, in this
                 course a simplified and succinct version is used. Below is a car object that we want to change into a
                 class later:
             </p>
@@ -701,8 +701,8 @@
         <h1>HTML Basics</h1>
         <p>
             HTML is the main structure of a web page. In this section we will go through some of the elements and
-            components that will be need in the project.
-            If the material here is too short, then see a more beginner friendly
+            components that will be needed in the project.
+            If the material here is too concise, then see a more beginner-friendly
             <a href="http://htmldog.com/guides/html/beginner/" target="_blank">tutorial</a>.
         </p>
         <p>
@@ -733,14 +733,14 @@
         </div>
 
         <p>
-            Note that the white space in the paragraph disappeared, this is because HTML collapses all white space (for
-            now, you can consider it to ignore all white space).
+            Note that the whitespace in the paragraph disappeared, this is because HTML collapses all whitespace (for
+            now, you can consider it to ignore all whitespace).
         </p>
 
         <p>
             Below are some of the most common HTML elements used to structure a web site.
             The rest of the elements you will have to figure out as you go along with the project. Refer to the
-            Mozilla developers guide
+            Mozilla developers' guide
             <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element" target="_blank">reference</a> for a
             complete list. Some important ommisions are:
             <code>&lt;table&gt;</code>,
@@ -753,7 +753,7 @@
             <dd class="col-sm-9">Most of the content is placed in this tag.</dd>
             <dt class="col-sm-3"><code>&lt;head&gt;</code></dt>
             <dd class="col-sm-9">
-                <code>&lt;head&gt;</code> and its sub-elements contain meta data, such as document title and which
+                <code>&lt;head&gt;</code> and its sub-elements contain metadata, such as document title and which
                 script dependencies to load. As seen in the example above, the <code>&lt;script&gt;</code> tag is used
                 to load JavaScript by referencing them in the src attribute.
                 Note that the order of the script tags matter, so scripts that depend on other scripts must be loaded
@@ -879,8 +879,8 @@
             <p class="mt-5">
                 The HTML <code>&lt;form&gt;</code> element can be used to group multiple buttons and inputs with a
                 single event. It also supports some basic form validation. By default the form will perform a POST to
-                the current URL, this behaviour was standard during the 90's and 00's. Modern web pages build with
-                JavaScript and REST APIs processes the events dynamically instead with JavaScript. To turn off
+                the current URL, this behaviour was standard during the 90's and 00's. Modern web pages are constructed 
+                using REST APIs to dynamically process events, employing JavaScript for this purpose. To turn off
                 the default POST and still keep the useful form validation, follow the format below of the
                 <code>onsubmit</code> declaration.
             </p>
@@ -937,8 +937,8 @@
         <a class="anchor" name="CSS"></a>
         <h1>CSS Basics</h1>
         <p>
-            HTML provides the structure of a web page, giving it a nice appearance is the job of the cascading style
-            sheets (CSS) language. The language describes the visual appearance of a document using <em>selectors</em>
+            HTML provides the structure of a web page, giving it a nice appearance is the job of the Cascading Style
+            Sheets (CSS) language. The language describes the visual appearance of a document using <em>selectors</em>
             and key/value <em>attributes</em>.
             As before, a more comprehensive tutorial is available here:
             <a href="http://htmldog.com/guides/css/beginner/" target="_blank">tutorial</a>.
@@ -952,7 +952,7 @@
             The resulting element is styled as follows:
             <span style="background-color: red">Red background on text</span>
             As seen, when setting styling elements directly on HTML, the style-attribute of the HTML element is used.
-            Multiple key-value pairs are delimited using semi-colon.
+            Multiple key-value pairs are delimited using semicolon.
         </p>
 
         <p>
@@ -1183,7 +1183,7 @@
                 Using only inline styling is annoying because it is not reusable. This brings us to the concept of
                 style sheets. They are reusable rules that can be applied to multiple HTML elements.
                 There are three options for specifying CSS: inline, internal style sheet, and external style sheet. What
-                was show earlier was inline styling. An example of an internal style sheet follows.
+                was shown earlier was inline styling. An example of an internal style sheet follows.
             </p>
             <pre class="mb-0"><code class="language-markup">
                 &lt;style&gt;
@@ -1199,8 +1199,8 @@
             <p>
                 Note that, the crucial difference between the inline style and the style sheet definitions is that the
                 inline style applies to a single element, while the style sheet applies to all HTML elements of type
-                span. This is the reason that it is so powerful, next we will learn by controlling which element to
-                apply style to using selectors.
+                span. This is the reason that it is so powerful. Next, we will learn how to control which elements to 
+                apply styles to using selectors.
             </p>
         </section>
 
@@ -1208,9 +1208,9 @@
             <a class="sub-anchor" name="CSSSelector"></a>
             <h3>Selectors</h3>
             <p>
-                CSS selectors are used to qualify to which elements the styling should be applied to. They come in three
+                CSS selectors are employed to specify which elements should receive styling. They come in three
                 major forms: <code>element</code>, <code>.class</code>, and <code>#id</code>. The first matches the name
-                of an element, the second matches on an elements declared classes, and finally the third matches to a
+                of an element, the second targets elements with specified classes, and finally the third matches to a
                 unique identifier. These selectors can be combined in a chain to match parents and then their children
                 in the tree of HTML elements. To combine multiple CSS selectors, simply append them with space, like so:
                 <code>#example-div span</code>. That will match for a div that has <code>id="example-div"</code> and
@@ -1254,7 +1254,7 @@
                 elements with the class bolded.
                 Secondly, styling can be overriden. <code>font-weight</code> is set to both
                 normal and bold, yet it is displayed as bold in the span with class bolded. CSS applies the style
-                which is most specific. In this case the second selector is more specific than the first,
+                which is the most specific. In this case the second selector is more specific than the first,
                 since it has more selectors. See
                 <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity">here</a> for more
                 information about the specificity rules.
@@ -1416,7 +1416,7 @@
                     <br>
                     <b>Hint!</b>
                     Did you know that you can right click on any HTML element and select <q>Inspect</q> or <q>Inspect
-                    Element</q>, that can be useful right now.
+                    Element</q>? That can be useful right now.
                 </p>
                 <div class="lab-task-form">
                     <div class="form-check">
@@ -1480,14 +1480,14 @@
         <a class="anchor" name="Front-End"></a>
         <h1>Front End in BASE</h1>
         <p>
-            It is time to dive deeper in the frontend of the actual <a href="#BASE">BASE system</a>.
+            It is time to dive deeper in the front end of the actual <a href="#BASE">BASE system</a>.
         </p>
         <p>
             When a user goes to <a href="/" target="_blank">localhost:8080</a> the server serves the
             <a href="/index.html">index.html</a> and <a target="_blank" href="/index.js">index.js</a> files. They
             contain the contents for the navigation header and the code for replacing the tab with either 'Foo' or
             'User Admin' stuff. In the script there is an object containing the routing information for said tabs. If
-            additional tabs are needed in your project, then it is sufficient to modify the <code>routingTable</code>
+            additional tabs are needed in your project, then it's sufficient to modify the <code>routingTable</code>
             object and to add a script tag in <code>index.html</code>. If the tab should be accessible from the
             navigational header, then add an <code>a</code>-tag to the <code>nav</code> in <code>index.html</code>.
         </p>
@@ -1510,7 +1510,7 @@
            target="_blank">Source.</a>
 
         <p class="mt-3">
-            When the user clicks on the 'Foo' link in the navigation header the script in <code>index.js</code>
+            When the user clicks on the 'Foo' link in the navigation header, the script in <code>index.js</code>
             loads the <a target="_blank" href="/foo/foo.html">foo.html</a> and adds it to the web page.
             This is done through the <code>DOM</code> as such:
         </p>
@@ -1614,13 +1614,13 @@
             <a class="sub-anchor" name="E2E"></a>
             <h3>End to End Changes in BASE</h3>
             <p>
-                We are now going to add a simple extension to the Foo tab, in addition to the data field, there will be
+                We are now going to add a simple extension to the Foo tab. In addition to the data field, there will be
                 a total of the number of data. This could represent the number of items in a shopping basket etc.
             </p>
             <div class="lab-task-group alert alert-warning" id="e2eServer">
                 <h4 class="alert-heading">Server side stub</h4>
                 <p>
-                    In order for the server to return data in the format we want the first task will be to modify the
+                    In order for the server to return data in the format we want, the first task will be to modify the
                     <code>Foo.java</code> file. The contents in the file will affect the data that is received from the
                     server.
                 </p>
@@ -1728,7 +1728,7 @@
                 </div>
                 <div class="lab-task-completed">
                     <hr>
-                    That's all folks! See you on the next lab. If you are in the front end development team, I hope you
+                    That's all folks! See you at the next lab. If you are in the front end development team, I hope you
                     will come back and look at this document again. In case you really want to start from the beginning
                     run <code class="language-javascript">baseLab.clearAll()</code> in the console (and why wouldn't
                     you?).
@@ -1738,14 +1738,14 @@
 
         <div class="alert alert-info mt-5">
             <h4 class="alert-heading">Present to your TA</h4>
-            Show that <b>all tasks in this lab</b> are completed and that the <b>jasmine unit tests pass</b>. That means
+            Show that <b>all tasks in this lab</b> are completed and that the <b>Jasmine unit tests pass</b>. That means
             that everything in <a target="_blank" href="/specs.html">jasmine specs</a> should be green, nothing red or
             yellow. Don't forget to ask any remaining questions.
         </div>
     </section>
 
     <div class="lab-section">
-        <b>P.s.</b> total errors during validation were <span id="score"></span>.
+        <b>P.S.</b> the total number of errors validation errors during your lab session was <span id="score"></span>.
     </div>
 </div>
 </body>
