@@ -255,7 +255,7 @@
                     users, but it does return all foo's. You can filter which columns to return when using an implicit
                     join like so:
                     <pre><code>SELECT foo.*, user.user_name FROM foo, user</code></pre>
-                    The example returns everything from the foo table but only user_name from the foo table.
+                    The example returns everything from the foo table but only user_name from the user table.
                 </dd>
                 <dt class="col-sm-3"><code>WHERE clause</code></dt>
                 <dd class="col-sm-9">
@@ -1382,7 +1382,7 @@
                     <code>DataAccessException</code> (thrown by the database code). The WebApplicationException is built
                     into JAX-RS and can be used to set a specific error code. You can see this in action by doing a
                     request to <a href="http://localhost:8080/rest/nothing" target="_blank">/rest/nothing</a>, Jersey
-                    will find to find a match for this resource and throw a WebApplicationException with code
+                    will fail to find a match for this resource and throw a WebApplicationException with code
                     <code>404</code>.
                     Your code can also throw <code>WebApplicationException</code>. An example of this follows, consider
                     an implementation of the <code>deleteFoo</code> method:
