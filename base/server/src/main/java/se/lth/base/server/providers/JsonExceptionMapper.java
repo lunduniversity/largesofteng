@@ -1,15 +1,15 @@
 package se.lth.base.server.providers;
 
-import org.eclipse.jetty.util.log.StdErrLog;
+import org.slf4j.LoggerFactory;
 import se.lth.base.server.BaseServer;
 import se.lth.base.server.database.DataAccessException;
 import se.lth.base.server.database.ErrorType;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -40,7 +40,7 @@ public class JsonExceptionMapper implements ExceptionMapper<Exception> {
         jsonObject.put("message", exception.getMessage());
         jsonObject.put("status", status);
         if (errorType.getLevel() == Level.SEVERE) {
-            StdErrLog.getLogger(BaseServer.class).warn(exception.getMessage(), exception);
+            LoggerFactory.getLogger(BaseServer.class).warn(exception.getMessage(), exception);
         }
         return Response.status(status)
                 .header("Content-Type", MediaType.APPLICATION_JSON + ";charset=utf-8")

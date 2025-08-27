@@ -52,7 +52,7 @@ public class UserDataAccess extends DataAccess<User> {
      */
     public User addUser(Credentials credentials) {
         long salt = Credentials.generateSalt();
-        int userId = insert("INSERT INTO user (role_id, username, password_hash, salt) VALUES ((" +
+        int userId = insert("INSERT INTO users (role_id, username, password_hash, salt) VALUES ((" +
                         "SELECT role_id FROM user_role WHERE user_role.role=?),?,?,?)",
                 credentials.getRole().name(), credentials.getUsername(), credentials.generatePasswordHash(salt), salt);
         return new User(userId, credentials.getRole(), credentials.getUsername());
@@ -61,13 +61,13 @@ public class UserDataAccess extends DataAccess<User> {
     public User updateUser(int userId, Credentials credentials) {
         if (credentials.hasPassword()) {
             long salt = Credentials.generateSalt();
-            execute("UPDATE user SET username = ?, password_hash = ?, salt = ?, role_id = (" +
+            execute("UPDATE users SET username = ?, password_hash = ?, salt = ?, role_id = (" +
                             "    SELECT user_role.role_id FROM user_role WHERE user_role.role = ?) " +
                             "WHERE user_id = ?",
                     credentials.getUsername(), credentials.generatePasswordHash(salt), salt,
                     credentials.getRole().name(), userId);
         } else {
-            execute("UPDATE user SET username = ?, role_id = (" +
+            execute("UPDATE users SET username = ?, role_id = (" +
                             "    SELECT user_role.role_id FROM user_role WHERE user_role.role = ?) " +
                             "WHERE user_id = ?",
                     credentials.getUsername(), credentials.getRole().name(), userId);
@@ -76,20 +76,20 @@ public class UserDataAccess extends DataAccess<User> {
     }
 
     public User getUser(int userId) {
-        return queryFirst("SELECT user_id, role, username FROM user, user_role " +
-                "WHERE user.user_id = ? AND user.role_id = user_role.role_id", userId);
+        return queryFirst("SELECT user_id, role, username FROM users, user_role " +
+                "WHERE users.user_id = ? AND users.role_id = user_role.role_id", userId);
     }
 
     public boolean deleteUser(int userId) {
-        return execute("DELETE FROM user WHERE user_id = ?", userId) > 0;
+        return execute("DELETE FROM users WHERE user_id = ?", userId) > 0;
     }
 
     /**
      * @return all users in the system.
      */
     public List<User> getUsers() {
-        return query("SELECT user_id, username, role FROM user, user_role " +
-                "WHERE user.role_id = user_role.role_id");
+        return query("SELECT user_id, username, role FROM users, user_role " +
+                "WHERE users.role_id = user_role.role_id");
     }
 
     /**
@@ -100,9 +100,9 @@ public class UserDataAccess extends DataAccess<User> {
      * @throws DataAccessException if the session is not found.
      */
     public Session getSession(UUID sessionId) {
-        User user = queryFirst("SELECT user.user_id, username, role FROM user, user_role, session " +
-                "WHERE user_role.role_id = user.role_id " +
-                "    AND session.user_id = user.user_id " +
+        User user = queryFirst("SELECT users.user_id, username, role FROM users, user_role, session " +
+                "WHERE user_role.role_id = users.role_id " +
+                "    AND session.user_id = users.user_id " +
                 "    AND session.session_uuid = ?", sessionId);
         execute("UPDATE session SET last_seen = CURRENT_TIMESTAMP() " +
                 "WHERE session_uuid = ?", sessionId);
@@ -128,15 +128,15 @@ public class UserDataAccess extends DataAccess<User> {
      */
     public Session authenticate(Credentials credentials) {
         long salt = new DataAccess<>(getDriverUrl(), (rs) -> rs.getLong(1))
-                .queryStream("SELECT salt FROM user WHERE username = ?", credentials.getUsername()).findFirst()
+                .queryStream("SELECT salt FROM users WHERE username = ?", credentials.getUsername()).findFirst()
                 .orElseThrow(() -> new DataAccessException("Username or password incorrect", ErrorType.DATA_QUALITY));
         UUID hash = credentials.generatePasswordHash(salt);
-        User user = queryFirst("SELECT user_id, username, role FROM user, user_role " +
-                "WHERE user_role.role_id = user.role_id " +
+        User user = queryFirst("SELECT user_id, username, role FROM users, user_role " +
+                "WHERE user_role.role_id = users.role_id " +
                 "    AND username = ? " +
                 "    AND password_hash = ?", credentials.getUsername(), hash);
         UUID sessionId = insert("INSERT INTO session (user_id) " +
-                "SELECT user_id from USER WHERE username = ?", user.getName());
+                "SELECT user_id FROM users WHERE username = ?", user.getName());
         return new Session(sessionId, user);
     }
 }

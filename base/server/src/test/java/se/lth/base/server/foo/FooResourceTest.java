@@ -5,9 +5,9 @@ import org.junit.Test;
 import se.lth.base.server.BaseResourceTest;
 import se.lth.base.server.foo.Foo;
 
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.ForbiddenException;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.GenericType;
 import java.util.Collections;
 import java.util.List;
 
