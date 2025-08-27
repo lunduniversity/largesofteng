@@ -9,11 +9,11 @@ import se.lth.base.server.user.UserResource;
 import se.lth.base.server.providers.JsonProvider;
 import se.lth.base.server.user.*;
 
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Cookie;
+import jakarta.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.util.Collections;
 

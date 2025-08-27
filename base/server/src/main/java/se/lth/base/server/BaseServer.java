@@ -8,19 +8,20 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.log.StdErrLog;
 import org.eclipse.jetty.util.resource.Resource;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.slf4j.LoggerFactory;
 import se.lth.base.server.database.CreateSchema;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Objects;
 
 
 public class BaseServer {
@@ -28,13 +29,14 @@ public class BaseServer {
     public static void main(String[] args) {
         String databaseDriver = Config.instance().getDatabaseDriver();
         if (new CreateSchema(databaseDriver).createSchemaIfNotExists()) {
-            StdErrLog.getLogger(BaseServer.class).info("Installed database to " + databaseDriver);
+            LoggerFactory.getLogger(BaseServer.class).info("Installed database to {}", databaseDriver);
         }
 
         Server server = new Server(Config.instance().getPort());
 
-        server.setRequestLog((request, response) -> StdErrLog.getLogger(BaseServer.class).info(
-                request.getMethod() + " " + request.getOriginalURI() + " " + response.getStatus()));
+        server.setRequestLog((request, response) ->
+                LoggerFactory.getLogger(BaseServer.class)
+                             .info("{} {} {}", request.getMethod(), request.getOriginalURI(), response.getStatus()));
 
         // Handlers take care of server request in the order given
         HandlerList handlers = new HandlerList(
@@ -47,7 +49,7 @@ public class BaseServer {
             server.start();
             server.join();
         } catch (Exception ex) {
-            StdErrLog.getLogger(BaseServer.class).warn(ex);
+            LoggerFactory.getLogger(BaseServer.class).warn("Failed to start server", ex);
         } finally {
             server.destroy();
         }
@@ -60,7 +62,7 @@ public class BaseServer {
             public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
                 if (target.equals("/")) {
                     response.addHeader("Content-Type", "text/html");
-                    copyStream(BaseServer.class.getResourceAsStream("/webassets/index.html"), response.getOutputStream());
+                    copyStream(Objects.requireNonNull(BaseServer.class.getResourceAsStream("/webassets/index.html")), response.getOutputStream());
                     baseRequest.setHandled(true);
                 }
             }

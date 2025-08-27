@@ -1777,7 +1777,7 @@
                         Foo foo = fooDao.addFoo(userId, "data");
                         // Even though we provide the same foo id, the method should fail to delete here since the user id is different
                         int otherUserId = 2;
-                        assertFalse(fooDao.deleteFoo(foo.getId(), otherUserId));
+                        assertFalse(fooDao.deleteFoo(otherUserId, foo.getId()));
                     }
 
                     @Test

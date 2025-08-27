@@ -1,5 +1,6 @@
 package se.lth.base.server.providers;
 
+import jakarta.ws.rs.core.SecurityContext;
 import se.lth.base.server.Config;
 import se.lth.base.server.user.Session;
 import se.lth.base.server.user.User;
@@ -7,13 +8,13 @@ import se.lth.base.server.user.UserDataAccess;
 import se.lth.base.server.database.DataAccessException;
 import se.lth.base.server.database.ErrorType;
 
-import javax.annotation.Priority;
-import javax.ws.rs.Priorities;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.PreMatching;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.ext.Provider;
+import jakarta.annotation.Priority;
+import jakarta.ws.rs.Priorities;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.PreMatching;
+import jakarta.ws.rs.core.Cookie;
+import jakarta.ws.rs.ext.Provider;
 import java.util.UUID;
 
 /**

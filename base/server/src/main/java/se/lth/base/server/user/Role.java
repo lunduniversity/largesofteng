@@ -18,7 +18,7 @@ public enum Role {
     ADMIN(3);
 
     /**
-     * The reason for this strange pattern is to be able to use @{@link javax.annotation.security.RolesAllowed} which
+     * The reason for this strange pattern is to be able to use @{@link jakarta.annotation.security.RolesAllowed} which
      * requires a String, but at the same time we want to have typed Roles. That is, when GSON serializes a ROLE we know
      * it is one of USER/ADMIN and not something made up.
      * <p>
@@ -44,5 +44,5 @@ public enum Role {
         return this.level >= other.level;
     }
 
-    public static Set<Role> ALL_ROLES = new LinkedHashSet<>(Arrays.asList(USER, ADMIN));
+    public static final Set<Role> ALL_ROLES = new LinkedHashSet<>(Arrays.asList(USER, ADMIN));
 }
