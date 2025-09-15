@@ -171,7 +171,7 @@
                 <li>Enter this query into the large text area:</li>
             </ol>
             <pre><code class="language-sql">
-                SELECT username FROM user
+                SELECT username FROM users
                 WHERE user_id = 1
             </code></pre>
             <ol start="6">
@@ -200,7 +200,7 @@
                 <li class="language-sql">
                     You might also want to execute these queries (one at a time) to see what is stored in the rest of
                     the tables:<br>
-                    <code>SELECT * FROM user</code><br>
+                    <code>SELECT * FROM users</code><br>
                     <code>SELECT * FROM foo</code><br>
                     <code>SELECT * FROM user_role</code><br>
                     <code>SELECT * FROM session</code>
@@ -307,7 +307,7 @@
                         SQL has very powerful syntax for performing data aggregations. Let's illustrate with an example:
                     </p>
                     <pre><code class="language-sql">
-                        SELECT user.username, COUNT(foo.user_id) FROM user
+                        SELECT user.username, COUNT(foo.user_id) FROM users
                         LEFT JOIN foo ON foo.user_id = user.user_id
                         GROUP BY user.user_id
                         ORDER BY user.username
@@ -353,28 +353,28 @@
                         <label class="form-check-label">
                             <input onclick="baseLab.complete('sqlSelect', 1)" class="form-check-input" type="radio"
                                    name="sqlSelect">
-                            <code>SELECT VALUES FROM user WHERE username='Test' </code>
+                            <code>SELECT VALUES FROM users WHERE username='Test' </code>
                         </label>
                     </div>
                     <div class="form-check">
                         <label class="form-check-label">
                             <input onclick="baseLab.complete('sqlSelect', 2)" class="form-check-input" type="radio"
                                    name="sqlSelect">
-                            <code>SELECT * FROM user WHERE username='Test'</code>
+                            <code>SELECT * FROM users WHERE username='Test'</code>
                         </label>
                     </div>
                     <div class="form-check">
                         <label class="form-check-label">
                             <input onclick="baseLab.complete('sqlSelect', 3)" class="form-check-input" type="radio"
                                    name="sqlSelect">
-                            <code>SELECT * FROM user JOIN ON username='Test'</code>
+                            <code>SELECT * FROM users JOIN ON username='Test'</code>
                         </label>
                     </div>
                     <div class="form-check">
                         <label class="form-check-label">
                             <input onclick="baseLab.complete('sqlSelect', 4)" class="form-check-input" type="radio"
                                    name="sqlSelect">
-                            <code>SELECT username='Test' FROM user</code>
+                            <code>SELECT username='Test' FROM users</code>
                         </label>
                     </div>
                 </div>
@@ -392,7 +392,7 @@
                     What does this query do?
                 </h4>
                 <pre><code class="language-sql">
-                    SELECT user_role.role FROM user, user_role
+                    SELECT user_role.role FROM users, user_role
                     WHERE username = 'Admin'
                         AND password_hash = '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59'
                         AND user_role.role_id = user.role_id
